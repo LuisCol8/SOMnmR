@@ -14,11 +14,17 @@ If the MMM option is chosen, then a fitting is made either constrained with the 
 Background substraction, and phase correction is out of the scope of this package.
 
 ## Table of contents
-* [How to cite](##-How-to-cite)
-* [How to install](##-How-to-install)
-* [Introduction](##-Introduction)
-* [How to use](##-How-to-use)
-* [References](##_References)
+- [How to cite](#how-to-cite)
+- [How to install](#how-to-install)
+  * [Step 1:](#step-1-)
+  * [Step 2:](#step-2-)
+  * [Step 3:](#step-3-)
+- [Introduction](#introduction)
+- [How to use](#how-to-use)
+- [References](#references)
+- [Contact](#contact)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## How to cite
 
