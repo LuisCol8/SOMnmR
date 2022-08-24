@@ -16,9 +16,9 @@ Background substraction, and phase correction is out of the scope of this packag
 ## Table of contents
 - [How to cite](#how-to-cite)
 - [How to install](#how-to-install)
-  * [Step 1:](#step-1-)
-  * [Step 2:](#step-2-)
-  * [Step 3:](#step-3-)
+  * [Step 1](#step-1-)
+  * [Step 2](#step-2-)
+  * [Step 3](#step-3-)
 - [Introduction](#introduction)
 - [How to use](#how-to-use)
 - [References](#references)
@@ -37,7 +37,7 @@ Just copy paste this:
 
 ## How to install
 
-### Step 1: 
+### Step 1
 To install a SOMnmR as a package, start by installing the devtools package. The best way to do this is from CRAN, by typing from your comand line:
 
 ```bash
@@ -45,7 +45,7 @@ To install a SOMnmR as a package, start by installing the devtools package. The 
   install.packages("devtools")
 ```
 
-### Step 2: 
+### Step 2
 Install the package of interest from GitHub
 
 Install SOMnmR from GitHub using the following code:
@@ -59,7 +59,7 @@ Install SOMnmR from GitHub using the following code:
 ```
 
  
-### Step 3: 
+### Step 3
 Load the package
 	
 ```bash
