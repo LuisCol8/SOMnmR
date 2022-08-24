@@ -24,8 +24,6 @@ Background substraction, and phase correction is out of the scope of this packag
 - [References](#references)
 - [Contact](#contact)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
 ## How to cite
 
 This package is my effort of applying stuff that I learned with what I needed to make things faster during my Ph.D.
