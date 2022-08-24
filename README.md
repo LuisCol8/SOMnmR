@@ -70,8 +70,26 @@ Load the package
 
 ## Introduction
 
+Hi My name is Luis Colocho.
+I made my Ph.D. at the Chair of Soil Science of the Technical University of Munich, under Apl. Prof. Joerg Prietzel.
+At our lab, a major equipment of use was the solid state NMR and for a manuscript I developed this package, which takes some functions
+from the package developed by my college Florian Werner (check LCF if you do linear combination fitting of synchrotron data).
+
+In soil science we use Nuclear magnetic resonance (NMR) spectroscopy for atomic and molecular level structure elucidation. During such an NMR experiment the
+sample of interest is placed into an external static magnetic field that forces the nuclei spins to distribute themselves among different energy levels. The
+energy difference (DE) between those levels is dependent upon the magnetic properties and the strength of the surrounding magnetic field of the affected
+nuclei. Consequently, DE is different for nuclei in different chemical and physical environments. Spin transitions between those levels can be induced if an
+additional electromagnetic field with a frequency corre- sponding exactly to DE is applied. In this case, the induced transitions can be detected as a
+resonance signal at a specific resonance frequency in a spectrum. Note that different to mass spectrometric techniques an NMR signal represents only one
+certain kind of nuclei that is typical for a specific chemical functionality. As mentioned above DE and con- sequently the resonance frequency is also
+dependent upon the strength of the external magnetic field which makes it dificult to compare results obtained with two different NMR spectrometers. In order to circumvent this problem, the resonance frequency is given relative to a reference as chemical shift in ppm in relation to a standard (tetramethylsilan).
+
 The first step towards understanding NOM reactivity, properties and functions is to identify its composition and functional groups, which is extremely
-challenging though, due to the structural com- plexity and heterogeneity of NOM. Decades of research have shown that NOM is a heterogeneous mixture of
+challenging though, due to the structural complexity and heterogeneity of NOM.
+
+
+
+Decades of research have shown that NOM is a heterogeneous mixture of
 various functional units present in charged macromolecules of polydisperse size [4,12]. These functional units include nonpolar alkyl, carbohydrate-like,
 protein-like, lignin-like, heterocyclic, and polycyclic aromatic moieties. One new paradigm considers soil NOM as a heterogeneous mixture of physical states
 with a hierarchy of preferred sites [13]. Although several more hypotheses on NOM structures have been proposed, none of them has been confirmed at the
