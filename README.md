@@ -20,9 +20,14 @@ $ install.packages("devtools")
 Install the package of interest from GitHub
 
 Install SOMnmR from GitHub using the following code:
-	
-library(devtools)
-install_github("LuisCol8/SOMnmR")
+
+```bash
+# load devtools
+$ library(devtools)
+
+# load SOMnmR
+$ install_github("LuisCol8/SOMnmR")
+```
 
  
 ### Step 3: 
