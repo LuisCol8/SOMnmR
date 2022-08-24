@@ -2,9 +2,13 @@
 A package for 13C NMR analysis (spinning sidebands, molecular mixing model, etc)
 
 ## Table of contents
+* [How to cite](##-How-to-cite)
 * [How to install](##-How-to-install)
 * [Introduction](##-Introduction)
 * [How to use](##-How-to-use)
+* [References](##-References)
+
+## How to cite
 
 ## How to install
 
@@ -113,7 +117,7 @@ plot_NMR(spec, NMRmeth = "MMMM",file.output = TRUE,use.tiff = TRUE)
 
 ```
 
-
+## References
 
 
 
