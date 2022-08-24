@@ -56,6 +56,19 @@ $ library(pracma)
 $ (ggplot2)
 $ library(SOMnmR)
 
+# set your working directory, I suggest you have a folder for where all the integrals are placed, a folder for the C:N data and a folder for the plots
+
+work.dir <- c("C:/Plant_NMR/")
+
+## Load the folder containing the spectra, you can have them as a two column file with the ppm and the intensity in each column
+
+setwd(paste(work.dir,"csv",sep = "/"))
+files <- list.files()
+files <- files[grep(".csv", files)]
+
+# Read all the spectra and make a variable containing them all. Types accepted: "Bruker", "coma", "tab"
+spec <- read_raw_spec(files, filetype = "coma")
+
 
 ```
 
