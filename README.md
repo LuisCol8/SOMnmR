@@ -33,7 +33,11 @@ $ install_github("LuisCol8/SOMnmR")
 ### Step 3: 
 Load the package
 	
-library(SOMnmR)
+```bash
+# load SOMnmR
+$ library(SOMnmR)
+
+```
 
 ## Introduction
 
