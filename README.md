@@ -22,6 +22,15 @@ Background substraction, and phase correction is out of the scope of this packag
 
 ## How to cite
 
+This package is my effor of applying stuff that I learned with what I needed to make things faster during my Ph.D.
+If you want me to be motivated to mantain this package and maybe add something or improve it. Show me the love/citations:
+
+Just copy paste this:
+
+
+
+
+
 ## How to install
 
 ### Step 1: 
