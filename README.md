@@ -119,5 +119,11 @@ plot_NMR(spec, NMRmeth = "MMMM",file.output = TRUE,use.tiff = TRUE)
 
 ## References
 
+Hockaday, W. C., Masiello, C. A., Randerson, J. T., Smernik, R. J., Baldock, J. A., Chadwick, O. A., & Harden, J. W. (2009). Measurement of soil carbon oxidation state and oxidative ratio by 13C nuclear magnetic resonance. Journal of Geophysical Research: Biogeosciences, 114(2), 1–14. https://doi.org/10.1029/2008JG000803
+
+Nelson, P. N., & Baldock, J. A. (2005). Estimating the molecular composition of a diverse range of natural organic materials from solid-state 13 C NMR and elemental analyses. Biogeochemistry, 72(1), 1–34. https://doi.org/10.1007/s10533-004-0076-3
+
+Wilson, M.A., 1987. NMR Techniques and Applications in Geochemistry and Soil Chemistry. Pergamon
+Press, Oxford.
 
 
