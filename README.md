@@ -151,4 +151,7 @@ Nelson, P. N., & Baldock, J. A. (2005). Estimating the molecular composition of 
 Wilson, M.A., 1987. NMR Techniques and Applications in Geochemistry and Soil Chemistry. Pergamon
 Press, Oxford.
 
+## Contact
 
+If you have suggestions, complains and questions just send me an email to:
+luis [dot] colocho [at] esrf [dot] fr
