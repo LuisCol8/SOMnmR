@@ -71,6 +71,29 @@ files <- files[grep(".csv", files)]
 # Read all the spectra and make a variable containing them all. Types accepted: "Bruker", "coma", "tab"
 spec <- read_raw_spec(files, filetype = "coma")
 
+# If you are going to do the MMM fitting you need to create a file contaning the  Carbon and Nitrogen
+# data of your spectra. With this function we will create an empty file which contains the columns 
+# for C and N and the name of the files. Do not change the order as it is following the order of the loaded spectra
+
+ncdata <- mk_nc_data(spec)
+
+# save and fill with CN data
+setwd(paste(work.dir,"CN",sep = "/"))
+write.csv(ncdata,"./NC_plant.csv", row.names = FALSE)
+
+# After you filled the file with the CN data load it into the script
+
+ncdata <- nc_data("/NC/NC_plant.csv")
+
+# Now you can calculate Molecular mixing model! Choose as NMR Meth either "MMMFixN" to fix the NC ratio of the fit
+# or "MMM" to let it vary, you can also choose ecosys either "Terr" or "Aqua" which takes into account the different
+# composition of terrestrial or aquatic ecosystems.
+
+MMM <- region_calc(spec, NMRmeth = "MMMFixN", ecosys= "Terr", cndata = ncdata)
+
+# Save your results using:
+
+write.csv(MMM, "MMM_R.csv")
 
 ```
 
