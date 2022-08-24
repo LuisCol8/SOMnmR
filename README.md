@@ -2,14 +2,14 @@
 
 A package for 13C NMR analysis (spinning sidebands, molecular mixing model, etc)
 
-### What does it do?
+### What can be done?
 
 The package mainly focuses on the integration of NMR regions. With this information it can either correct the spinning side bands,
 give the integrals according to Bonanomi et al. (2011) or to the molecular mixing model (thereafter named MMM) according to Nelson et al. (2005). 
 
 If the MMM option is chosen, then a fitting is made either constrained with the NC ration of the sample or not.
 
-### What does it DOES NOT do?
+### What can't be done?
 
 Background substraction, and phase correction is out of the scope of this package.
 
