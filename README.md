@@ -9,11 +9,12 @@ A package for 13C NMR analysis (spinning sidebands, molecular mixing model, etc)
 ## How to install
 
 ### Step 1: 
-Install the devtools package
+To install a SOMnmR as a package, start by installing the devtools package. The best way to do this is from CRAN, by typing from your comand line:
 
-To install a R package, start by installing the devtools package. The best way to do this is from CRAN, by typing:
-	
-install.packages("devtools")
+```bash
+# Install devtools
+$ install.packages("devtools")
+```
 
 ### Step 2: 
 Install the package of interest from GitHub
