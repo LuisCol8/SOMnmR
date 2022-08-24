@@ -1,7 +1,12 @@
-# SOMnmR H1
+# SOMnmR
 A package for 13C NMR analysis (spinning sidebands, molecular mixing model, etc)
 
-## How to install H2
+## Table of contents
+* [How to install](##How to install)
+* [Introduction](##Introduction)
+* [How to use](##How to use)
+
+## How to install
 
 Step 1: Install the devtools package
 
@@ -24,3 +29,7 @@ Step 3: Load the package
 1
 	
 library(flipPlots)
+
+## Introduction
+
+## How to use
