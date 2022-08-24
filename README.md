@@ -95,6 +95,22 @@ MMM <- region_calc(spec, NMRmeth = "MMMFixN", ecosys= "Terr", cndata = ncdata)
 
 write.csv(MMM, "MMM_R.csv")
 
+# If you want to check the integrals of the MMM use:
+
+MMMregions <- int_nmr(spec,NMRmeth = "MMM")
+
+# You can save each result (change the number in x [[x]]) as follows: 
+
+write.csv(unlist(MMMregions[[1]]$data$Integral), "MMMregions_name.csv")
+
+# There is a simple function that makes a ggplot2 plot of your spectra. You can choose between different integration regions
+# to be colored. Use "Bonanomi" or "MMM" or leave it blank to choose between the "Bonanomi", "MMM", or spinning side bands regions,
+# respectively. 
+
+plot_NMR(spec, NMRmeth = "MMMM",file.output = TRUE,use.tiff = TRUE)
+
+
+
 ```
 
 
