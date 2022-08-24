@@ -70,6 +70,20 @@ Load the package
 
 ## Introduction
 
+The first step towards understanding NOM reactivity, properties and functions is to identify its composition and functional groups, which is extremely
+challenging though, due to the structural com- plexity and heterogeneity of NOM. Decades of research have shown that NOM is a heterogeneous mixture of
+various functional units present in charged macromolecules of polydisperse size [4,12]. These functional units include nonpolar alkyl, carbohydrate-like,
+protein-like, lignin-like, heterocyclic, and polycyclic aromatic moieties. One new paradigm considers soil NOM as a heterogeneous mixture of physical states
+with a hierarchy of preferred sites [13]. Although several more hypotheses on NOM structures have been proposed, none of them has been confirmed at the
+molecular level. Various methods have been used to investi- gate NOM structure, including chemical degradation, thermal degradation and spectroscopic methods
+[6,14,15]. Although chem- ical and thermal degradation methods could yield structural infor- mation on subunits, the structures of these subunits might be
+unrepresentative, or even from artifacts, and difficult to relate directly back to the original structures of NOM. Many spectro- scopic methods such as
+infrared (IR), electron paramagnetic reso- nance, Raman, fluorescence and nuclear magnetic resonance (NMR) spectroscopies have been applied to NOM [1], and
+it has been established that non-destructive spectroscopic analyses such as NMR spectroscopy are better choices than destructive approaches [16]. Compared to
+other spectroscopic methods such as IR or Raman spectroscopy, solid-state NMR allows for compre- hensive and quantitative structural information to be
+obtained from NOM, and is therefore arguably one of the most powerful techniques for the comprehensive characterization of NOM.
+
+
 ## How to use
 
 As explained before the package is a simple wrap up of integration and fitting (in the case of the MMM). As an example I include a simple script that can be easily modified.
