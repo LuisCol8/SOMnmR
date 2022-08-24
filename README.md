@@ -13,7 +13,7 @@ To install a SOMnmR as a package, start by installing the devtools package. The 
 
 ```bash
 # Install devtools
-$ install.packages("devtools")
+  install.packages("devtools")
 ```
 
 ### Step 2: 
@@ -23,10 +23,10 @@ Install SOMnmR from GitHub using the following code:
 
 ```bash
 # load devtools
-$ library(devtools)
+  library(devtools)
 
 # load SOMnmR
-$ install_github("LuisCol8/SOMnmR")
+  install_github("LuisCol8/SOMnmR")
 ```
 
  
@@ -35,7 +35,7 @@ Load the package
 	
 ```bash
 # load SOMnmR
-$ library(SOMnmR)
+  library(SOMnmR)
 
 ```
 
@@ -49,12 +49,12 @@ As explained before the package is a simple wrap up of integration and fitting (
 # Start by loading the necessary packages, which are cnma, minpack.lm, quadprog, pracma and ggplot2. 
 # If you dont have them installedjust write install.packages("name_of_the_package_you_are_missing")
 
-$ library(cmna)
-$ library(minpack.lm)
-$ library(quadprog)
-$ library(pracma)
-$ (ggplot2)
-$ library(SOMnmR)
+  library(cmna)
+  library(minpack.lm)
+  library(quadprog)
+  library(pracma)
+  (ggplot2)
+  library(SOMnmR)
 
 # set your working directory, I suggest you have a folder for where all the integrals are placed, 
 # a folder for the C:N data and a folder for the plots
