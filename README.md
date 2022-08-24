@@ -42,3 +42,24 @@ $ library(SOMnmR)
 ## Introduction
 
 ## How to use
+
+As explained before the package is a simple wrap up of integration and fitting (in the case of the MMM). As an example I include a simple script that can be easily modified.
+
+```bash
+# Start by loading the necessary packages, which are cnma, minpack.lm, quadprog, pracma and ggplot2. If you dont have them installed
+# just write install.packages("name_of_the_package_you_are_missing")
+
+$ library(cmna)
+$ library(minpack.lm)
+$ library(quadprog)
+$ library(pracma)
+$ (ggplot2)
+$ library(SOMnmR)
+
+
+```
+
+
+
+
+
