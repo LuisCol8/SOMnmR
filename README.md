@@ -18,7 +18,7 @@ Background substraction, and phase correction is out of the scope of this packag
 * [How to install](##-How-to-install)
 * [Introduction](##-Introduction)
 * [How to use](##-How-to-use)
-* [References](##References)
+* [References](##_References)
 
 ## How to cite
 
