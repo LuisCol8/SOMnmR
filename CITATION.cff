@@ -5,7 +5,7 @@ authors:
   given-names: "Luis Carlos"
   orcid: "https://orcid.org/0000-0002-1791-2298"
 title: "SOMnmR"
-version: 1.0.0
-doi: 10.5281/zenodo.1234
+version: 0.1.0
+doi: 10.5281/zenodo.7023316
 date-released: 2022-08-25
 url: "https://github.com/LuisCol8/SOMnmR"
