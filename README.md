@@ -1,4 +1,5 @@
 # SOMnmR
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7023316.svg)](https://doi.org/10.5281/zenodo.7023316)
 
 A package for 13C NMR analysis (spinning sidebands, molecular mixing model, etc)
 
