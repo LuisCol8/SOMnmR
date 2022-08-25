@@ -33,7 +33,7 @@ If you want me to be motivated to mantain this package and maybe add something o
 Just copy paste this:
 
 
-
+Colocho Hurtarte, L. C. (2022). SOMnmR (Version 0.1.0) [Computer software]. https://doi.org/10.5281/zenodo.7023316
 
 
 ## How to install
