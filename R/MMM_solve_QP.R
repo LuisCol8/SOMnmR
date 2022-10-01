@@ -51,8 +51,11 @@ MMM_solve_QP <- function (LCF.stds, LCF.samp, NMRmeth = NULL) {
     ## create the R-factor as fitting statistics
     r.fac <- sum((LCF.samp - fit.spec)^2)/sum(LCF.samp^2)
 
+    ## create the Sum of Squares as fitting statistics
+    ssq <- sum((LCF.samp - fit.spec)^2)
+
     ## combinde the coefficient with the R-factor
-    result <- cbind(raw.coeff, R.fac = r.fac)
+    result <- cbind(raw.coeff, R.fac = r.fac, SSQ = ssq)
 
     } else if (NMRmeth == "MMMFixN") {
 
@@ -89,8 +92,12 @@ MMM_solve_QP <- function (LCF.stds, LCF.samp, NMRmeth = NULL) {
     ## create the R-factor as fitting statistics
     r.fac <- sum((LCF.samp - fit.spec)^2)/sum(LCF.samp^2)
 
+    ## create the Sum of Squares as fitting statistics
+    ssq <- sum((LCF.samp - fit.spec)^2)
+
     ## combinde the coefficient with the R-factor
-    result <- cbind(raw.coeff, R.fac = r.fac)
+    result <- cbind(raw.coeff, R.fac = r.fac, SSQ = ssq)
+    #result <- cbind(raw.coeff, R.fac = r.fac)
 
   }
 

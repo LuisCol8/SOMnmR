@@ -61,7 +61,8 @@ MMM_fit <- function (sample, standards, ex.smaller = NULL, NMRmeth) {
 
 
   ## fill a result vector with the proportions and the statistics
-  end.result <- cbind(dum.coef, R.fac = result$R.fac)
+  end.result <- cbind(dum.coef, R.fac = result$R.fac, SSQ = result$SSQ)
+  #end.result <- cbind(dum.coef, SSQ = result$SSQ)
 
   ## return result
   return(end.result)

@@ -93,7 +93,7 @@ fit_LCF <- function (all.samples, all.standards, ecosys =NULL,
       colnames(exp.zero) <- res.STD
       result <- cbind(result, exp.zero)
 
-      result <- result[c(names(standards), "R.fac")]
+      result <- result[c(names(standards), "R.fac", "SSQ")]
       new.results <- rbind(new.results, result)
 
       ## set progress bar again
@@ -115,8 +115,8 @@ fit_LCF <- function (all.samples, all.standards, ecosys =NULL,
     } else {
 
 
-      new.results.sorted <- as.data.frame(t(rep(0, length(c(names(standards), "R.fac")))))
-      colnames(new.results.sorted) <- c(names(standards), "R.fac")
+      new.results.sorted <- as.data.frame(t(rep(0, length(c(names(standards), "R.fac", "SSQ")))))
+      colnames(new.results.sorted) <- c(names(standards), "R.fac", "SSQ")
 
     }
 
