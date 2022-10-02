@@ -46,11 +46,11 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
     if (file.output == TRUE) {
       if (use.tiff == TRUE) {
         tiff(filename = paste(sample.name, "normalized.tiff", sep = "."),
-             width = 3200, height = 3200, units = "px", res = 800,
+             width = 3200, height = 3200, units = "px", res = 400,
              compression = c("none"))
       } else {
         png(filename = paste(sample.name, "normalized.png", sep = "."),
-            width = 3200, height = 3200, units = "px", res = 800)
+            width = 3200, height = 3200, units = "px", res = 400)
       }
 
       ## create header name
@@ -86,7 +86,7 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.title=element_blank(),
         legend.text=element_text(size=16),
-        legend.position = "bottom",
+        legend.position = c(0.8,0.85),
         plot.title = element_text(lineheight=.8, face="bold", size = 16),
         panel.border = element_blank(),
         panel.background = element_blank(),
@@ -95,32 +95,36 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         axis.line.x = element_line(colour = 'black', size=0.5, linetype='solid'),
         axis.line.y = element_line(colour = 'black', size=0.5, linetype='solid'))
 
+      colors  <- c("Carboxyl-C" = "#999999", "Aryl-C" = "#F0E442", "O-Alkyl-C" = "#0072B2", "Alkyl-C" = "#D55E00")
+
 
       ## plot the coordinate system
-      plt  <- ggplot(data = output.spec, mapping = aes(x = ppm, y = norm.intensity)) +
+      plt <- ggplot(data = output.spec, mapping = aes(x = ppm, y = norm.intensity)) +
+
+        scale_fill_manual(values=colors)+
 
         ## area of carboxyl-C
-        geom_area(mapping = aes(x = ifelse(ppm >= 295 & ppm <= 355, ppm,0)), fill = "#1F78B4", alpha = 0.8, size = 0.6) +
-        geom_area(mapping = aes(x = ifelse(ppm>160 & ppm< 220 , ppm, 0)), fill = "#1F78B4" , alpha = 0.8, size = 0.6) +
-        geom_area(mapping = aes(x = ifelse(ppm>-110 & ppm< -50 , ppm, 0)), fill = "#1F78B4", alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm >= 295 & ppm <= 355, ppm,0), fill = "Carboxyl-C"), alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>160 & ppm< 220 , ppm, 0), fill = "Carboxyl-C"), alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>-110 & ppm< -50 , ppm, 0), fill = "Carboxyl-C"), alpha = 0.8, size = 0.6) +
 
         ## area of Aryl-C
-        geom_area(mapping = aes(x = ifelse(ppm>245 & ppm< 295 , ppm, 0)), fill = "#33A02C", alpha = 0.8, size = 0.6) +
-        geom_area(mapping = aes(x = ifelse(ppm>110 & ppm< 160 , ppm, 0)), fill = "#33A02C", alpha = 0.8, size = 0.6) +
-        geom_area(mapping = aes(x = ifelse(ppm>-145 & ppm< -110 , ppm, 0)), fill = "#33A02C", alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>245 & ppm< 295 , ppm, 0), fill = "Aryl-C"), alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>110 & ppm< 160 , ppm, 0), fill = "Aryl-C"), alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>-145 & ppm< -110 , ppm, 0), fill = "Aryl-C"), alpha = 0.8, size = 0.6) +
 
         ## area of O Alkyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>-90 & ppm< -25 , ppm, 0)), fill = "#E31A1C", alpha = 0.6, size = 0.6) +
-        geom_area(mapping = aes(x = ifelse(ppm>45 & ppm< 110 , ppm, 0)), fill = "#E31A1C", alpha = 0.6, size = 0.6) +
-        geom_area(mapping = aes(x = ifelse(ppm>315 & ppm< 355 , ppm, 0)), fill = "#E31A1C", alpha = 0.6, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>-90 & ppm< -25 , ppm, 0), fill = "O-Alkyl-C"), alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>45 & ppm< 110 , ppm, 0), fill = "O-Alkyl-C"), alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>315 & ppm< 355 , ppm, 0), fill = "O-Alkyl-C"), alpha = 0.8, size = 0.6) +
 
         ## area of Alkyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>-145 & ppm< -90 , ppm, 0)), fill = "#FF7F00", alpha = 0.6, size = 0.6) +
-        geom_area(mapping = aes(x = ifelse(ppm>-10 & ppm< 45 , ppm, 0)), fill = "#FF7F00", alpha = 0.6, size = 0.6) +
-        geom_area(mapping = aes(x = ifelse(ppm>260 & ppm< 315 , ppm, 0)), fill = "#FF7F00", alpha = 0.6, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>-145 & ppm< -90 , ppm, 0), fill = "Alkyl-C"), alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>-10 & ppm< 45 , ppm, 0), fill = "Alkyl-C"), alpha = 0.8, size = 0.6) +
+        geom_area(mapping = aes(x = ifelse(ppm>260 & ppm< 315 , ppm, 0), fill = "Alkyl-C"), alpha = 0.8, size = 0.6) +
 
         ## plot the NMR spectrum
-        geom_line(size = 1)+
+        geom_line(size = 0.25)+
 
         ## Axis title
         xlab("Chemical shift (ppm)") +
@@ -130,6 +134,8 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         ylim(-5, plot.ymax)+
         xlim(-200, 400)+
         raincloud_theme
+
+      print(plt)
 
     } else if (NMRmeth == "Bonanomi") {
 
@@ -141,7 +147,7 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.title=element_blank(),
         legend.text=element_text(size=16),
-        legend.position = "bottom",
+        legend.position = c(0.8,0.85),
         plot.title = element_text(lineheight=.8, face="bold", size = 16),
         panel.border = element_blank(),
         panel.background = element_blank(),
@@ -150,33 +156,37 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         axis.line.x = element_line(colour = 'black', size=0.5, linetype='solid'),
         axis.line.y = element_line(colour = 'black', size=0.5, linetype='solid'))
 
+      colors  <- c("Alkyl-C" = "#CC79A7", "Methoxyl-C"= "#D55E00", "O-Alkyl-C" = "#0072B2",  "Di-O-Alkyl-C" = "#F0E442",
+                   "Aromatic-C" = "#56B4E9", "Phenolic-C" = "#E69F00", "Carboxyl-C" = "#999999")
+
       ## plot the coordinate system
       plt  <- ggplot(data = output.spec, mapping = aes(x = ppm, y = norm.intensity)) +
 
+        scale_fill_manual(values=colors)+
 
         ## area of Alkyl-C
-        geom_area(mapping = aes(x = ifelse(ppm >= 0 & ppm <= 45, ppm,0)), fill = "#A6CEE3", alpha = 0.6, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm >= 0 & ppm <= 45, ppm,0), fill = "Alkyl-C"), alpha = 0.8, size = 0.5) +
 
         ## area of Methoxyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>45 & ppm< 60 , ppm, 0)), fill = "#1F78B4", alpha = 0.8, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 45 & ppm< 60 , ppm, 0), fill = "Methoxyl-C"), alpha = 0.8, size = 0.5) +
 
         ## area of O-Alkyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>-60 & ppm< 90 , ppm, 0)), fill = "#33A02C", alpha = 0.8, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 60 & ppm< 90 , ppm, 0), fill = "O-Alkyl-C"), alpha = 0.8, size = 0.5) +
 
         ## area of Di-O-Alkyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>90 & ppm< 110 , ppm, 0)), fill = "#E31A1C", alpha = 0.8, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 90 & ppm< 110 , ppm, 0), fill = "Di-O-Alkyl-C"), alpha = 0.8, size = 0.5) +
 
         ## area of H and C substituted aromatic -C
-        geom_area(mapping = aes(x = ifelse(ppm>110 & ppm< 140 , ppm, 0)), fill = "#B2DF8A", alpha = 0.8, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 110 & ppm< 140 , ppm, 0), fill = "Aromatic-C"), alpha = 0.8, size = 0.5) +
 
         ## area of O substituted aromatic -C
-        geom_area(mapping = aes(x = ifelse(ppm>-140 & ppm< 160 , ppm, 0)), fill = "#6A3D9A", alpha = 0.8, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 140 & ppm< 160 , ppm, 0), fill = "Phenolic-C"), alpha = 0.8, size = 0.5) +
 
         ## area of carboxyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>-160 & ppm< 190 , ppm, 0)), fill = "#33A02C" , alpha = 0.8, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 160 & ppm< 190 , ppm, 0), fill = "Carboxyl-C"), alpha = 0.8, size = 0.5) +
 
         ## plot the NMR spectrum
-        geom_line(size = 1)+
+        geom_line(size = 0.25)+
 
         ## Axis title
         xlab("Chemical shift (ppm)") +
@@ -186,6 +196,8 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         ylim(-5, plot.ymax)+
         xlim(-200, 400)+
         raincloud_theme
+
+      print(plt)
 
 
     } else if (NMRmeth == "MMM") {
@@ -198,7 +210,7 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.title=element_blank(),
         legend.text=element_text(size=16),
-        legend.position = "bottom",
+        legend.position = c(0.8,0.85),
         plot.title = element_text(lineheight=.8, face="bold", size = 16),
         panel.border = element_blank(),
         panel.background = element_blank(),
@@ -207,32 +219,37 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         axis.line.x = element_line(colour = 'black', size=0.5, linetype='solid'),
         axis.line.y = element_line(colour = 'black', size=0.5, linetype='solid'))
 
+      colors  <- c("Alkyl-C" = "#CC79A7", "Methoxyl-C"= "#D55E00", "O-Alkyl-C" = "#0072B2",  "Di-O-Alkyl-C" = "#F0E442",
+                   "Aromatic-C" = "#56B4E9", "Phenolic-C" = "#E69F00", "Carboxyl-C" = "#999999")
+
       ## plot the coordinate system
       plt  <- ggplot(data = output.spec, mapping = aes(x = ppm, y = norm.intensity)) +
 
+        scale_fill_manual(values=colors)+
+
         ## area of Alkyl-C
-        geom_area(mapping = aes(x = ifelse(ppm >= 0 & ppm <= 45, ppm,0)), fill = "#A6CEE3", alpha = 0.6, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm >= 0 & ppm <= 45, ppm,0), fill = "Alkyl-C"), alpha = 0.8, size = 0.5) +
 
         ## area of Methoxyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>45 & ppm< 60 , ppm, 0)), fill = "#1F78B4", alpha = 0.6, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 45 & ppm< 60 , ppm, 0), fill = "Methoxyl-C"), alpha = 0.8, size = 0.5) +
 
         ## area of O-Alkyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>-60 & ppm< 95 , ppm, 0)), fill = "#B2DF8A", alpha = 0.6, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 60 & ppm< 95 , ppm, 0), fill = "O-Alkyl-C"), alpha = 0.8, size = 0.5) +
 
         ## area of Di-O-Alkyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>95 & ppm< 110 , ppm, 0)), fill = "#33A02C", alpha = 0.6, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 95 & ppm< 110 , ppm, 0), fill = "Di-O-Alkyl-C"), alpha = 0.8, size = 0.5) +
 
         ## area of H and C substituted aromatic -C
-        geom_area(mapping = aes(x = ifelse(ppm>110 & ppm< 145 , ppm, 0)), fill = "#FB9A99", alpha = 0.6, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 110 & ppm< 145 , ppm, 0), fill = "Aromatic-C"), alpha = 0.8, size = 0.5) +
 
         ## area of O substituted aromatic -C
-        geom_area(mapping = aes(x = ifelse(ppm>-145 & ppm< 165 , ppm, 0)), fill = "#E31A1C", alpha = 0.6, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 145 & ppm< 165 , ppm, 0), fill = "Phenolic-C"), alpha = 0.8, size = 0.5) +
 
         ## area of carboxyl-C
-        geom_area(mapping = aes(x = ifelse(ppm>-165 & ppm< 215 , ppm, 0)), fill = "#FDBF6F", alpha = 0.6, size = 0.5) +
+        geom_area(mapping = aes(x = ifelse(ppm> 165 & ppm< 215 , ppm, 0), fill = "Carboxyl-C"), alpha = 0.8, size = 0.5) +
 
         ## plot the NMR spectrum
-        geom_line(size = 1)+
+        geom_line(size = 0.25)+
 
         ## Axis title
         xlab("Chemical shift (ppm)") +
@@ -242,6 +259,8 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
         ylim(-5, plot.ymax)+
         xlim(-200, 400)+
         raincloud_theme
+
+      print(plt)
 
 
     }
@@ -253,6 +272,6 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
       print(plt)
     }
   }
-  #return(plt)
+  return(plt)
   ## close function
 }
