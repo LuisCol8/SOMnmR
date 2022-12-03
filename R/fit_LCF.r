@@ -61,7 +61,18 @@ fit_LCF <- function (all.samples, all.standards, ecosys =NULL,
       colnames(temp.comb) <- NULL
 
       ## add recent combination to list of standard combinations
-      STD.combs <- c(STD.combs, as.list(temp.comb))
+      #STD.combs <- c(STD.combs, as.list(temp.comb))
+
+      if (NMRmeth == "MMMFixN") {
+        ## add recent combination to list of standard combinations
+        STD.combs <- c(STD.combs, as.list(temp.comb))
+        STD.combs <- STD.combs[grepl("Protein",STD.combs)]
+
+        } else {
+        ## add recent combination to list of standard combinations
+        STD.combs <- c(STD.combs, as.list(temp.comb))
+
+        }
 
     }
 
@@ -121,7 +132,7 @@ fit_LCF <- function (all.samples, all.standards, ecosys =NULL,
     }
 
     if (file.output == TRUE) {
-      write.csv2(x = new.results.sorted, file = paste("LCF.athena", all.samples[[i]]$name, "csv", sep = "."), row.names = FALSE)
+      write.csv2(x = new.results.sorted, file = paste("LCF.SOMnmR", all.samples[[i]]$name, "csv", sep = "."), row.names = FALSE)
     }
 
     best.fit <- head(new.results.sorted, best.fits)
@@ -131,7 +142,7 @@ fit_LCF <- function (all.samples, all.standards, ecosys =NULL,
 
     full.result <- rbind(full.result, best.fit)
 
-    write.csv2(full.result, "temp.result.athena.csv", row.names = TRUE)
+    write.csv2(full.result, "temp.result.SOMnmR.csv", row.names = TRUE)
 
     ## close all samples loop
   }
