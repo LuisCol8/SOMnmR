@@ -12,7 +12,7 @@
 #' @importFrom cmna simp
 #' @examples
 
-int_nmr <- function(raw.spec, NMRmeth=NULL) {
+int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
 
   raw.spec.end <- NULL
 
@@ -546,8 +546,37 @@ int_nmr <- function(raw.spec, NMRmeth=NULL) {
       norm <- sum(Integral[1:14])
       normalized.Int <- (Integral/norm)*100
       Integral <- data.frame(normalized.Int)
-      raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
-      }
+
+      if (SSBcorr == TRUE) {
+
+        Alkyl <- ifelse(Integral[4,1] - Integral[15,1] < 0,0, Integral[4,1] - Integral[15,1])
+
+        N_Alkyl_Methoxyl <- ifelse(Integral[5,1] < 0,0, Integral[5,1])
+
+        O_Alkyl <- ifelse(Integral[6,1] < 0,0, Integral[6,1])
+
+        Di_O_Alkyl <- ifelse(Integral[7,1] < 0,0, Integral[7,1] + Integral[1,1] + Integral[12,1])
+
+        Aromatic <- ifelse(Integral[8,1] < 0,0, Integral[8,1] + Integral[2,1] + Integral[13,1])
+
+        Phenolic <- ifelse(Integral[9,1] < 0,0, Integral[9,1] + Integral[3,1] + Integral[14,1])
+
+        Amide_Carboxylic <- ifelse(Integral[10,1] < 0,0, Integral[10,1] + Integral[3,1] + 2*Integral[15,1])
+
+        Ketone <- ifelse(Integral[11,1] < 0,0, Integral[11,1])
+
+        Amide_to_Ketone <- c(Amide_Carboxylic + Ketone)
+
+        Integral <- data.frame(Alkyl, N_Alkyl_Methoxyl, O_Alkyl, Di_O_Alkyl, Aromatic, Phenolic, Amide_to_Ketone)
+
+        raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
+
+        } else if (SSBcorr == FALSE) {
+
+          raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
+
+          }
   }
   return(raw.spec.end)
+}
 }

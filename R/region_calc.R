@@ -126,7 +126,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       if (ecosys == "Terr") {
 
         stdmat <- std_nmr(ecosys = "Terr")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 10, NMRmeth = "MMM")
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = "MMM")
 
         ## Elementar ratios (relative to C)
 
@@ -165,7 +165,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       } else if (ecosys == "Aqua") {
 
         stdmat <- std_nmr(ecosys = "Aqua")
-        NMR.end <- fit_athena(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 10,  NMRmeth = "MMM")
+        NMR.end <- fit_athena(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMM")
 
         ## Elementar ratios (relative to C)
 
@@ -249,7 +249,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       if (ecosys == "Terr") {
 
         stdmat <- std_nmr(ecosys = "Terr")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 10, NMRmeth = "MMMFixN")
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = "MMMFixN")
 
         ## Elementar ratios (relative to C)
 
@@ -288,7 +288,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       } else if (ecosys == "Aqua") {
 
         stdmat <- std_nmr(ecosys = "Aqua")
-        NMR.end <- fit_athena(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 10,  NMRmeth = "MMMFixN")
+        NMR.end <- fit_athena(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
 
         ## Elementar ratios (relative to C)
 
