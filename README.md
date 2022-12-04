@@ -134,7 +134,8 @@ MMM <- region_calc(spec, NMRmeth = "MMMFixN", ecosys= "Terr", cndata = ncdata)
 
 write.csv(MMM, "MMM_R.csv")
 
-# If you want to check the integrals (for SSB calculated and corrected SSBcorr = TRUE, for SSB calculated SSBcorr = FALSE)of the MMM use:
+# If you want to check the integrals (for SSB calculated and corrected SSBcorr = TRUE,
+# for SSB calculated SSBcorr = FALSE) of the MMM use:
 
 MMMregions <- int_nmr(spec,NMRmeth = "MMM", SSBcorr = TRUE)
 
