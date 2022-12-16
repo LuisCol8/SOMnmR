@@ -38,7 +38,7 @@ Colocho Hurtarte, L. C. (2022). SOMnmR (Version 0.1.0) [Computer software]. http
 
 ## How to install
 
-### Step 1
+### Step 1 (Install devtools)
 To install a SOMnmR as a package, start by installing the devtools package. The best way to do this is from CRAN, by typing from your comand line:
 
 ```bash
@@ -46,7 +46,7 @@ To install a SOMnmR as a package, start by installing the devtools package. The 
   install.packages("devtools")
 ```
 
-### Step 2
+### Step 2 (.....)
 Install the package of interest from GitHub
 
 Install SOMnmR from GitHub using the following code:
@@ -60,7 +60,7 @@ Install SOMnmR from GitHub using the following code:
 ```
 
  
-### Step 3
+### Step 3 (Profit)
 Load the package
 	
 ```bash
