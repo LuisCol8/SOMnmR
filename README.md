@@ -147,7 +147,7 @@ write.csv(unlist(MMMregions[[1]]$data$Integral), "MMMregions_name.csv")
 # to be colored. Use "Bonanomi" or "MMM" or leave it blank to choose between the "Bonanomi", "MMM", or spinning side bands regions,
 # respectively. 
 
-plot_NMR(spec, NMRmeth = "MMMM",file.output = TRUE,use.tiff = TRUE)
+plot_NMR(spec, NMRmeth = "MMM",file.output = TRUE,use.tiff = TRUE)
 
 
 
