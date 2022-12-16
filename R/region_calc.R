@@ -20,7 +20,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
 
     if (is.null(file)) {
 
-      stop("Please provide either a raw spectrum from the read_raw_spec function or a raw .xmu file")
+      stop("Please provide either a raw spectrum from the read_raw_spec function or a raw NMR file")
 
     } else {
 
@@ -41,7 +41,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
     batch.nmr <- int_nmr(batch.nmr)
 
     for (i in 1:length(batch.nmr)) {
-      # file.name <- batch.nmr[[i]]$name
+      file.name <- batch.nmr[[i]]$name
       Integral <- c(batch.nmr[[i]]$data$Integral)
 
 
@@ -55,7 +55,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       alkyl <-  setNames(data.frame(sum(2*sum(Integral$normalized.Int[1:3]), sum(Integral$normalized.Int[10:12]), -sum(Integral$normalized.Int[28:30]))), c("Alkyl"))
       ##Put all together
       #NMR.end[[i]] <- list(file.name = file.name, data = data.frame(carboxyl, aryl, oalkyl, alkyl))
-      NMR.end[[i]] <- data.frame(carboxyl, aryl, oalkyl, alkyl)
+      NMR.end[[i]] <- data.frame(file.name, carboxyl, aryl, oalkyl, alkyl)
     }
   } else if (NMRmeth == "Bonanomi") {
     ## loop to process all samples
@@ -326,7 +326,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       }
     }
   }
-  citation  <- setNames(data.frame(matrix(ncol = 1, nrow= nrow(NMR.end))), c("Plz cite this work as an incentive to its curation"))
-  NMR.end <- cbind(NMR.end,citation)
+  #citation  <- setNames(data.frame(matrix(ncol = 1, nrow= nrow(NMR.end))), c("Plz cite this work as an incentive to its curation"))
+  #NMR.end <- cbind(NMR.end,citation)
   return(NMR.end)
 }

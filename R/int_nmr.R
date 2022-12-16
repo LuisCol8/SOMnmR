@@ -34,7 +34,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int1 <- data.frame(Int.x.1,Int.y.1)
       Int_model <- function (Int.x.1) {(Int.y.1)}
       Integral <- append(Integral,trap(Int_model, -145,-130, m = 240))
-      print(length((Int.x.1)))
+      #print(length((Int.x.1)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.2 <- which(abs(spectrum[[c("ppm")]]-(-130)) == min(abs(spectrum[[c("ppm")]]-(-130))))
@@ -44,7 +44,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int2 <- data.frame(Int.x.2,Int.y.2)
       Int_model <- function (Int.x.2) {(Int.y.2)}
       Integral <- append(Integral,trap(f = Int_model, -130,-110, m = 300))
-      print(length((Int.x.2)))
+      #print(length((Int.x.2)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.3 <- which(abs(spectrum[[c("ppm")]]-(-110)) == min(abs(spectrum[[c("ppm")]]-(-110))))
@@ -54,7 +54,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int3 <- data.frame(Int.x.3,Int.y.3)
       Int_model <- function (Int.x.3) {(Int.y.3)}
       Integral <- append(Integral,trap(f = Int_model, -110,-90, m = 300))
-      print(length((Int.x.3)))
+      #print(length((Int.x.3)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.4 <- which(abs(spectrum[[c("ppm")]]-(-90)) == min(abs(spectrum[[c("ppm")]]-(-90))))
@@ -64,7 +64,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int4 <- data.frame(Int.x.4,Int.y.4)
       Int_model <- function (Int.x.4) {(Int.y.4)}
       Integral <- append(Integral,trap(f = Int_model, -90,-86, m = 66))
-      print(length((Int.x.4)))
+      #print(length((Int.x.4)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.5 <- which(abs(spectrum[[c("ppm")]]-(-86)) == min(abs(spectrum[[c("ppm")]]-(-86))))
@@ -74,7 +74,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int5 <- data.frame(Int.x.5,Int.y.5)
       Int_model <- function (Int.x.5) {(Int.y.5)}
       Integral <- append(Integral,trap(f = Int_model, -86,-75, m = 180))
-      print(length((Int.x.5)))
+      #print(length((Int.x.5)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.6 <- which(abs(spectrum[[c("ppm")]]-(-75)) == min(abs(spectrum[[c("ppm")]]-(-75))))
@@ -84,7 +84,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int6 <- data.frame(Int.x.6,Int.y.6)
       Int_model <- function (Int.x.6) {(Int.y.6)}
       Integral <- append(Integral,trap(f = Int_model, -75,-50, m = 400))
-      print(length((Int.x.6)))
+      #print(length((Int.x.6)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.7 <- which(abs(spectrum[[c("ppm")]]-(-50)) == min(abs(spectrum[[c("ppm")]]-(-50))))
@@ -94,7 +94,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int7 <- data.frame(Int.x.7,Int.y.7)
       Int_model <- function (Int.x.7) {(Int.y.7)}
       Integral <- append(Integral,trap(f = Int_model, -50,-45, m = 80))
-      print(length((Int.x.7)))
+      #print(length((Int.x.7)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.8 <- which(abs(spectrum[[c("ppm")]]-(-45)) == min(abs(spectrum[[c("ppm")]]-(-45))))
@@ -104,7 +104,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int8 <- data.frame(Int.x.8,Int.y.8)
       Int_model <- function (Int.x.8) {(Int.y.8)}
       Integral <- append(Integral,trap(f = Int_model, -45,-25, m = 300))
-      print(length((Int.x.8)))
+      #print(length((Int.x.8)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.9 <- which(abs(spectrum[[c("ppm")]]-(-25)) == min(abs(spectrum[[c("ppm")]]-(-25))))
@@ -114,7 +114,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int9 <- data.frame(Int.x.9,Int.y.9)
       Int_model <- function (Int.x.9) {(Int.y.9)}
       Integral <- append(Integral,trap(f = Int_model, -25,-10, m = 240))
-      print(length((Int.x.9)))
+      #print(length((Int.x.9)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.10 <- which(abs(spectrum[[c("ppm")]]-(-10)) == min(abs(spectrum[[c("ppm")]]-(-10))))
@@ -124,7 +124,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int10 <- data.frame(Int.x.10,Int.y.10)
       Int_model <- function (Int.x.10) {(Int.y.10)}
       Integral <- append(Integral,trap(f = Int_model, -10,5, m = 240))
-      print(length((Int.x.10)))
+      #print(length((Int.x.10)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.11 <- which(abs(spectrum[[c("ppm")]]-(5)) == min(abs(spectrum[[c("ppm")]]-(5))))
@@ -134,7 +134,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int11 <- data.frame(Int.x.11,Int.y.11)
       Int_model <- function (Int.x.11) {(Int.y.11)}
       Integral <- append(Integral,trap(f = Int_model, 5,25, m = 300))
-      print(length((Int.x.11)))
+      #print(length((Int.x.11)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.12 <- which(abs(spectrum[[c("ppm")]]-(25)) == min(abs(spectrum[[c("ppm")]]-(25))))
@@ -144,7 +144,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int12 <- data.frame(Int.x.12,Int.y.12)
       Int_model <- function (Int.x.12) {(Int.y.12)}
       Integral <- append(Integral,trap(f = Int_model, 25,45, m = 300))
-      print(length((Int.x.12)))
+      #print(length((Int.x.12)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.13 <- which(abs(spectrum[[c("ppm")]]-(45)) == min(abs(spectrum[[c("ppm")]]-(45))))
@@ -154,7 +154,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int13 <- data.frame(Int.x.13,Int.y.13)
       Int_model <- function (Int.x.13) {(Int.y.13)}
       Integral <- append(Integral,trap(f = Int_model, 45,49, m = 66))
-      print(length((Int.x.13)))
+      #print(length((Int.x.13)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.14 <- which(abs(spectrum[[c("ppm")]]-(49)) == min(abs(spectrum[[c("ppm")]]-(49))))
@@ -164,7 +164,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int14 <- data.frame(Int.x.14,Int.y.14)
       Int_model <- function (Int.x.14) {(Int.y.14)}
       Integral <- append(Integral,trap(f = Int_model, 49,60, m = 180))
-      print(length((Int.x.14)))
+      #print(length((Int.x.14)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.15 <- which(abs(spectrum[[c("ppm")]]-(60)) == min(abs(spectrum[[c("ppm")]]-(60))))
@@ -174,7 +174,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int15 <- data.frame(Int.x.15,Int.y.15)
       Int_model <- function (Int.x.15) {(Int.y.15)}
       Integral <- append(Integral,trap(f = Int_model, 60,85, m = 400))
-      print(length((Int.x.15)))
+      #print(length((Int.x.15)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.16 <- which(abs(spectrum[[c("ppm")]]-(85)) == min(abs(spectrum[[c("ppm")]]-(85))))
@@ -184,7 +184,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int16 <- data.frame(Int.x.16,Int.y.16)
       Int_model <- function (Int.x.16) {(Int.y.16)}
       Integral <- append(Integral,trap(f = Int_model, 85,90, m = 80))
-      print(length((Int.x.16)))
+      #print(length((Int.x.16)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.17 <- which(abs(spectrum[[c("ppm")]]-(90)) == min(abs(spectrum[[c("ppm")]]-(90))))
@@ -194,7 +194,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int17 <- data.frame(Int.x.17,Int.y.17)
       Int_model <- function (Int.x.17) {(Int.y.17)}
       Integral <- append(Integral,trap(f = Int_model, 90,110, m = 300))
-      print(length((Int.x.17)))
+      #print(length((Int.x.17)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.18 <- which(abs(spectrum[[c("ppm")]]-(110)) == min(abs(spectrum[[c("ppm")]]-(110))))
@@ -204,7 +204,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int18 <- data.frame(Int.x.18,Int.y.18)
       Int_model <- function (Int.x.18) {(Int.y.18)}
       Integral <- append(Integral,trap(f = Int_model, 110,125, m = 240))
-      print(length((Int.x.18)))
+      #print(length((Int.x.18)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.19 <- which(abs(spectrum[[c("ppm")]]-(125)) == min(abs(spectrum[[c("ppm")]]-(125))))
@@ -214,7 +214,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int19 <- data.frame(Int.x.19,Int.y.19)
       Int_model <- function (Int.x.19) {(Int.y.19)}
       Integral <- append(Integral,trap(f = Int_model, 125,140, m = 240))
-      print(length((Int.x.19)))
+      #print(length((Int.x.19)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.20 <- which(abs(spectrum[[c("ppm")]]-(140)) == min(abs(spectrum[[c("ppm")]]-(140))))
@@ -224,7 +224,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int20 <- data.frame(Int.x.20,Int.y.20)
       Int_model <- function (Int.x.20) {(Int.y.20)}
       Integral <- append(Integral,trap(f = Int_model, 140,160, m = 300))
-      print(length((Int.x.20)))
+      #print(length((Int.x.20)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.21 <- which(abs(spectrum[[c("ppm")]]-(160)) == min(abs(spectrum[[c("ppm")]]-(160))))
@@ -234,7 +234,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int21 <- data.frame(Int.x.21,Int.y.21)
       Int_model <- function (Int.x.21) {(Int.y.21)}
       Integral <- append(Integral,trap(f = Int_model, 160, 180, m = 300))
-      print(length((Int.x.21)))
+      #print(length((Int.x.21)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.22 <- which(abs(spectrum[[c("ppm")]]-(180)) == min(abs(spectrum[[c("ppm")]]-(180))))
@@ -244,7 +244,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int22 <- data.frame(Int.x.22,Int.y.22)
       Int_model <- function (Int.x.22) {(Int.y.22)}
       Integral <- append(Integral,trap(f = Int_model, 180,185, m = 80))
-      print(length((Int.x.22)))
+      #print(length((Int.x.22)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.23 <- which(abs(spectrum[[c("ppm")]]-(185)) == min(abs(spectrum[[c("ppm")]]-(185))))
@@ -254,7 +254,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int23 <- data.frame(Int.x.23,Int.y.23)
       Int_model <- function (Int.x.23) {(Int.y.23)}
       Integral <- append(Integral,trap(f = Int_model, 185,195, m = 160))
-      print(length((Int.x.23)))
+      #print(length((Int.x.23)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.24 <- which(abs(spectrum[[c("ppm")]]-(195)) == min(abs(spectrum[[c("ppm")]]-(195))))
@@ -264,7 +264,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int24 <- data.frame(Int.x.24,Int.y.24)
       Int_model <- function (Int.x.24) {(Int.y.24)}
       Integral <- append(Integral,trap(f = Int_model, 195,220, m = 400))
-      print(length((Int.x.24)))
+      #print(length((Int.x.24)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.25 <- which(abs(spectrum[[c("ppm")]]-(220)) == min(abs(spectrum[[c("ppm")]]-(220))))
@@ -274,7 +274,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int25 <- data.frame(Int.x.25,Int.y.25)
       Int_model <- function (Int.x.25) {(Int.y.25)}
       Integral <- append(Integral,trap(f = Int_model, 220,225, m = 80))
-      print(length((Int.x.25)))
+      #print(length((Int.x.25)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.26 <- which(abs(spectrum[[c("ppm")]]-(225)) == min(abs(spectrum[[c("ppm")]]-(225))))
@@ -284,7 +284,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int26 <- data.frame(Int.x.26,Int.y.26)
       Int_model <- function (Int.x.26) {(Int.y.26)}
       Integral <- append(Integral,trap(f = Int_model, 225,245, m = 300))
-      print(length((Int.x.26)))
+      #print(length((Int.x.26)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.27 <- which(abs(spectrum[[c("ppm")]]-(245)) == min(abs(spectrum[[c("ppm")]]-(245))))
@@ -294,7 +294,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int27 <- data.frame(Int.x.27,Int.y.27)
       Int_model <- function (Int.x.27) {(Int.y.27)}
       Integral <- append(Integral,trap(f = Int_model, 245,260, m = 240))
-      print(length((Int.x.27)))
+      #print(length((Int.x.27)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.28 <- which(abs(spectrum[[c("ppm")]]-(260)) == min(abs(spectrum[[c("ppm")]]-(260))))
@@ -304,7 +304,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int28 <- data.frame(Int.x.28,Int.y.28)
       Int_model <- function (Int.x.28) {(Int.y.28)}
       Integral <- append(Integral,trap(f = Int_model, 260,275, m = 240))
-      print(length((Int.x.28)))
+      #print(length((Int.x.28)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.29 <- which(abs(spectrum[[c("ppm")]]-(275)) == min(abs(spectrum[[c("ppm")]]-(275))))
@@ -314,7 +314,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int29 <- data.frame(Int.x.29,Int.y.29)
       Int_model <- function (Int.x.29) {(Int.y.29)}
       Integral <- append(Integral,trap(f = Int_model, 275,295, m = 240))
-      print(length((Int.x.29)))
+      #print(length((Int.x.29)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.30 <- which(abs(spectrum[[c("ppm")]]-(295)) == min(abs(spectrum[[c("ppm")]]-(295))))
@@ -324,7 +324,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int30 <- data.frame(Int.x.30,Int.y.30)
       Int_model <- function (Int.x.30) {(Int.y.30)}
       Integral <- append(Integral,trap(f = Int_model, 295,315, m = 300))
-      print(length((Int.x.30)))
+      #print(length((Int.x.30)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.31 <- which(abs(spectrum[[c("ppm")]]-(315)) == min(abs(spectrum[[c("ppm")]]-(315))))
@@ -334,7 +334,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int31 <- data.frame(Int.x.31,Int.y.31)
       Int_model <- function (Int.x.31) {(Int.y.31)}
       Integral <- append(Integral,trap(f = Int_model, 315,320, m = 80))
-      print(length((Int.x.31)))
+      #print(length((Int.x.31)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.32 <- which(abs(spectrum[[c("ppm")]]-(320)) == min(abs(spectrum[[c("ppm")]]-(320))))
@@ -344,7 +344,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int32 <- data.frame(Int.x.32,Int.y.32)
       Int_model <- function (Int.x.32) {(Int.y.32)}
       Integral <- append(Integral,trap(f = Int_model, 320,330, m = 160))
-      print(length((Int.x.32)))
+      #print(length((Int.x.32)))
 
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       Int.min.33 <- which(abs(spectrum[[c("ppm")]]-(330)) == min(abs(spectrum[[c("ppm")]]-(330))))
@@ -354,81 +354,14 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
       Int33 <- data.frame(Int.x.33,Int.y.33)
       Int_model <- function (Int.x.33) {(Int.y.33)}
       Integral <- append(Integral,trap(f = Int_model, 330,355, m = 400))
-      print(length((Int.x.33)))
+      #print(length((Int.x.33)))
 
       norm <- sum(Integral[1:33])
       normalized.Int <- (Integral/norm)*100
       Integral <- data.frame(normalized.Int)
       raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
-
     }
-
-  } else if (NMRmeth == "MMM") {
-
-
-    raw.spec.end <- NULL
-
-    for (i in 1:length(raw.spec)) {
-      Integral <- NULL
-      raw.spec.end[[i]] <- raw.spec[[i]]
-      name <- raw.spec[[i]]$name
-      spectrum <- raw.spec[[i]]$data$raw.spec
-
-      ## Extract ppm (x) and the intesity (y) for predifined intervals
-      Int.min.1 <- which(abs(spectrum[[c("ppm")]]-(0)) == min(abs(spectrum[[c("ppm")]]-(0))))
-      Int.max.1 <- which(abs(spectrum[[c("ppm")]]-(45)) == min(abs(spectrum[[c("ppm")]]-(45))))
-      Int.x.1 <- c(spectrum[[c("ppm")]][(Int.min.1:Int.max.1)])
-      Int.y.1 <- c(spectrum[[c("raw.intensity")]][(Int.min.1:Int.max.1)])
-      Integral <- append(Integral,trapz(Int.x.1,Int.y.1))
-
-      ## Extract ppm (x) and the intesity (y) for predifined intervals
-      Int.min.2 <- which(abs(spectrum[[c("ppm")]]-(45)) == min(abs(spectrum[[c("ppm")]]-(45))))
-      Int.max.2 <- which(abs(spectrum[[c("ppm")]]-(60)) == min(abs(spectrum[[c("ppm")]]-(60))))
-      Int.x.2 <- c(spectrum[[c("ppm")]][(Int.min.2:Int.max.2)])
-      Int.y.2 <- c(spectrum[[c("raw.intensity")]][(Int.min.2:Int.max.2)])
-      Integral <- append(Integral,trapz(Int.x.2,Int.y.2))
-
-      ## Extract ppm (x) and the intesity (y) for predifined intervals
-      Int.min.3 <- which(abs(spectrum[[c("ppm")]]-(60)) == min(abs(spectrum[[c("ppm")]]-(60))))
-      Int.max.3 <- which(abs(spectrum[[c("ppm")]]-(95)) == min(abs(spectrum[[c("ppm")]]-(95))))
-      Int.x.3 <- c(spectrum[[c("ppm")]][(Int.min.3:Int.max.3)])
-      Int.y.3 <- c(spectrum[[c("raw.intensity")]][(Int.min.3:Int.max.3)])
-      Integral <- append(Integral,trapz(Int.x.3,Int.y.3))
-
-      ## Extract ppm (x) and the intesity (y) for predifined intervals
-      Int.min.4 <- which(abs(spectrum[[c("ppm")]]-(95)) == min(abs(spectrum[[c("ppm")]]-(95))))
-      Int.max.4 <- which(abs(spectrum[[c("ppm")]]-(110)) == min(abs(spectrum[[c("ppm")]]-(110))))
-      Int.x.4 <- c(spectrum[[c("ppm")]][(Int.min.4:Int.max.4)])
-      Int.y.4 <- c(spectrum[[c("raw.intensity")]][(Int.min.4:Int.max.4)])
-      Integral <- append(Integral,trapz(Int.x.4,Int.y.4))
-
-      ## Extract ppm (x) and the intesity (y) for predifined intervals
-      Int.min.5 <- which(abs(spectrum[[c("ppm")]]-(110)) == min(abs(spectrum[[c("ppm")]]-(110))))
-      Int.max.5 <- which(abs(spectrum[[c("ppm")]]-(145)) == min(abs(spectrum[[c("ppm")]]-(145))))
-      Int.x.5 <- c(spectrum[[c("ppm")]][(Int.min.5:Int.max.5)])
-      Int.y.5 <- c(spectrum[[c("raw.intensity")]][(Int.min.5:Int.max.5)])
-      Integral <- append(Integral,trapz(Int.x.5,Int.y.5))
-
-      ## Extract ppm (x) and the intesity (y) for predifined intervals
-      Int.min.6 <- which(abs(spectrum[[c("ppm")]]-(145)) == min(abs(spectrum[[c("ppm")]]-(145))))
-      Int.max.6 <- which(abs(spectrum[[c("ppm")]]-(165)) == min(abs(spectrum[[c("ppm")]]-(165))))
-      Int.x.6 <- c(spectrum[[c("ppm")]][(Int.min.6:Int.max.6)])
-      Int.y.6 <- c(spectrum[[c("raw.intensity")]][(Int.min.6:Int.max.6)])
-      Integral <- append(Integral,trapz(Int.x.6,Int.y.6))
-
-      ## Extract ppm (x) and the intesity (y) for predifined intervals
-      Int.min.7 <- which(abs(spectrum[[c("ppm")]]-(165)) == min(abs(spectrum[[c("ppm")]]-(165))))
-      Int.max.7 <- which(abs(spectrum[[c("ppm")]]-(215)) == min(abs(spectrum[[c("ppm")]]-(215))))
-      Int.x.7 <- c(spectrum[[c("ppm")]][(Int.min.7:Int.max.7)])
-      Int.y.7 <- c(spectrum[[c("raw.intensity")]][(Int.min.7:Int.max.7)])
-      Integral <- append(Integral,trapz(Int.x.7,Int.y.7))
-      norm <- sum(Integral[1:7])
-      normalized.Int <- (Integral/norm)*100
-      Integral <- data.frame(normalized.Int)
-      raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
-
-    }
-  } else if (NMRmeth == "MMM-SSB") {
+  }  else if (NMRmeth == "MMM-SSB") {
 
     raw.spec.end <- NULL
 
@@ -569,13 +502,15 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
 
         Integral <- data.frame(Alkyl, N_Alkyl_Methoxyl, O_Alkyl, Di_O_Alkyl, Aromatic, Phenolic, Amide_to_Ketone)
 
-        raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
+        Integral <- Integral/sum(Integral)
 
-        } else if (SSBcorr == FALSE) {
+        raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum, "Integral" = Integral))
 
-          raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
+      } else if (SSBcorr == FALSE) {
+        raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum, "Integral" = Integral))
+      }
+    }
 
-          }
   }
   return(raw.spec.end)
 }
