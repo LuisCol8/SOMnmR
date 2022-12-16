@@ -79,6 +79,7 @@ from the package developed by my college Florian Werner (check LCF if you do lin
 The package has some pre set regions like spinning side bands (which makes a spinning side band correction by subtracting the spinning sidebands from
 carboxyl-C and O-N-alkyl-C region and adding the proportion to the aryl-C), Bonanomi,based on the reported regions of Bonanomi et al. (2011) and the MMM  according to Nelson et al. (2005).
 
+A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 
 ## How to use
 
