@@ -76,7 +76,10 @@ MMM_solve_QP <- function (LCF.stds, LCF.samp, NMRmeth = NULL) {
     C <- cbind(rep(1,length(LCF.stds)), diag(length(LCF.stds)))
 
     ## vector holding the values of sum to one contrain
-    n  <- (Y[1]/0.275)
+    ntot  <- as.numeric(X[1,1])
+    nsamp  <- as.numeric(Y[1])
+    n <- c(nsamp/ntot)
+    #n  <- (Y[1]/0.275)
     b <- c(1, n, rep(0, length(LCF.stds)-1))
 
     ## actual fit / solving the quadratic problem

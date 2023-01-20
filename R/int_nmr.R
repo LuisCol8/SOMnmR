@@ -514,4 +514,3 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE) {
   }
   return(raw.spec.end)
 }
-}

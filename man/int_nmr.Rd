@@ -4,7 +4,7 @@
 \alias{int_nmr}
 \title{Integration function}
 \usage{
-int_nmr(raw.spec, NMRmeth = NULL)
+int_nmr(raw.spec, NMRmeth = NULL, SSBcorr = FALSE)
 }
 \arguments{
 \item{raw.spec}{Raw spectrum}
