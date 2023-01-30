@@ -83,20 +83,20 @@ A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 
 ## About the reference compounds of the Molecular mixing model 
 
-The original paper from Nelson et al. (2005), suggests that two sets of compounds can be used, depending on the origin of the SOM of the sample, i.e. if it is either Terrestrial or Aquatic.
+The original paper from Nelson et al. (2005), suggests that two sets of compounds can be used, depending on the origin of the SOM of the sample, i.e. Terrestrial or Aquatic.
 
 For this he considered the following composition for a terrestrial ecosystem
 
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| 210 to 165 (Amide/Carboxyl) | 0.0 | 26.4  | 4.6  | Content Cell  | Content Cell  | Content Cell  |
-| 165 to 145 (Phenolic)  | 0.0  | 2.5  | 19.5  | Content Cell  | Content Cell  | Content Cell  |
-| 145 to 110 (Aromatic)  | 1.0  | 7.5  | 30.6  | Content Cell  | Content Cell  | Content Cell  |
-| 110 to 95 (Di-O-Alkyl)  | 15.7  | 0.0  | 8.6  | Content Cell  | Content Cell  | Content Cell  |
-| 95 to 60 (O-Alkyl)  | 79  | 2.1  | 12.5  | Content Cell  | Content Cell  | Content Cell  |
-| 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 21.9  | 13.8 | Content Cell  | Content Cell  | Content Cell  |
-| 45 to -10 (Alkyl)  | 0.0 | 39.6  | 10.5  | Content Cell  | Content Cell  | Content Cell  |
-| Molar N:C   | 0.0  | 0.32  | 0.0  | Content Cell  | Content Cell  | Content Cell  |
+| 210 to 165 (Amide/Carboxyl) | 0.0 | 26.4  | 4.6  | 6.6  | Content Cell  | Content Cell  |
+| 165 to 145 (Phenolic)  | 0.0  | 2.5  | 19.5  | 0.7 | Content Cell  | Content Cell  |
+| 145 to 110 (Aromatic)  | 1.0  | 7.5  | 30.6  | 3.6  | Content Cell  | Content Cell  |
+| 110 to 95 (Di-O-Alkyl)  | 15.7  | 0.0  | 8.6  | 0.0  | Content Cell  | Content Cell  |
+| 95 to 60 (O-Alkyl)  | 79  | 2.1  | 12.5  | 9.0  | Content Cell  | Content Cell  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 21.9  | 13.8 | 4.5  | Content Cell  | Content Cell  |
+| 45 to -10 (Alkyl)  | 0.0 | 39.6  | 10.5  | 75.6  | Content Cell  | Content Cell  |
+| Molar N:C   | 0.0  | 0.32  | 0.0  | 0.0  | Content Cell  | Content Cell  |
 
 ## How to use
 
