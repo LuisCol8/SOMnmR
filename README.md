@@ -81,6 +81,24 @@ carboxyl-C and O-N-alkyl-C region and adding the proportion to the aryl-C), Bona
 
 A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 
+## About the reference compounds of the Molecular mixing model 
+
+The original paper from Nelson et al. (2005), suggests that two sets of compounds can be used, depending on the origin of the SOM of the sample, i.e. if it is either Terrestrial or Aquatic.
+
+For this he considered the following composition for a terrestrial ecosystem
+
+| First Header  | Second Header | First Header  | Second Header | First Header  | Second Header | First Header  |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+
 ## How to use
 
 As explained before the package is a simple wrap up of integration and fitting (in the case of the MMM). As an example I include a simple script that can be easily modified.
