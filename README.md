@@ -95,7 +95,7 @@ For this he considered the following composition for a terrestrial ecosystem
 | 110 to 95 (Di-O-Alkyl)  | 15.7  | 0.0  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
 | 95 to 60 (O-Alkyl)  | 79  | 2.1  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
 | 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 21.9  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 45 to -10 (Alkyl)  | 39.6 | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 45 to -10 (Alkyl)  | 0.0 | 39.6  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
 | Molar N:C   | 0.0  | 0.32  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
 
 ## How to use
