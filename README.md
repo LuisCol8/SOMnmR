@@ -89,14 +89,14 @@ For this he considered the following composition for a terrestrial ecosystem
 
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| 210 - 165 (Amide/Carboxyl) | 0.0 | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 165 - 145 (Phenolic)  | 0.0  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 145 - 110 (Aromatic)  | 1.0  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 110 - 95 (Di-O-Alkyl)  | 15.7  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 95 - 60 (O-Alkyl)  | 79  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 60 - 45 (N-Alkyl/Methoxyl)  | 4.3  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 45 - -10 (Alkyl)  | 0.0 | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| Molar N:C   | 0.0  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 210 to 165 (Amide/Carboxyl) | 0.0 | 26.4  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 165 to 145 (Phenolic)  | 0.0  | 2.5  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 145 to 110 (Aromatic)  | 1.0  | 7.5  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 110 to 95 (Di-O-Alkyl)  | 15.7  | 0.0  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 95 to 60 (O-Alkyl)  | 79  | 2.1  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 21.9  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 45 to -10 (Alkyl)  | 39.6 | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Molar N:C   | 0.0  | 0.32  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
 
 ## How to use
 
