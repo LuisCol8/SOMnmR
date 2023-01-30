@@ -93,7 +93,7 @@ For this he considered the following composition for a terrestrial ecosystem
 | 165 to 145 (Phenolic)  | 0.0  | 2.5  | 19.5  | 0.7 | 0.0  | 16.1  |
 | 145 to 110 (Aromatic)  | 1.0  | 7.5  | 30.5  | 3.6  | 0.0  | 73.9  |
 | 110 to 95 (Di-O-Alkyl)  | 15.7  | 0.0  | 8.6  | 0.0  | 0.0  | 4.3  |
-| 95 to 60 (O-Alkyl)  | 79  | 2.1  | 12.5  | 9.0  | 0.0  | 0.0  |
+| 95 to 60 (O-Alkyl)  | 79.0  | 2.1  | 12.5  | 9.0  | 0.0  | 0.0  |
 | 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 21.9  | 13.8 | 4.5  | 0.0  | 0.0  |
 | 45 to -10 (Alkyl)  | 0.0 | 39.6  | 10.5  | 75.6  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.32  | 0.0  | 0.0  | 0.0  | 0.0  |
@@ -106,7 +106,20 @@ While for an aquatic ecosystem, the composition of protein and lipid changes, as
 | 165 to 145 (Phenolic)  | 0.0  | 1.0  | 19.5  | 0.0 | 0.0  | 16.1  |
 | 145 to 110 (Aromatic)  | 1.0  | 4.5  | 30.5  | 0.0  | 0.0  | 73.9  |
 | 110 to 95 (Di-O-Alkyl)  | 15.7  | 0.0  | 8.6  | 0.0  | 0.0  | 4.3  |
-| 95 to 60 (O-Alkyl)  | 79  | 2.9  | 12.5  | 0.0  | 0.0  | 0.0  |
+| 95 to 60 (O-Alkyl)  | 79.0  | 2.9  | 12.5  | 0.0  | 0.0  | 0.0  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 24.7  | 13.8 | 0.5  | 0.0  | 0.0  |
+| 45 to -10 (Alkyl)  | 0.0 | 36.6  | 10.5  | 94.4  | 0.0  | 0.0  |
+| Molar N:C   | 0.0  | 0.27  | 0.0  | 0.0  | 0.0  | 0.0  |
+
+However, a newer version of these standard compounds was calculated consiering, for cabohydrates a cellulose model, for protein based on extractable aminoacids from Friedel and Scheller (2002), the lignin is  assumed to be equivalent to  the average of those acquired for spruce and red alder lignin  presented by Wilson (1987), and the lipid is calculated from structures proposed by Kolattukudy (1980).
+
+| Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| 210 to 165 (Amide/Carboxyl) | 0.0 | 30.4  | 4.6  | 5.6  | 100  | 5.7  |
+| 165 to 145 (Phenolic)  | 0.0  | 1.0  | 19.5  | 0.0 | 0.0  | 16.1  |
+| 145 to 110 (Aromatic)  | 0.0  | 4.5  | 30.5  | 0.0  | 0.0  | 73.9  |
+| 110 to 95 (Di-O-Alkyl)  | 16.7  | 0.0  | 8.6  | 0.0  | 0.0  | 4.3  |
+| 95 to 60 (O-Alkyl)  | 83.3  | 2.9  | 12.5  | 0.0  | 0.0  | 0.0  |
 | 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 24.7  | 13.8 | 0.5  | 0.0  | 0.0  |
 | 45 to -10 (Alkyl)  | 0.0 | 36.6  | 10.5  | 94.4  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.27  | 0.0  | 0.0  | 0.0  | 0.0  |
