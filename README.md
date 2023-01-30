@@ -89,14 +89,14 @@ For this he considered the following composition for a terrestrial ecosystem
 
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| 210 - 165 (Amide/Carboxyl) | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 165 - 145 (Phenolic)  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 145 - 110 (Aromatic)  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 110 - 95 (Di-O-Alkyl)  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 95 - 60 (O-Alkyl)  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 60 - 45 (N-Alkyl/Methoxyl)  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| 45 - -10 (Alkyl)  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
-| Molar N:C   | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 210 - 165 (Amide/Carboxyl) | 0.0 | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 165 - 145 (Phenolic)  | 0.0  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 145 - 110 (Aromatic)  | 1.0  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 110 - 95 (Di-O-Alkyl)  | 15.7  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 95 - 60 (O-Alkyl)  | 79  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 60 - 45 (N-Alkyl/Methoxyl)  | 4.3  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| 45 - -10 (Alkyl)  | 0.0 | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+| Molar N:C   | 0.0  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
 
 ## How to use
 
