@@ -83,7 +83,7 @@ A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 
 ## About the reference compounds of the Molecular mixing model 
 
-The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references
+The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references.
 
 | Chemical shift region (ppm)   | Aminoacid | Hexose  | Lignin | Cutin  | Suberin | Char  | Chitin | Carbonyl  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
