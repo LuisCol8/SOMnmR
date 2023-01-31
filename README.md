@@ -86,7 +86,7 @@ A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references
 
 | Chemical shift region (ppm)   | Aminoacid | Hexose  | Lignin | Cutin  | Suberin | Char  | Chitin | Carbonyl  |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 26.4 | 0.0  | 4.6  | 6.6  | 4.3  | 5.6  | 12.5  | 100.0  |
 | 165 to 145 (Phenolic)  | 2.5  | 0.0  | 19.5  | 0.7 | 6.2  | 16.1  | 0.0  | 0.0  |
 | 145 to 110 (Aromatic)  | 7.5  | 1.0  | 30.5  | 3.6  | 19.1  | 73.9  | 0.0  | 0.0  |
