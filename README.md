@@ -96,7 +96,7 @@ The original paper from Nelson et al. (1999), used an amalgam of pure compounds 
 | 45 to -10 (Alkyl)  | 39.6 | 0.0  | 10.5  | 75.6  | 60.7  | 0.0  | 12.5  | 0.0  |
 | Molar N:C   | 0.32  | 0.0  | 0.0  | 0.0  | 0.0  | 0.0  | 0.125  | 0.0  |
 
-A subsequent paper from Baldock et al (2004), uses a modified version of this, adjusted for terrestrial and acquatic ecosystems.
+A subsequent paper from Baldock et al (2004), uses a modified version of this, adjusted for terrestrial ecosystems.
 
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
@@ -108,6 +108,15 @@ A subsequent paper from Baldock et al (2004), uses a modified version of this, a
 | 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 22.6  | 13.8 | 0.5  | 0.0  | 1.7  |
 | 45 to -10 (Alkyl)  | 0.0 | 35.4  | 10.5  | 94.4  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
+
+with their molar elemental ratios (normalised against C)
+| Element   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
+| C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
+| N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
+| H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
+| O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
+
+and acquatic ecosystems
 
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
