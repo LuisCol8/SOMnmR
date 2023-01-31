@@ -112,10 +112,6 @@ A subsequent paper from Baldock et al (2004), uses a modified version of this, a
 with their molar elemental ratios (normalised against C)
 
 | Element   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
-| C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
-| N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
-| H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
-| O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
 
 and acquatic ecosystems
 
