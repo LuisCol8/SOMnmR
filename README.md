@@ -83,7 +83,19 @@ A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 
 ## About the reference compounds of the Molecular mixing model 
 
-The original paper from Nelson et al. (2005), suggests that two sets of compounds can be used, depending on the origin of the SOM of the sample, i.e. Terrestrial or Aquatic.
+The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references
+| Chemical shift region (ppm)   | Aminoacid | Hexose  | Lignin | Cutin  | Suberin | Char  | Chitin | Carbonyl  |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| 210 to 165 (Amide/Carboxyl) | 26.4 | 0.0  | 4.6  | 6.6  | 4.3  | 5.6  | 12.5  | 100.0  |
+| 165 to 145 (Phenolic)  | 2.5  | 0.0  | 19.5  | 0.7 | 6.2  | 16.1  | 0.0  | 0.0  |
+| 145 to 110 (Aromatic)  | 7.5  | 1.0  | 30.5  | 3.6  | 19.1  | 73.9  | 0.0  | 0.0  |
+| 110 to 95 (Di-O-Alkyl)  | 0.0  | 15.7  | 8.6  | 0.0  | 0.0  | 4.3  | 12.5  | 0.0  |
+| 95 to 60 (O-Alkyl)  | 2.1  | 79.0  | 12.5  | 9.0  | 6.8  | 0.0  | 50.0  | 0.0  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 21.9  | 13.8 | 2.9  | 0.0  | 0.0  | 12.5  | 0.0  |
+| 45 to -10 (Alkyl)  | 39.6 | 0.0  | 10.5  | 75.6  | 60.7  | 0.0  | 12.5  | 0.0  |
+| Molar N:C   | 0.32  | 0.0  | 0.0  | 0.0  | 0.0  | 0.0  | 0.125  | 0.0  |
+
+suggests that two sets of compounds can be used, depending on the origin of the SOM of the sample, i.e. Terrestrial or Aquatic.
 
 For this he considered the following composition for a terrestrial ecosystem
 
