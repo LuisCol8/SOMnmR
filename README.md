@@ -84,6 +84,7 @@ A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 ## About the reference compounds of the Molecular mixing model 
 
 The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references
+
 | Chemical shift region (ppm)   | Aminoacid | Hexose  | Lignin | Cutin  | Suberin | Char  | Chitin | Carbonyl  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 26.4 | 0.0  | 4.6  | 6.6  | 4.3  | 5.6  | 12.5  | 100.0  |
