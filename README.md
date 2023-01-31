@@ -131,6 +131,14 @@ and acquatic ecosystems
 | 45 to -10 (Alkyl)  | 0.0 | 40.4  | 10.5  | 94.4  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
 
+with their molar elemental ratios (normalised against C)
+
+| Element   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
+| N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
+| H   | 1.67 | 1.17  | 1.24 | 1.89  | 1.0 | 0.45  |
+| O   | 0.83 | 0.12  | 0.43 | 0.11  | 2.0 | 0.41  |
 
 suggests that two sets of compounds can be used, depending on the origin of the SOM of the sample, i.e. Terrestrial or Aquatic.
 
