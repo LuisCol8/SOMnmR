@@ -96,6 +96,31 @@ The original paper from Nelson et al. (1999), used an amalgam of pure compounds 
 | 45 to -10 (Alkyl)  | 39.6 | 0.0  | 10.5  | 75.6  | 60.7  | 0.0  | 12.5  | 0.0  |
 | Molar N:C   | 0.32  | 0.0  | 0.0  | 0.0  | 0.0  | 0.0  | 0.125  | 0.0  |
 
+A subsequent paper from Baldock et al (2004), uses a modified version of this, adjusted for terrestrial and acquatic ecosystems.
+
+| Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| 210 to 165 (Amide/Carboxyl) | 0.0 | 28.3  | 4.6  | 5.6  | 100  | 3.9  |
+| 165 to 145 (Phenolic)  | 0.0  | 1.3  | 19.5  | 0.0 | 0.0  | 15.2  |
+| 145 to 110 (Aromatic)  | 0.0  | 8.9  | 30.5  | 0.0  | 0.0  | 72.0  |
+| 110 to 95 (Di-O-Alkyl)  | 16.7  | 0.0  | 8.6  | 0.0  | 0.0  | 5.3  |
+| 95 to 60 (O-Alkyl)  | 83.3  | 3.5  | 12.5  | 0.0  | 0.0  | 1.8  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 22.6  | 13.8 | 0.5  | 0.0  | 1.7  |
+| 45 to -10 (Alkyl)  | 0.0 | 35.4  | 10.5  | 94.4  | 0.0  | 0.0  |
+| Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
+
+| Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| 210 to 165 (Amide/Carboxyl) | 0.0 | 25.7  | 4.6  | 5.6  | 100  | 3.9  |
+| 165 to 145 (Phenolic)  | 0.0  | 1.4  | 19.5  | 0.0 | 0.0  | 15.2  |
+| 145 to 110 (Aromatic)  | 0.0  | 9.1  | 30.5  | 0.0  | 0.0  | 72.0  |
+| 110 to 95 (Di-O-Alkyl)  | 16.7  | 0.0  | 8.6  | 0.0  | 0.0  | 5.3  |
+| 95 to 60 (O-Alkyl)  | 83.3  | 2.3  | 12.5  | 0.0  | 0.0  | 1.8  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 21.0  | 13.8 | 0.5  | 0.0  | 1.7  |
+| 45 to -10 (Alkyl)  | 0.0 | 40.4  | 10.5  | 94.4  | 0.0  | 0.0  |
+| Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
+
+
 suggests that two sets of compounds can be used, depending on the origin of the SOM of the sample, i.e. Terrestrial or Aquatic.
 
 For this he considered the following composition for a terrestrial ecosystem
