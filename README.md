@@ -110,6 +110,7 @@ A subsequent paper from Baldock et al (2004), uses a modified version of this, a
 | Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
 
 with their molar elemental ratios (normalised against C)
+
 | Element   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
 | N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
