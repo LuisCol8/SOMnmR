@@ -108,11 +108,6 @@ A subsequent paper from Baldock et al (2004), uses a modified version of this, a
 | 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 22.6  | 13.8 | 0.5  | 0.0  | 1.7  |
 | 45 to -10 (Alkyl)  | 0.0 | 35.4  | 10.5  | 94.4  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
-
-with their molar elemental ratios (normalised against C)
-
-| Element   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
 | N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
 | H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
@@ -130,11 +125,6 @@ and acquatic ecosystems
 | 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 21.0  | 13.8 | 0.5  | 0.0  | 1.7  |
 | 45 to -10 (Alkyl)  | 0.0 | 40.4  | 10.5  | 94.4  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
-
-with their molar elemental ratios (normalised against C)
-
-| Element   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
 | N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
 | H   | 1.67 | 1.17  | 1.24 | 1.89  | 1.0 | 0.45  |
@@ -154,11 +144,6 @@ For terrestrial ecosystems.
 | 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 24.7  | 13.8 | 0.5  | 0.0  | 0.0  |
 | 45 to -10 (Alkyl)  | 0.0 | 36.6  | 10.5  | 94.4  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.266  | 0.0  | 0.0  | 0.0  | 0.0  |
-
-with their molar elemental ratios (normalised against C)
-
-| Element   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
 | N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
 | H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
@@ -176,11 +161,6 @@ For aquatic ecosystems.
 | 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 24.7  | 13.8 | 0.5  | 0.0  | 0.0  |
 | 45 to -10 (Alkyl)  | 0.0 | 36.6  | 10.5  | 94.4  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.266  | 0.0  | 0.0  | 0.0  | 0.0  |
-
-with their molar elemental ratios (normalised against C)
-
-| Element   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
 | N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
 | H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
