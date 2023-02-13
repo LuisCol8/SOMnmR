@@ -85,7 +85,7 @@ A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 
 The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references. The  lignin is  assumed to be equivalent to  the average of those acquired for spruce and red alder lignin  presented by Wilson (1987), and the lipid is calculated from structures proposed by Kolattukudy (1980).
 
-Table 1. Reference compounds for natural soil organic matter, as published by Nelson et al. (1999).
+### Table 1. Reference compounds for natural soil organic matter, as published by Nelson et al. (1999).
 | Chemical shift region (ppm)   | Aminoacid | Hexose  | Lignin | Cutin  | Suberin | Char  | Chitin | Carbonyl  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 26.4 | 0.0  | 4.6  | 6.6  | 4.3  | 5.6  | 12.5  | 100.0  |
@@ -99,7 +99,7 @@ Table 1. Reference compounds for natural soil organic matter, as published by Ne
 
 A subsequent paper from Baldock et al (2004), uses a modified version of this, adjusted for terrestrial ecosystems. Here it is considered for cabohydrates a cellulose model, for protein based on extractable aminoacids from Friedel and Scheller (2002).
 
-Table 2. Reference compounds for natural terrestrial organic matter, as published by Baldock et al (2004).
+### Table 2. Reference compounds for natural terrestrial organic matter, as published by Baldock et al (2004).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 0.0 | 28.3  | 4.6  | 5.6  | 100  | 3.9  |
@@ -116,7 +116,7 @@ Table 2. Reference compounds for natural terrestrial organic matter, as publishe
 | O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
 
 
-Table 3. Reference compounds for natural aquatic organic matter, as published by Baldock et al (2004).
+### Table 3. Reference compounds for natural aquatic organic matter, as published by Baldock et al (2004).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 0.0 | 25.7  | 4.6  | 5.6  | 100  | 3.9  |
@@ -134,7 +134,7 @@ Table 3. Reference compounds for natural aquatic organic matter, as published by
 
 Later Nelson et al. (2005), published another set of reference compounds, which consider the carbohydrate and the protein fraction are based on the hexose and aminoacid composition described above and in Nelson (1999).
 
-Table 4. Reference compounds for natural terrestrial organic matter, as published by Nelson et al. (2005).
+### Table 4. Reference compounds for natural terrestrial organic matter, as published by Nelson et al. (2005).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 0.0 | 30.4  | 4.6  | 5.6  | 100  | 5.7  |
@@ -151,7 +151,7 @@ Table 4. Reference compounds for natural terrestrial organic matter, as publishe
 | O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
 
 
-Table 5. Reference compounds for aquatic terrestrial organic matter, as published by Nelson et al. (2005).
+### Table 5. Reference compounds for aquatic terrestrial organic matter, as published by Nelson et al. (2005).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 0.0 | 30.4  | 4.6  | 5.6  | 100  | 5.7  |
