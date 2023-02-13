@@ -169,7 +169,7 @@ Later Nelson et al. (2005), published another set of reference compounds, which 
 
 I have incorporated Tables 2, 3, 4 and 5 into the SOMnmR package as: "Terr_Nelson", "Aqua_Nelson", "Terr_Baldock" and "Aqua_Baldock", respectively.
 
-Creating your own table.
+### Creating your own table.
 
 In some cases, these 4 tables do not give the best result, or you could try to improve the result if you have for example an specific char, lignin,
 you can analyse. For such cases, you can try to improve the table with your own analyzed compounds. However, you must take care of filling the table
