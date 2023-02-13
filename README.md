@@ -99,7 +99,7 @@ Table 1. Reference compounds for natural soil organic matter, as published by Ne
 
 A subsequent paper from Baldock et al (2004), uses a modified version of this, adjusted for terrestrial ecosystems. Here it is considered for cabohydrates a cellulose model, for protein based on extractable aminoacids from Friedel and Scheller (2002).
 
-
+Table 2. Reference compounds for natural terrestrial organic matter, as published by Baldock et al (2004).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 0.0 | 28.3  | 4.6  | 5.6  | 100  | 3.9  |
@@ -115,8 +115,8 @@ A subsequent paper from Baldock et al (2004), uses a modified version of this, a
 | H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
 | O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
 
-and acquatic ecosystems
 
+Table 3. Reference compounds for natural aquatic organic matter, as published by Baldock et al (2004).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 0.0 | 25.7  | 4.6  | 5.6  | 100  | 3.9  |
@@ -134,8 +134,7 @@ and acquatic ecosystems
 
 Later Nelson et al. (2005), published another set of reference compounds, which consider the carbohydrate and the protein fraction are based on the hexose and aminoacid composition described above and in Nelson (1999).
 
-For terrestrial ecosystems.
-
+Table 4. Reference compounds for natural terrestrial organic matter, as published by Nelson et al. (2005).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 0.0 | 30.4  | 4.6  | 5.6  | 100  | 5.7  |
@@ -151,8 +150,8 @@ For terrestrial ecosystems.
 | H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
 | O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
 
-TaFor aquatic ecosystems.
 
+Table 5. Reference compounds for aquatic terrestrial organic matter, as published by Nelson et al. (2005).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 0.0 | 30.4  | 4.6  | 5.6  | 100  | 5.7  |
@@ -168,6 +167,7 @@ TaFor aquatic ecosystems.
 | H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
 | O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
 
+I have incorporated Tables 2, 3, 4 and 5 into the SOMnmR package as: "Terr_Nelson", "Aqua_Nelson", "Terr_Baldock" and "Aqua_Baldock", respectively.
 
 
 ## How to use
@@ -215,10 +215,10 @@ write.csv(ncdata,"./NC_plant.csv", row.names = FALSE)
 ncdata <- nc_data("/NC/NC_plant.csv")
 
 # Now you can calculate Molecular mixing model! Choose as NMR Meth either "MMMFixN" to fix the NC ratio of the fit
-# or "MMM" to let it vary, you can also choose ecosys either "Terr" or "Aqua" which takes into account the different
-# composition of terrestrial or aquatic ecosystems.
+# or "MMM" to let it vary, you can also choose ecosys either "Terr_Nelson", "Aqua_Nelson", "Terr_Baldock" or "Aqua_Baldock" which takes into account the
+# different composition of terrestrial or aquatic ecosystems.
 
-MMM <- region_calc(spec, NMRmeth = "MMMFixN", ecosys= "Terr", cndata = ncdata)
+MMM <- region_calc(spec, NMRmeth = "MMMFixN", ecosys= "Terr_Nelson", cndata = ncdata)
 
 # Save your results using:
 
