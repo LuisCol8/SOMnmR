@@ -234,9 +234,9 @@ MMMregions <- int_nmr(spec,NMRmeth = "MMM", SSBcorr = TRUE)
 
 write.csv(unlist(MMMregions[[1]]$data$Integral), "MMMregions_name.csv")
 
-# There is a simple function that makes a ggplot2 plot of your spectra. You can choose between different integration regions
-# to be colored. Use "Bonanomi" or "MMM" or leave it blank to choose between the "Bonanomi", "MMM", or spinning side bands regions,
-# respectively. 
+# There is a simple function that makes a ggplot2 plot of your spectra. You can choose between different 
+# integration regions to be colored. Use "Bonanomi" or "MMM" or leave it blank to choose between the 
+# "Bonanomi", "MMM", or the common 4 regions only. 
 
 plot_NMR(spec, NMRmeth = "MMM",file.output = TRUE,use.tiff = TRUE)
 
