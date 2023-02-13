@@ -85,6 +85,7 @@ A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 
 The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references. The  lignin is  assumed to be equivalent to  the average of those acquired for spruce and red alder lignin  presented by Wilson (1987), and the lipid is calculated from structures proposed by Kolattukudy (1980).
 
+Table 1. Reference compounds for natural soil organic matter, as published by Nelson et al. (1999).
 | Chemical shift region (ppm)   | Aminoacid | Hexose  | Lignin | Cutin  | Suberin | Char  | Chitin | Carbonyl  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
 | 210 to 165 (Amide/Carboxyl) | 26.4 | 0.0  | 4.6  | 6.6  | 4.3  | 5.6  | 12.5  | 100.0  |
@@ -150,7 +151,7 @@ For terrestrial ecosystems.
 | H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
 | O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
 
-For aquatic ecosystems.
+TaFor aquatic ecosystems.
 
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
