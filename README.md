@@ -215,8 +215,9 @@ write.csv(ncdata,"./NC_plant.csv", row.names = FALSE)
 ncdata <- nc_data("/NC/NC_plant.csv")
 
 # Now you can calculate Molecular mixing model! Choose as NMR Meth either "MMMFixN" to fix the NC ratio of the fit
-# or "MMM" to let it vary, you can also choose ecosys either "Terr_Nelson", "Aqua_Nelson", "Terr_Baldock" or "Aqua_Baldock" which takes into account the
-# different composition of terrestrial or aquatic ecosystems.
+# or "MMM" to let it vary, you can also choose ecosys either "Terr_Nelson", "Aqua_Nelson",
+# "Terr_Baldock" or "Aqua_Baldock" which takes into account the different composition of 
+# terrestrial or aquatic ecosystems.
 
 MMM <- region_calc(spec, NMRmeth = "MMMFixN", ecosys= "Terr_Nelson", cndata = ncdata)
 
