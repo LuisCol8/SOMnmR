@@ -83,7 +83,7 @@ A special thanks goes to Prof. Carol Aldair for encouraging me to finish.
 
 ## About the reference compounds of the Molecular mixing model 
 
-The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references.
+The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references. The  lignin is  assumed to be equivalent to  the average of those acquired for spruce and red alder lignin  presented by Wilson (1987), and the lipid is calculated from structures proposed by Kolattukudy (1980).
 
 | Chemical shift region (ppm)   | Aminoacid | Hexose  | Lignin | Cutin  | Suberin | Char  | Chitin | Carbonyl  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
@@ -96,7 +96,8 @@ The original paper from Nelson et al. (1999), used an amalgam of pure compounds 
 | 45 to -10 (Alkyl)  | 39.6 | 0.0  | 10.5  | 75.6  | 60.7  | 0.0  | 12.5  | 0.0  |
 | Molar N:C   | 0.32  | 0.0  | 0.0  | 0.0  | 0.0  | 0.0  | 0.125  | 0.0  |
 
-A subsequent paper from Baldock et al (2004), uses a modified version of this, adjusted for terrestrial ecosystems.
+A subsequent paper from Baldock et al (2004), uses a modified version of this, adjusted for terrestrial ecosystems. Here it is considered for cabohydrates a cellulose model, for protein based on extractable aminoacids from Friedel and Scheller (2002).
+
 
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
@@ -166,7 +167,7 @@ For aquatic ecosystems.
 | H   | 1.67 | 1.1  | 1.24 | 1.94  | 1.0 | 0.45  |
 | O   | 0.83 | 0.16  | 0.43 | 0.24  | 2.0 | 0.41  |
 
-However, a newer version of these standard compounds was calculated consiering, for cabohydrates a cellulose model, for protein based on extractable aminoacids from Friedel and Scheller (2002), the lignin is  assumed to be equivalent to  the average of those acquired for spruce and red alder lignin  presented by Wilson (1987), and the lipid is calculated from structures proposed by Kolattukudy (1980).
+
 
 ## How to use
 
