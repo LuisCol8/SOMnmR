@@ -7,7 +7,7 @@
 std_nmr(ecosys = NULL)
 }
 \arguments{
-\item{ecosys}{Standards from the ecosystem to be fitted. "Terr" for terrestrial, "Aqua" for aquatic.}
+\item{ecosys}{Standards from the ecosystem to be fitted. "Terr_Nelson" or "Terr_Baldock" for terrestrial, "Aqua_Nelson" or "Aqua_Baldock" for aquatic.}
 }
 \description{
 The function creates a data frame with all standards of the selected ecosystem (Terrestrial or Aquatic).

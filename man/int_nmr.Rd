@@ -10,7 +10,7 @@ int_nmr(raw.spec, NMRmeth = NULL, SSBcorr = FALSE)
 \item{raw.spec}{Raw spectrum}
 
 \item{NMRmeth}{Regions to be integrated.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM-SSB").}
 }
 \description{
 This function allows you to integrate the 13C-NMR spectra using diferent integration regions.

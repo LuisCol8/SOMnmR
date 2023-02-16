@@ -6,7 +6,7 @@
 #' The function returns the corrected, normalized and flattened spectrum
 #' @param raw.spec Raw spectrum
 #' @param NMRmeth Regions to be integrated.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
+#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM-SSB").
 #' @keywords normalization, integration
 #' @export
 #' @importFrom cmna simp

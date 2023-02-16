@@ -44,7 +44,7 @@ fit_LCF <- function (all.samples, all.standards, ecosys =NULL,
   for (i in 1:length(all.samples)) {
 
     ## create correct data frame of standards, depending of the energy of the sample
-    standards <- data.frame(all.standards[[1]])
+    standards <- data.frame(all.standards[[1]][1:8,1:6])
 
     ## extract all names of the used standards
     STD.names <- colnames(standards)

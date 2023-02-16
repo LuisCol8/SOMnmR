@@ -6,15 +6,14 @@
 #' @param batch_nmr Vector with file names, default
 #' @param NMRmeth Regions to be integrated.
 #' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
-#' @param ecosys Standards to be used for the MMM, can be Terrestrial("Terr") or Aquatic ("Aqua")
-#' @param nc_constrain Boolean for the fitting of the MMM, TRUE for N/C constrained fit, FALS for non-constrained. Default is FALSE.
+#' @param ecosys Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")
 #' @param ncdata Initial correction and normalization parameters
 #' @keywords
 #' @export
 #' @examples
 
 region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=NULL,
-                          cn_constrain=FALSE, cndata = NULL) {
+                          cndata = NULL, mod_std = NULL) {
 
   if (is.null(batch_nmr)) {
 
@@ -76,9 +75,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       alkyl <-  setNames(data.frame(sum(2*sum(Integral[1:3,2]), sum(Integral[10:12,2]), -sum(Integral[28:30,2]))), c("Alkyl"))
       ##Put all together
       NMR.end[[i]] <- data.frame(file.name = file.name, data = data.frame(carboxyl, aryl, oalkyl, alkyl))
-      write.table(NMR.end[[i]], "output.csv", append = TRUE, sep = ",", dec = ".",
-                  col.names = TRUE, row.names = FALSE)
-      sample <- NULL
+
     }
   } else if (NMRmeth == "MMM") {
 
@@ -123,36 +120,36 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
 
       raw.spec.end[[i]] <- list("name" = samplename, "data" = list("raw.spec" = sampleraw.spec,"Integral" = sampleintegralend))
 
-      if (ecosys == "Terr") {
+      if (ecosys == "Terr_Nelson") {
 
-        stdmat <- std_nmr(ecosys = "Terr")
+        stdmat <- std_nmr(ecosys = "Terr_Nelson")
         NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = "MMM")
 
         ## Elementar ratios (relative to C)
 
-        Cmol <- as.numeric(NMR.end$Carbohydrates*1+NMR.end$Protein*1+NMR.end$Lignin*1+
-                             NMR.end$Lipid*1+NMR.end$Carbonyl*1+NMR.end$Char*1)
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
 
-        Nmol <- as.numeric(NMR.end$Carbohydrates*0+NMR.end$Protein*0.275+NMR.end$Lignin*0+
-                             NMR.end$Lipid*0+NMR.end$Carbonyl*0+NMR.end$Char*0.004)
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
 
-        Hmol <- as.numeric(NMR.end$Carbohydrates*1.667+NMR.end$Protein*1.101+NMR.end$Lignin*1.238+
-                             NMR.end$Lipid*1.941+NMR.end$Carbonyl*1+NMR.end$Char*0.452)
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
 
-        Omol <- as.numeric(NMR.end$Carbohydrates*0.833+NMR.end$Protein*0.155+NMR.end$Lignin*0.429+
-                             NMR.end$Lipid*0.235+NMR.end$Carbonyl*2+NMR.end$Char*0.405)
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
 
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*1*12.0107+NMR.end$Protein*1*12.0107+NMR.end$Lignin*1*12.0107+
-                             NMR.end$Lipid*1*12.0107+NMR.end$Carbonyl*1*12.0107+NMR.end$Char*1*12.0107)
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
 
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*0*14.0067+NMR.end$Protein*0.275*14.0067+NMR.end$Lignin*0*14.0067+
-                             NMR.end$Lipid*0*14.0067+NMR.end$Carbonyl*0*14.0067+NMR.end$Char*0.004*14.0067)
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
 
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*1.667*1.00794+NMR.end$Protein*1.101*1.00794+NMR.end$Lignin*1.238*1.00794+
-                             NMR.end$Lipid*1.941*1.00794+NMR.end$Carbonyl*1*1.00794+NMR.end$Char*0.452*1.00794)
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
 
-        Owgt <- as.numeric(NMR.end$Carbohydrates*0.833*15.994+NMR.end$Protein*0.155*15.994+NMR.end$Lignin*0.429*15.994+
-                             NMR.end$Lipid*0.235*15.994+NMR.end$Carbonyl*2*15.994+NMR.end$Char*0.405*15.994)
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
 
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
 
@@ -162,36 +159,152 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
 
         NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
 
-      } else if (ecosys == "Aqua") {
+      } else if (ecosys == "Terr_Baldock") {
 
-        stdmat <- std_nmr(ecosys = "Aqua")
-        NMR.end <- fit_athena(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMM")
+        stdmat <- std_nmr(ecosys = "Terr_Baldock")
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = "MMM")
 
         ## Elementar ratios (relative to C)
 
-        Cmol <- as.numeric(NMR.end$Carbohydrates*1+NMR.end$Protein*1+NMR.end$Lignin*1+
-                             NMR.end$Lipid*1+NMR.end$Carbonyl*1+NMR.end$Char*1)
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
 
-        Nmol <- as.numeric(NMR.end$Carbohydrates*0+NMR.end$Protein*0.275+NMR.end$Lignin*0+
-                             NMR.end$Lipid*0+NMR.end$Carbonyl*0+NMR.end$Char*0.004)
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
 
-        Hmol <- as.numeric(NMR.end$Carbohydrates*1.667+NMR.end$Protein*1.101+NMR.end$Lignin*1.238+
-                             NMR.end$Lipid*1.941+NMR.end$Carbonyl*1+NMR.end$Char*0.452)
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
 
-        Omol <- as.numeric(NMR.end$Carbohydrates*0.833+NMR.end$Protein*0.155+NMR.end$Lignin*0.429+
-                             NMR.end$Lipid*0.235+NMR.end$Carbonyl*2+NMR.end$Char*0.405)
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
 
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*1*12.0107+NMR.end$Protein*1*12.0107+NMR.end$Lignin*1*12.0107+
-                             NMR.end$Lipid*1*12.0107+NMR.end$Carbonyl*1*12.0107+NMR.end$Char*1*12.0107)
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
 
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*0*14.0067+NMR.end$Protein*0.275*14.0067+NMR.end$Lignin*0*14.0067+
-                             NMR.end$Lipid*0*14.0067+NMR.end$Carbonyl*0*14.0067+NMR.end$Char*0.004*14.0067)
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
 
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*1.667*1.00794+NMR.end$Protein*1.101*1.00794+NMR.end$Lignin*1.238*1.00794+
-                             NMR.end$Lipid*1.941*1.00794+NMR.end$Carbonyl*1*1.00794+NMR.end$Char*0.452*1.00794)
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
 
-        Owgt <- as.numeric(NMR.end$Carbohydrates*0.833*15.994+NMR.end$Protein*0.155*15.994+NMR.end$Lignin*0.429*15.994+
-                             NMR.end$Lipid*0.235*15.994+NMR.end$Carbonyl*2*15.994+NMR.end$Char*0.405*15.994)
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
+
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
+
+        ## Final result
+
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
+
+      } else if (ecosys == "Aqua_Nelson") {
+
+        stdmat <- std_nmr(ecosys = "Aqua_Nelson")
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMM")
+
+        ## Elementar ratios (relative to C)
+
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
+
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
+
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
+
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
+
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
+
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
+
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
+
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
+
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
+
+        ## Final result
+
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
+
+      } else if (ecosys == "Aqua_Baldock") {
+
+        stdmat <- std_nmr(ecosys = "Aqua_Baldock")
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMM")
+
+        ## Elementar ratios (relative to C)
+
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
+
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
+
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
+
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
+
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
+
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
+
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
+
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
+
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
+
+        ## Final result
+
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
+
+      } else if (ecosys == "mod") {
+
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = mod_std, amoSTD = 6, best.fits = 30,  NMRmeth = "MMM")
+
+        ## Elementar ratios (relative to C)
+
+        Cmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][9,2]+NMR.end$Protein*mod_std[[1]][9,1]+NMR.end$Lignin*mod_std[[1]][9,3]+
+                             NMR.end$Lipid*mod_std[[1]][9,4]+NMR.end$Carbonyl*mod_std[[1]][9,5]+NMR.end$Char*mod_std[[1]][9,6])
+
+        Nmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][10,2]+NMR.end$Protein*mod_std[[1]][10,1]+NMR.end$Lignin*mod_std[[1]][10,3]+
+                             NMR.end$Lipid*mod_std[[1]][10,4]+NMR.end$Carbonyl*mod_std[[1]][10,5]+NMR.end$Char*mod_std[[1]][10,6])
+
+        Hmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][11,2]+NMR.end$Protein*mod_std[[1]][11,1]+NMR.end$Lignin*mod_std[[1]][11,3]+
+                             NMR.end$Lipid*mod_std[[1]][11,4]+NMR.end$Carbonyl*mod_std[[1]][11,5]+NMR.end$Char*mod_std[[1]][11,6])
+
+        Omol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][12,2]+NMR.end$Protein*mod_std[[1]][12,1]+NMR.end$Lignin*mod_std[[1]][12,3]+
+                             NMR.end$Lipid*mod_std[[1]][12,4]+NMR.end$Carbonyl*mod_std[[1]][12,5]+NMR.end$Char*mod_std[[1]][12,6])
+
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][9,2]*12.0107+NMR.end$Protein*mod_std[[1]][9,1]*12.0107+NMR.end$Lignin*mod_std[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*mod_std[[1]][9,4]*12.0107+NMR.end$Carbonyl*mod_std[[1]][9,5]*12.0107+NMR.end$Char*mod_std[[1]][9,6]*12.0107)
+
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][10,2]*14.0067+NMR.end$Protein*mod_std[[1]][10,1]*14.0067+NMR.end$Lignin*mod_std[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*mod_std[[1]][10,4]*14.0067+NMR.end$Carbonyl*mod_std[[1]][10,5]*14.0067+NMR.end$Char*mod_std[[1]][10,6]*14.0067)
+
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][11,2]*1.00794+NMR.end$Protein*mod_std[[1]][11,1]*1.00794+NMR.end$Lignin*mod_std[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*mod_std[[1]][11,4]*1.00794+NMR.end$Carbonyl*mod_std[[1]][11,5]*1.00794+NMR.end$Char*mod_std[[1]][11,6]*1.00794)
+
+        Owgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][12,2]*15.994+NMR.end$Protein*mod_std[[1]][12,1]*15.994+NMR.end$Lignin*mod_std[[1]][12,3]*15.994+
+                             NMR.end$Lipid*mod_std[[1]][12,4]*15.994+NMR.end$Carbonyl*mod_std[[1]][12,5]*15.994+NMR.end$Char*mod_std[[1]][12,6]*15.994)
 
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
 
@@ -246,36 +359,36 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
 
       raw.spec.end[[i]] <- list("name" = samplename, "data" = list("raw.spec" = sampleraw.spec,"Integral" = sampleintegralend))
 
-      if (ecosys == "Terr") {
+      if (ecosys == "Terr_Nelson") {
 
-        stdmat <- std_nmr(ecosys = "Terr")
+        stdmat <- std_nmr(ecosys = "Terr_Nelson")
         NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = "MMMFixN")
 
         ## Elementar ratios (relative to C)
 
-        Cmol <- as.numeric(NMR.end$Carbohydrates*1+NMR.end$Protein*1+NMR.end$Lignin*1+
-                             NMR.end$Lipid*1+NMR.end$Carbonyl*1+NMR.end$Char*1)
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
 
-        Nmol <- as.numeric(NMR.end$Carbohydrates*0+NMR.end$Protein*0.275+NMR.end$Lignin*0+
-                             NMR.end$Lipid*0+NMR.end$Carbonyl*0+NMR.end$Char*0.004)
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
 
-        Hmol <- as.numeric(NMR.end$Carbohydrates*1.667+NMR.end$Protein*1.101+NMR.end$Lignin*1.238+
-                             NMR.end$Lipid*1.941+NMR.end$Carbonyl*1+NMR.end$Char*0.452)
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
 
-        Omol <- as.numeric(NMR.end$Carbohydrates*0.833+NMR.end$Protein*0.155+NMR.end$Lignin*0.429+
-                             NMR.end$Lipid*0.235+NMR.end$Carbonyl*2+NMR.end$Char*0.405)
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
 
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*1*12.0107+NMR.end$Protein*1*12.0107+NMR.end$Lignin*1*12.0107+
-                             NMR.end$Lipid*1*12.0107+NMR.end$Carbonyl*1*12.0107+NMR.end$Char*1*12.0107)
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
 
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*0*14.0067+NMR.end$Protein*0.275*14.0067+NMR.end$Lignin*0*14.0067+
-                             NMR.end$Lipid*0*14.0067+NMR.end$Carbonyl*0*14.0067+NMR.end$Char*0.004*14.0067)
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
 
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*1.667*1.00794+NMR.end$Protein*1.101*1.00794+NMR.end$Lignin*1.238*1.00794+
-                             NMR.end$Lipid*1.941*1.00794+NMR.end$Carbonyl*1*1.00794+NMR.end$Char*0.452*1.00794)
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
 
-        Owgt <- as.numeric(NMR.end$Carbohydrates*0.833*15.994+NMR.end$Protein*0.155*15.994+NMR.end$Lignin*0.429*15.994+
-                             NMR.end$Lipid*0.235*15.994+NMR.end$Carbonyl*2*15.994+NMR.end$Char*0.405*15.994)
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
 
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
 
@@ -285,36 +398,150 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
 
         NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
 
-      } else if (ecosys == "Aqua") {
+      } else if (ecosys == "Terr_Baldock") {
 
-        stdmat <- std_nmr(ecosys = "Aqua")
-        NMR.end <- fit_athena(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
+        stdmat <- std_nmr(ecosys = "Terr_Baldock")
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
 
         ## Elementar ratios (relative to C)
 
-        Cmol <- as.numeric(NMR.end$Carbohydrates*1+NMR.end$Protein*1+NMR.end$Lignin*1+
-                             NMR.end$Lipid*1+NMR.end$Carbonyl*1+NMR.end$Char*1)
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
 
-        Nmol <- as.numeric(NMR.end$Carbohydrates*0+NMR.end$Protein*0.275+NMR.end$Lignin*0+
-                             NMR.end$Lipid*0+NMR.end$Carbonyl*0+NMR.end$Char*0.004)
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
 
-        Hmol <- as.numeric(NMR.end$Carbohydrates*1.667+NMR.end$Protein*1.101+NMR.end$Lignin*1.238+
-                             NMR.end$Lipid*1.941+NMR.end$Carbonyl*1+NMR.end$Char*0.452)
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
 
-        Omol <- as.numeric(NMR.end$Carbohydrates*0.833+NMR.end$Protein*0.155+NMR.end$Lignin*0.429+
-                             NMR.end$Lipid*0.235+NMR.end$Carbonyl*2+NMR.end$Char*0.405)
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
 
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*1*12.0107+NMR.end$Protein*1*12.0107+NMR.end$Lignin*1*12.0107+
-                             NMR.end$Lipid*1*12.0107+NMR.end$Carbonyl*1*12.0107+NMR.end$Char*1*12.0107)
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
 
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*0*14.0067+NMR.end$Protein*0.275*14.0067+NMR.end$Lignin*0*14.0067+
-                             NMR.end$Lipid*0*14.0067+NMR.end$Carbonyl*0*14.0067+NMR.end$Char*0.004*14.0067)
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
 
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*1.667*1.00794+NMR.end$Protein*1.101*1.00794+NMR.end$Lignin*1.238*1.00794+
-                             NMR.end$Lipid*1.941*1.00794+NMR.end$Carbonyl*1*1.00794+NMR.end$Char*0.452*1.00794)
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
 
-        Owgt <- as.numeric(NMR.end$Carbohydrates*0.833*15.994+NMR.end$Protein*0.155*15.994+NMR.end$Lignin*0.429*15.994+
-                             NMR.end$Lipid*0.235*15.994+NMR.end$Carbonyl*2*15.994+NMR.end$Char*0.405*15.994)
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
+
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
+
+        ## Final result
+
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
+
+      } else if (ecosys == "Aqua_Nelson") {
+
+        stdmat <- std_nmr(ecosys = "Aqua_Nelson")
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
+
+        ## Elementar ratios (relative to C)
+
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
+
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
+
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
+
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
+
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
+
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
+
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
+
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
+
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
+
+        ## Final result
+
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
+      } else if (ecosys == "Aqua_Baldock") {
+
+        stdmat <- std_nmr(ecosys = "Aqua_Baldock")
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
+
+        ## Elementar ratios (relative to C)
+
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
+
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
+
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
+
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
+
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
+
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
+
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
+
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
+
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
+
+        ## Final result
+
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
+      } else if (ecosys == "mod") {
+
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = mod_std, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
+
+        ## Elementar ratios (relative to C)
+
+        Cmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][9,2]+NMR.end$Protein*mod_std[[1]][9,1]+NMR.end$Lignin*mod_std[[1]][9,3]+
+                             NMR.end$Lipid*mod_std[[1]][9,4]+NMR.end$Carbonyl*mod_std[[1]][9,5]+NMR.end$Char*mod_std[[1]][9,6])
+
+        Nmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][10,2]+NMR.end$Protein*mod_std[[1]][10,1]+NMR.end$Lignin*mod_std[[1]][10,3]+
+                             NMR.end$Lipid*mod_std[[1]][10,4]+NMR.end$Carbonyl*mod_std[[1]][10,5]+NMR.end$Char*mod_std[[1]][10,6])
+
+        Hmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][11,2]+NMR.end$Protein*mod_std[[1]][11,1]+NMR.end$Lignin*mod_std[[1]][11,3]+
+                             NMR.end$Lipid*mod_std[[1]][11,4]+NMR.end$Carbonyl*mod_std[[1]][11,5]+NMR.end$Char*mod_std[[1]][11,6])
+
+        Omol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][12,2]+NMR.end$Protein*mod_std[[1]][12,1]+NMR.end$Lignin*mod_std[[1]][12,3]+
+                             NMR.end$Lipid*mod_std[[1]][12,4]+NMR.end$Carbonyl*mod_std[[1]][12,5]+NMR.end$Char*mod_std[[1]][12,6])
+
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][9,2]*12.0107+NMR.end$Protein*mod_std[[1]][9,1]*12.0107+NMR.end$Lignin*mod_std[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*mod_std[[1]][9,4]*12.0107+NMR.end$Carbonyl*mod_std[[1]][9,5]*12.0107+NMR.end$Char*mod_std[[1]][9,6]*12.0107)
+
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][10,2]*14.0067+NMR.end$Protein*mod_std[[1]][10,1]*14.0067+NMR.end$Lignin*mod_std[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*mod_std[[1]][10,4]*14.0067+NMR.end$Carbonyl*mod_std[[1]][10,5]*14.0067+NMR.end$Char*mod_std[[1]][10,6]*14.0067)
+
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][11,2]*1.00794+NMR.end$Protein*mod_std[[1]][11,1]*1.00794+NMR.end$Lignin*mod_std[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*mod_std[[1]][11,4]*1.00794+NMR.end$Carbonyl*mod_std[[1]][11,5]*1.00794+NMR.end$Char*mod_std[[1]][11,6]*1.00794)
+
+        Owgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][12,2]*15.994+NMR.end$Protein*mod_std[[1]][12,1]*15.994+NMR.end$Lignin*mod_std[[1]][12,3]*15.994+
+                             NMR.end$Lipid*mod_std[[1]][12,4]*15.994+NMR.end$Carbonyl*mod_std[[1]][12,5]*15.994+NMR.end$Char*mod_std[[1]][12,6]*15.994)
 
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
 

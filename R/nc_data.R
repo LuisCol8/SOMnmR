@@ -16,7 +16,7 @@ nc_data <- function (NCdata) {
 
     file.name <- NC[i,1]
 
-    calc <- c((as.numeric(NC[i,3])/14)/(as.numeric(NC[i,2])/12))
+    calc <- c((as.numeric(NC[i,3])/14.0067)/(as.numeric(NC[i,2])/12.0107))
 
     ## create a list with name, element, edge and the data of the spectrum
     NC.end[[i]] <- list("name" = file.name, "NC" =calc)
