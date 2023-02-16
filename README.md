@@ -102,13 +102,13 @@ A subsequent paper from Baldock et al (2004), uses a modified version of this, a
 ### Table 2. Reference compounds for natural terrestrial organic matter, as published by Baldock et al (2004).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| 210 to 165 (Amide/Carboxyl) | 0.0 | 28.3  | 4.6  | 5.6  | 100  | 3.9  |
-| 165 to 145 (Phenolic)  | 0.0  | 1.3  | 19.5  | 0.0 | 0.0  | 15.2  |
-| 145 to 110 (Aromatic)  | 0.0  | 8.9  | 30.5  | 0.0  | 0.0  | 72.0  |
+| 210 to 165 (Amide/Carboxyl) | 0.0 | 28.3  | 4.6  | 6.6  | 100  | 3.9  |
+| 165 to 145 (Phenolic)  | 0.0  | 1.3  | 19.5  | 0.7 | 0.0  | 15.2  |
+| 145 to 110 (Aromatic)  | 0.0  | 8.9  | 30.5  | 3.6  | 0.0  | 72.0  |
 | 110 to 95 (Di-O-Alkyl)  | 16.7  | 0.0  | 8.6  | 0.0  | 0.0  | 5.3  |
-| 95 to 60 (O-Alkyl)  | 83.3  | 3.5  | 12.5  | 0.0  | 0.0  | 1.8  |
-| 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 22.6  | 13.8 | 0.5  | 0.0  | 1.7  |
-| 45 to -10 (Alkyl)  | 0.0 | 35.4  | 10.5  | 94.4  | 0.0  | 0.0  |
+| 95 to 60 (O-Alkyl)  | 83.3  | 3.5  | 12.5  | 9.0  | 0.0  | 1.8  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 22.6  | 13.8 | 4.5  | 0.0  | 1.7  |
+| 45 to -10 (Alkyl)  | 0.0 | 35.4  | 10.5  | 75.6  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
 | C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
 | N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
@@ -137,13 +137,13 @@ Later Nelson et al. (2005), published another set of reference compounds, which 
 ### Table 4. Reference compounds for natural terrestrial organic matter, as published by Nelson et al. (2005).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| 210 to 165 (Amide/Carboxyl) | 0.0 | 30.4  | 4.6  | 5.6  | 100  | 5.7  |
-| 165 to 145 (Phenolic)  | 0.0  | 1.0  | 19.5  | 0.0 | 0.0  | 16.1  |
-| 145 to 110 (Aromatic)  | 1.0  | 4.5  | 30.5  | 0.0  | 0.0  | 73.9  |
+| 210 to 165 (Amide/Carboxyl) | 0.0 | 30.4  | 4.6  | 6.6  | 100  | 5.7  |
+| 165 to 145 (Phenolic)  | 0.0  | 1.0  | 19.5  | 0.7 | 0.0  | 16.1  |
+| 145 to 110 (Aromatic)  | 1.0  | 4.5  | 30.5  | 3.6  | 0.0  | 73.9  |
 | 110 to 95 (Di-O-Alkyl)  | 15.7  | 0.0  | 8.6  | 0.0  | 0.0  | 4.3  |
-| 95 to 60 (O-Alkyl)  | 79.0  | 2.9  | 12.5  | 0.0  | 0.0  | 0.0  |
-| 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 24.7  | 13.8 | 0.5  | 0.0  | 0.0  |
-| 45 to -10 (Alkyl)  | 0.0 | 36.6  | 10.5  | 94.4  | 0.0  | 0.0  |
+| 95 to 60 (O-Alkyl)  | 79.0  | 2.9  | 12.5  | 9.0  | 0.0  | 0.0  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 4.3  | 24.7  | 13.8 | 4.5  | 0.0  | 0.0  |
+| 45 to -10 (Alkyl)  | 0.0 | 36.6  | 10.5  | 75.6  | 0.0  | 0.0  |
 | Molar N:C   | 0.0  | 0.266  | 0.0  | 0.0  | 0.0  | 0.0  |
 | C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
 | N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
