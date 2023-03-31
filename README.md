@@ -247,9 +247,12 @@ write.csv(unlist(MMMregions[[1]]$data$Integral), "MMMregions_name.csv")
 
 plot_NMR(spec, NMRmeth = "MMM",file.output = TRUE,use.tiff = TRUE)
 
-
-
 ```
+
+Example of Plot function
+
+![image](https://user-images.githubusercontent.com/35764330/229078246-aec21aa0-4380-4714-ba5d-b01603309ebe.png)
+
 
 ## References
 
