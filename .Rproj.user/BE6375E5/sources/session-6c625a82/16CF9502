@@ -1,0 +1,24 @@
+{
+    "id": "16CF9502",
+    "path": "~/GitHub/SOMnmR/R/mk_nc_data.R",
+    "project_path": "R/mk_nc_data.R",
+    "type": "r_source",
+    "hash": "1070326844",
+    "contents": "",
+    "dirty": false,
+    "created": 1686411320511.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1661333737,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1661333737,
+    "read_only": false,
+    "read_only_alternatives": []
+}
