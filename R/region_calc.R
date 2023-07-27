@@ -126,11 +126,15 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       
       ##Put all together
       Amide_to_Ketone <- c(Amide_Carboxylic + Ketone)
-
+      
       sampleintegraljoin <- data.frame(Alkyl, N_Alkyl_Methoxyl, O_Alkyl, Di_O_Alkyl, Aromatic, Phenolic, Amide_to_Ketone)
 
       sampleintegraljoin <- t(sampleintegraljoin)
-
+      
+      norm <- sum(sampleintegraljoin)
+      
+      sampleintegraljoin <- (sampleintegraljoin/norm)*100
+      sampleintegraljoin <- data.frame(sampleintegraljoin)
       sampleintegralend <- rbind(NCval,sampleintegraljoin)
 
       raw.spec.end[[i]] <- list("name" = samplename, "data" = list("raw.spec" = sampleraw.spec,"Integral" = sampleintegralend))
@@ -655,6 +659,10 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       
       sampleintegraljoin <- t(sampleintegraljoin)
       
+      norm <- sum(sampleintegraljoin)
+      
+      sampleintegraljoin <- (sampleintegraljoin/norm)*100
+      sampleintegraljoin <- data.frame(sampleintegraljoin)
       sampleintegralend <- rbind(NCval,sampleintegraljoin)
       
       raw.spec.end[[i]] <- list("name" = samplename, "data" = list("raw.spec" = sampleraw.spec,"Integral" = sampleintegralend))
@@ -1141,6 +1149,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
     
   } else if (stats == TRUE) {
     rownames(sample_stats) <- NULL
+    sample_stats <- order(sample_stats$Sum_ssq,increasing = TRUE)
     
     return(sample_stats)
     }
