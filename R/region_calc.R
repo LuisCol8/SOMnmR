@@ -413,7 +413,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
                                  (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
         
         colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
+
         sample_stats <- cbind(sample_stats,ssq_sample)
         
       } else if (ecosys == "Aqua_Baldock") {
@@ -592,6 +592,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
           nmrrest <- rbind(nmrrest, nmrrestt)
         }
         colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
+        rownames(nmrrest) <- NULL
         
         sample_stats <- cbind(sample_stats,nmrrest)
         ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
@@ -740,6 +741,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
           nmrrestt <- c(sampleintegraljoin)
           nmrrest <- rbind(nmrrest, nmrrestt)
         }
+        rownames(nmrrest) <- NULL
         colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
         
         sample_stats <- cbind(sample_stats,nmrrest)
@@ -1116,6 +1118,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
           nmrrest <- rbind(nmrrest, nmrrestt)
         }
         colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
+        rownames(nmrrest) <- NULL
         
         sample_stats <- cbind(sample_stats,nmrrest)
         ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
@@ -1137,6 +1140,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
     return(NMR.end)
     
   } else if (stats == TRUE) {
+    rownames(sample_stats) <- NULL
     
     return(sample_stats)
     }
