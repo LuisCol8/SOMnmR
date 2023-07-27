@@ -662,8 +662,8 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
       norm <- sum(sampleintegraljoin)
       
       sampleintegraljoin <- (sampleintegraljoin/norm)*100
-      sampleintegraljoin <- data.frame(sampleintegraljoin)
       sampleintegralend <- rbind(NCval,sampleintegraljoin)
+      sampleintegralend <- data.frame(sampleintegralend)
       
       raw.spec.end[[i]] <- list("name" = samplename, "data" = list("raw.spec" = sampleraw.spec,"Integral" = sampleintegralend))
       
@@ -1148,8 +1148,10 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=N
     return(NMR.end)
     
   } else if (stats == TRUE) {
+    
+    sample_stats <- sample_stats[order(sample_stats$Sum_ssq, decreasing = FALSE),]
     rownames(sample_stats) <- NULL
-    sample_stats <- order(sample_stats$Sum_ssq,increasing = TRUE)
+
     
     return(sample_stats)
     }
