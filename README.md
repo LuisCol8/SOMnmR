@@ -119,14 +119,14 @@ A subsequent paper from Baldock et al (2004), uses a modified version of this, a
 ### Table 3. Reference compounds for natural aquatic organic matter, as published by Baldock et al (2004).
 | Chemical shift region (ppm)   | Carbohydrate | Protein  | Lignin | Lipid  | Carbonyl | Char  |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| 210 to 165 (Amide/Carboxyl) | 0.0 | 25.7  | 4.6  | 5.6  | 100  | 3.9  |
-| 165 to 145 (Phenolic)  | 0.0  | 1.4  | 19.5  | 0.0 | 0.0  | 15.2  |
-| 145 to 110 (Aromatic)  | 0.0  | 9.1  | 30.5  | 0.0  | 0.0  | 72.0  |
+| 210 to 165 (Amide/Carboxyl) | 0.0 | 26.4  | 4.6  | 5.6  | 100  | 3.9  |
+| 165 to 145 (Phenolic)  | 0.0  | 2.5  | 19.5  | 0.0 | 0.0  | 15.2  |
+| 145 to 110 (Aromatic)  | 0.0  | 7.5  | 30.5  | 0.0  | 0.0  | 72.0  |
 | 110 to 95 (Di-O-Alkyl)  | 16.7  | 0.0  | 8.6  | 0.0  | 0.0  | 5.3  |
-| 95 to 60 (O-Alkyl)  | 83.3  | 2.3  | 12.5  | 0.0  | 0.0  | 1.8  |
-| 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 21.0  | 13.8 | 0.5  | 0.0  | 1.7  |
-| 45 to -10 (Alkyl)  | 0.0 | 40.4  | 10.5  | 94.4  | 0.0  | 0.0  |
-| Molar N:C   | 0.0  | 0.275  | 0.0  | 0.0  | 0.0  | 0.0  |
+| 95 to 60 (O-Alkyl)  | 83.3  |  2.1  | 12.5  | 0.0  | 0.0  | 1.8  |
+| 60 to 45 (N-Alkyl/Methoxyl)  | 0.0  | 4.3  | 13.8 | 0.5  | 0.0  | 1.7  |
+| 45 to -10 (Alkyl)  | 0.0 | 39.6   | 10.5  | 94.4  | 0.0  | 0.0  |
+| Molar N:C   | 0.0  | 0.32 | 0.0  | 0.0  | 0.0  | 0.0  |
 | C   | 1.0 | 1.0  | 1.0 | 1.0  | 1.0 | 1.0  |
 | N   | 0.0 | 0.27  | 0.0 | 0.0  | 0.0 | 0.0  |
 | H   | 1.67 | 1.17  | 1.24 | 1.89  | 1.0 | 0.45  |
