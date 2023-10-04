@@ -25,7 +25,7 @@ Background substraction, and phase correction is out of the scope of this packag
 - [Molecular Mixing Model](molecular-mixing-model.md)
 - [Statistics](statistics.md)
 - [How to use](how-to-use.md)
-- [references](references.md)
+- [References](references.md)
 - [Contact](#contact)
 
 ## How to cite
