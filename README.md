@@ -21,8 +21,11 @@ Background substraction, and phase correction is out of the scope of this packag
   * [Step 2](#step-2)
   * [Step 3](#step-3)
 - [Introduction](#introduction)
-- [How to use](#how-to-use)
-- [References](#references)
+- [Spinning Sidebands Correction](spinning-sidebands-correction.md)
+- [Molecular Mixing Model](molecular-mixing-model.md)
+- [Statistics](statistics.md)
+- [How to use](how-to-use.md)
+- [references](references.md)
 - [Contact](#contact)
 
 ## How to cite
