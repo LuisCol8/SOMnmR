@@ -1,14 +1,14 @@
 # SOMnmR
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7023316.svg)](https://doi.org/10.5281/zenodo.7023316)
 
-A package for 13C NMR analysis (spinning sidebands, molecular mixing model, etc)
+A package for 13C MAS NMR analysis 
 
 ### What can be done?
 
 The package mainly focuses on the integration of NMR regions. With this information it can either correct the spinning side bands,
 give the integrals according to Bonanomi et al. (2011) or to the molecular mixing model (thereafter named MMM) according to Nelson et al. (2005). 
 
-If the MMM option is chosen, then a fitting is made either constrained with the NC ration of the sample or not.
+If the MMM option is chosen, then a fitting is made either constrained with the NC ratio of the sample or not.
 
 ### What can't be done?
 
