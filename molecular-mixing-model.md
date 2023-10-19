@@ -1,6 +1,14 @@
 # Molecular Mixing Model
 [Back to the Main page](README.md)
 
+The molecular mixing model is a method to predict the molecular composition of a sample. It calculates the mathematically optimal composition of a sample using model components together so that the N:C ratio and the signal intensity in some regions of the NMR spectrum for the model mixture equalled those for the sample.
+This proces was accomplished by solving Equations 1 to 6 (Fig 1.), the solution of these equations deﬁned a proportion of each model component for that sample (a to f). The proportions of the various model components are then used to calculate a predicted spectral distribution for that sample by summing, for each chemical shift region, the product of (a) the proportion ofeach
+model component and (b) the present C in that region for that model component.
+
+![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/a99bd9b7-8bf2-4f1c-b806-cc155a22fe75)
+
+Equations (1)–(6), a, b, c, d, e and f equal the proportions of components A (carbohydrate), B (protein), C (lignin), D (aliphatic material), E (carbonyl) and F (char) in the model. Equation (1) ensures that the sum of all component proportions equals 1. In Equation (2), n equals the N:C ratio of the component (or sample) speciﬁed (e.g., nA equals the N:C ratio of component A, the carbohydrate component). Molar N:C ratios ofthe model components are shown in Table 1. In Equations (3)–(6), a, b, v and d equal the proportions ofcarbon in the speciﬁed components (or sample) that resonate in the 45 to 	10, 95–60, 210–165 and 145–110 ppm chemical shift regions, respectively (e.g., aA equals the proportion of total signal in the 45 to 10 ppm region in the carbohydrate component).
+
 The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references. The  lignin is  assumed to be equivalent to  the average of those acquired for spruce and red alder lignin  presented by Wilson (1987), and the lipid is calculated from structures proposed by Kolattukudy (1980).
 
 ### Table 1. Reference compounds for natural soil organic matter, as published by Nelson et al. (1999).
