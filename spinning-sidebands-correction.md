@@ -9,6 +9,7 @@ intensity of the centerband remain unchanged.
 As shown below:
 
 ![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/fd38b431-e32d-4b7e-be2f-5fbe2a7fb5ec)
+
 Fig 1.Effect of fast rotation on spinning side bands (SSB). Increasing the sample spinning rate leads to decreasing of both amount and intensity of SSB. Ref: Duer M. J. (2002)
 
 Example
