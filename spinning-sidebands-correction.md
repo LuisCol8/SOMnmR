@@ -20,7 +20,8 @@ When the TOSS sequence is not available because of instrument limitation, a simp
 
 Example of Mathematical substraction of SSB
 
-If we asume that a magnetic field strength of 200 MHz, and at the spinning rate of 6.8 kHz is used, the Carbon-13 nucleus has a gyromagnetic ratio of ¼ relative to the 1H nucleus. Therefore, the 13C resonance frequency is 50 MHz (¼ * 300 MHz). A prerequisite for quantitative interpretation of NMR signal intensities (peak areas) is a magic angle spinning rate that exceeds the 13C frequency range of 200 ppm. At a frequency of 50 MHz, this corresponds to a minimum magic angle spinning (MAS) rate of 5,000 Hz (½ * 200 ppm x 50 MHz).
+If we asume that a magnetic field strength of 200 MHz, and at the spinning rate of 6.8 kHz is used, the Carbon-13 nucleus has a gyromagnetic ratio of ¼ relative to the 1H nucleus. 
+Therefore, the 13C resonance frequency is 50 MHz (¼ * 300 MHz). A prerequisite for quantitative interpretation of NMR signal intensities (peak areas) is a magic angle spinning rate that exceeds the 13C frequency range of 200 ppm. At a frequency of 50 MHz, this corresponds to a minimum magic angle spinning (MAS) rate of 5,000 Hz (½ * 200 ppm x 50 MHz).
 
 Therefore, the MAS rate of 6.8 kHz is sufficient to move the spinning sidebands outside of the 13C spectrum, allowing for quantitative interpretation of the signal intensities. However, 6.8 kHz MAS is not sufficient to eliminate sidebands entirely. The sidebands simply appear at a distance of 136 ppm from the isotropic signal (6,800 Hz / 50,000,000 Hz = 136 x 10-6 Hz). This separation of the sidebands from the isotropic peak allowed us to integrate the sideband peak areas and numerically add the sideband intensity to the isotropic signal intensity, in a procedure commonly called “sideband correction”.
 
