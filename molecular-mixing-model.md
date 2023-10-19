@@ -1,4 +1,5 @@
 # Molecular Mixing Model
+[Back to the Main page](README.md)
 
 The original paper from Nelson et al. (1999), used an amalgam of pure compounds as references. The  lignin is  assumed to be equivalent to  the average of those acquired for spruce and red alder lignin  presented by Wilson (1987), and the lipid is calculated from structures proposed by Kolattukudy (1980).
 
@@ -86,5 +87,5 @@ Later Nelson et al. (2005), published another set of reference compounds, which 
 
 I have incorporated Tables 2, 3, 4 and 5 into the SOMnmR package as: "Terr_Nelson", "Aqua_Nelson", "Terr_Baldock" and "Aqua_Baldock", respectively.
 
-
+[Back to the Main page](README.md)
 
