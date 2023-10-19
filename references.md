@@ -1,5 +1,7 @@
 # References
 
+[Back to the Main page](README.md)
+
 Bonanomi, G., Incerti, G., Barile, E., Capodilupo, M., Antignani, V., Mingo, A., Lanzotti, V., Scala, F., & Mazzoleni, S. (2011). Phytotoxicity, not nitrogen immobilization, explains plant litter inhibitory effects: Evidence from solid-state 13C NMR spectroscopy. New Phytologist, 191(4), 1018–1030. https://doi.org/10.1111/j.1469-8137.2011.03765.x
 
 Hockaday, W. C., Masiello, C. A., Randerson, J. T., Smernik, R. J., Baldock, J. A., Chadwick, O. A., & Harden, J. W. (2009). Measurement of soil carbon oxidation state and oxidative ratio by 13C nuclear magnetic resonance. Journal of Geophysical Research: Biogeosciences, 114(2), 1–14. https://doi.org/10.1029/2008JG000803
