@@ -100,7 +100,8 @@ files <- files[grep(".txt", files)]
 # Load data, choose either  "Bruker" (standard Bruker file), "coma" (coma separated value), "tab" (tab separated value
 spec <- read_raw_spec(files, filetype = "Bruker")
 
-# Integrate and correct for the SSB of the whole data set, NMRmeth can be "4region", "Bonanomi" and "MMM". I will chose 4 region.
+# Integrate and correct for the SSB of the whole data set, NMRmeth can be "4region", "Bonanomi" and "MMM".
+# I will chose 4 region.
 # For this you will need to input the magnetic field of your NMR machine and the spinning frequency of the probe.
 # In this example we used an NMR of 200 MHz and a spinning frequency of 6800 Hz.
 
