@@ -12,7 +12,7 @@ As shown below:
 
 ![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/fd38b431-e32d-4b7e-be2f-5fbe2a7fb5ec)
 
-Fig 1.Effect of fast rotation on spinning side bands (SSB). Increasing the sample spinning rate leads to decreasing of both amount and intensity of SSB. Ref: Duer M. J. (2002)
+Fig 1. Effect of fast rotation on spinning side bands (SSB). Increasing the sample spinning rate leads to decreasing of both amount and intensity of SSB. Ref: Duer M. J. (2002)
 
 Different approaches have been suggested to suppress side bands. In particular, one of the best ways to eliminate SSB is to maximize the rotor spin velocity, i.e. up to 15 – 20 kHz.
 
@@ -26,6 +26,10 @@ If we asume that a magnetic field strength of 200 MHz, and at the spinning rate 
 Therefore, the 13C resonance frequency is 50 MHz (¼ * 300 MHz). A prerequisite for quantitative interpretation of NMR signal intensities (peak areas) is a magic angle spinning rate that exceeds the 13C frequency range of 200 ppm. At a frequency of 50 MHz, this corresponds to a minimum magic angle spinning (MAS) rate of 5,000 Hz (½ * 200 ppm x 50 MHz).
 
 Therefore, the MAS rate of 6.8 kHz is sufficient to move the spinning sidebands outside of the 13C spectrum, allowing for quantitative interpretation of the signal intensities. However, 6.8 kHz MAS is not sufficient to eliminate sidebands entirely. The sidebands simply appear at a distance of 136 ppm from the isotropic signal (6,800 Hz / 50,000,000 Hz = 136 x 10-6 Hz). This separation of the sidebands from the isotropic peak allowed us to integrate the sideband peak areas and numerically add the sideband intensity to the isotropic signal intensity, in a procedure commonly called “sideband correction”.
-A visual example of an NMR spectrum, divided into the regions 
+
+A visual example of an NMR integral table, divided into the regions and their respective sidebands is in Fig. 2, here we can see in blue the two rows that correspond to the main integral of the Alkyl region, and in red the two regions that correspond to the SSB below (-136 to -91 ppm). Observe that this region below does not overalp with other region, while the region above the main peak (136 to 181 ppm) overalps with the Aryl and the Carboxyl region. Thus to obtain the "real" main peak area, we have to take this SSB which does not overlap and multiply it by 2 (to account for the one that we can not correct for). We cal aso observe that at the main peak region (0 to 45 ppm) there is an overlap from the SSB of Aryl and Carboxyl, which should be removed. we do this by substracting the values of these SSB where they are not overlaping with anything (272 to 317 ppm). We do this for each region.
+
+![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/84ad9b9e-480c-49ed-ac17-ac74a4bb35dd)
+
 
 [Back to the Main page](README.md)
