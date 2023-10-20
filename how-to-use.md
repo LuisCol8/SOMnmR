@@ -89,11 +89,17 @@ spec <- read_raw_spec(files, filetype = "Bruker")
 IntegralSSBc <- region_calc(spec, NMRmeth = "4region", NMR_field = 200, NMR_rotation = 6800)
 
 #To view the output of a single spectrum
-View(Integralregions[[1]][["data"]][["Integral"]])
+View(IntegralSSBc[[1]])
 
+#If you want to generate a table with all the results insead of having each in a list you can try this
 
 
 ```
+
+The output of region_calc  will be a list, you will find a table as follows
+
+![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/467b5fbd-ba28-4914-90b6-a5c6006d8ed0)
+
 
 ## Fitting the Molecular Mixing model (MMM)
 
