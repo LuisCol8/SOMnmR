@@ -31,5 +31,6 @@ A visual example of an NMR integral table, divided into the regions and their re
 
 ![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/84ad9b9e-480c-49ed-ac17-ac74a4bb35dd)
 
+Fig 1. An excel table exemplifiying the SSB mathemathical correction.
 
 [Back to the Main page](README.md)
