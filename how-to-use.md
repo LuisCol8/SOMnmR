@@ -132,7 +132,8 @@ files <- files[grep(".txt", files)]
 # Load data, choose either  "Bruker" (standard Bruker file), "coma" (coma separated value), "tab" (tab separated value
 spec <- read_raw_spec(files, filetype = "Bruker")
 
-# We will now create an empty CN file, which we will save and open in excel and fill CN data. It is very important that you do not reorganize the Table, as it has to be in the same order as the input spectra.
+# We will now create an empty CN file, which we will save and open in excel and fill CN data.
+#It is very important that you do not reorganize the Table, as it has to be in the same order as the input spectra.
 
 ncdata <- mk_nc_data(spec)
 write.csv(ncdata,"C:/Documents/Data/Experiment_NMR/NC/NC_table.csv", row.names = FALSE)
