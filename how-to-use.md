@@ -150,7 +150,7 @@ ncdata <- nc_data("C:/Documents/Data/Experiment_NMR/NC/NC_table.csv")
 MMM_TB_fix <- region_calc(spec, NMRmeth = "MMM", ecosys= "Terr_Baldock", cndata = ncdata, FixNC = TRUE)
 
 #To view the output of a single spectrum
-View(Integralregions[[1]][["data"]][["Integral"]])
+View(MMM_TB_fix)
 
 ```
 The output of region_calc  will be a table, containing each sample and its succesive fittings, organized according to its lowest R-factor as follows
