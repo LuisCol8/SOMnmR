@@ -9,14 +9,34 @@ This means that the output is not yet SSB corrected.
 
 ```bash
 # load necessary packages
-  library(devtools)
+  library(minpack.lm)
+  library(quadprog)
+  library(pracma)
+  library(ggplot2)
+  library(data.table)
+  library(dplyr)
+  library(IntervalSurgeon)
+  library(SOMnmR)
 
 # load data
+## set working directory
+work.dir <- c("C:/Documents/Data/Experiment_NMR/")
 
-# integrate data
-# Here we can choose between "4region", "Bonanomi" and "MMM". I will chose 4 region.
+## go to directory containing all spectra
+setwd(paste(work.dir,"NMR_integrals",sep = "/"))
 
+## list all the files
+files <- list.files()
 
+## list all the files that end with .txt (or .csv, depending on how you saved the spectra)
+files <- files[grep(".txt", files)]
+
+# Load data, choose either  "Bruker" (standard Bruker file), "coma" (coma separated value), "tab" (tab separated value
+spec <- read_raw_spec(files, filetype = "Bruker")
+
+# Integrate the whole data set, NMRmeth can be "4region", "Bonanomi" and "MMM". I will chose 4 region.
+
+Integralregions <- int_nmr(spec, NMRmeth = "4region")
 
 ```
 
