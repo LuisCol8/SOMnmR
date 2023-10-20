@@ -157,3 +157,55 @@ The output of region_calc  will be a table, containing each sample and its succe
 
 ![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/5e296275-a69b-47cc-9be8-bc4e5cdbbc31)
 
+## Using a modified table for the MMM fitting
+
+We can modifiy the input table as needed, ofcourse having in mind that the values should have physical meaning and be correctly reported in publications. The example follows:
+
+```bash
+# load necessary packages
+  library(minpack.lm)
+  library(quadprog)
+  library(pracma)
+  library(ggplot2)
+  library(data.table)
+  library(dplyr)
+  library(IntervalSurgeon)
+  library(SOMnmR)
+
+# load data
+## set working directory
+work.dir <- c("C:/Documents/Data/Experiment_NMR/")
+
+## go to directory containing all spectra
+setwd(paste(work.dir,"NMR_integrals",sep = "/"))
+
+## list all the files
+files <- list.files()
+
+## list all the files that end with .txt (or .csv, depending on how you saved the spectra)
+files <- files[grep(".txt", files)]
+
+# Load data, choose either  "Bruker" (standard Bruker file), "coma" (coma separated value), "tab" (tab separated value
+spec <- read_raw_spec(files, filetype = "Bruker")
+
+# We will now create an empty CN file, which we will save and open in excel and fill CN data.
+#It is very important that you do not reorganize the Table, as it has to be in the same order as the input spectra.
+
+ncdata <- mk_nc_data(spec)
+write.csv(ncdata,"C:/Documents/Data/Experiment_NMR/NC/NC_table.csv", row.names = FALSE)
+
+# Now we will load the NC table and use it for the MMM fitting
+ncdata <- nc_data("C:/Documents/Data/Experiment_NMR/NC/NC_table.csv")
+
+# We will now, integrate and correct for the SSB, and perform the fittin of the MMM for the whole data set
+# For this the NMRMeth has to be "MMM", and I will choose to fix the NC data, using the FixNC = TRUE)
+# You will need to input the magnetic field of your NMR machine and the spinning frequency of the probe.
+# and the NCdata variable.
+# In this example we used an NMR of 200 MHz and a spinning frequency of 6800 Hz.
+
+MMM_TB_fix <- region_calc(spec, NMRmeth = "MMM", ecosys= "Terr_Baldock", cndata = ncdata, FixNC = TRUE)
+
+#To view the output of a single spectrum
+View(MMM_TB_fix)
+
+```
