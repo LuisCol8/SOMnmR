@@ -56,14 +56,40 @@ We now know how to load a spectrum a perform a simple integration. There is a wr
 
 ```bash
 # load necessary packages
-  library(devtools)
+  library(minpack.lm)
+  library(quadprog)
+  library(pracma)
+  library(ggplot2)
+  library(data.table)
+  library(dplyr)
+  library(IntervalSurgeon)
+  library(SOMnmR)
 
 # load data
+## set working directory
+work.dir <- c("C:/Documents/Data/Experiment_NMR/")
 
+## go to directory containing all spectra
+setwd(paste(work.dir,"NMR_integrals",sep = "/"))
 
-# now use the region_calc funtion to perform both the integration and the SSB correction.
+## list all the files
+files <- list.files()
+
+## list all the files that end with .txt (or .csv, depending on how you saved the spectra)
+files <- files[grep(".txt", files)]
+
+# Load data, choose either  "Bruker" (standard Bruker file), "coma" (coma separated value), "tab" (tab separated value
+spec <- read_raw_spec(files, filetype = "Bruker")
+
+# Integrate and correct for the SSB of the whole data set, NMRmeth can be "4region", "Bonanomi" and "MMM".
+# I will chose 4 region.
 # For this you will need to input the magnetic field of your NMR machine and the spinning frequency of the probe.
 # In this example we used an NMR of 200 MHz and a spinning frequency of 6800 Hz.
+
+IntegralSSBc <- region_calc(spec, NMRmeth = "4region", NMR_field = 200, NMR_rotation = 6800)
+
+#To view the output of a single spectrum
+View(Integralregions[[1]][["data"]][["Integral"]])
 
 
 
