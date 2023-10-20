@@ -152,4 +152,7 @@ MMM_TB_fix <- region_calc(spec, NMRmeth = "MMM", ecosys= "Terr_Baldock", cndata 
 View(Integralregions[[1]][["data"]][["Integral"]])
 
 ```
+The output of region_calc  will be a table, containing each sample and its succesive fittings, organized according to its lowest R-factor as follows
+
+![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/5e296275-a69b-47cc-9be8-bc4e5cdbbc31)
 
