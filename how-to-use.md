@@ -209,3 +209,38 @@ MMM_TB_fix <- region_calc(spec, NMRmeth = "MMM", ecosys= "Terr_Baldock", cndata 
 View(MMM_TB_fix)
 
 ```
+
+## Make a plot
+
+There is a quick plot function that separates the regions of the spectrum.
+
+```bash
+# load necessary packages
+  library(ggplot2)
+  library(SOMnmR)
+
+# load data
+## set working directory
+work.dir <- c("C:/Documents/Data/Experiment_NMR/")
+
+## go to directory containing all spectra
+setwd(paste(work.dir,"NMR_integrals",sep = "/"))
+
+## list all the files
+files <- list.files()
+
+## list all the files that end with .txt (or .csv, depending on how you saved the spectra)
+files <- files[grep(".txt", files)]
+
+# Load data, choose either  "Bruker" (standard Bruker file), "coma" (coma separated value), "tab" (tab separated value
+spec <- read_raw_spec(files, filetype = "Bruker")
+
+# We will not change folder to one named "plot" and create the plots.
+# ou can do the MMM regions by adding NMRmeth = "MMM", if it is empty it will do it as the "4region".
+
+setwd(paste(work.dir,"plot",sep = "/"))
+
+plot_NMR(spec, file.output = TRUE , use.tiff = FALSE)
+
+
+```
