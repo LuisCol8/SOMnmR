@@ -4,7 +4,7 @@
 \alias{MMM_solve_QP}
 \title{Linear combination fitting solve function}
 \usage{
-MMM_solve_QP(LCF.stds, LCF.samp, NMRmeth = NULL)
+MMM_solve_QP(LCF.stds, LCF.samp, NMRmeth = NULL, FixNC)
 }
 \arguments{
 \item{LCF.stds}{Standards for LCF}

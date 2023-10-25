@@ -12,7 +12,8 @@ fit_LCF(
   ex.smaller = NULL,
   file.output = NULL,
   best.fits = NULL,
-  NMRmeth
+  NMRmeth,
+  FixNC
 )
 }
 \arguments{

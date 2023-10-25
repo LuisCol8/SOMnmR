@@ -12,7 +12,7 @@
 #' @examples
 
 
-MMM_fit <- function (sample, standards, ex.smaller = NULL, NMRmeth) {
+MMM_fit <- function (sample, standards, ex.smaller = NULL, NMRmeth, FixNC) {
 
   ## set exclude to zero or stop if not set correctly
   if (is.null(ex.smaller)) {
@@ -22,11 +22,13 @@ MMM_fit <- function (sample, standards, ex.smaller = NULL, NMRmeth) {
   }
 
   ## extract standards and sample in given range
-  LC.sample <- sample
+  LC.sample <- data.frame(sample)
+  #LC.sample <- rbind(LC.sample[1:7,1], sum(as.numeric(LC.sample[8:9,1])))
+  #print(LC.sample)
   LC.standards <- standards
 
   ## solve the fitting as Quadratic Programming problem
-  result <- MMM_solve_QP(LCF.stds = LC.standards, LCF.samp = LC.sample, NMRmeth = NMRmeth )
+  result <- MMM_solve_QP(LCF.stds = LC.standards, LCF.samp = LC.sample, NMRmeth = NMRmeth, FixNC = FixNC)
 
   ## extract the standard names
   LC.standard.names.start <- colnames(LC.standards)
@@ -43,7 +45,7 @@ MMM_fit <- function (sample, standards, ex.smaller = NULL, NMRmeth) {
     LC.standard.names <- colnames(LC.standards)
 
     ## solve the fitting as Quadratic Programming problem
-    result <- MMM_solve_QP(LCF.stds = LC.standards,  LCF.samp = LC.sample, NMRmeth = NMRmeth)
+    result <- MMM_solve_QP(LCF.stds = LC.standards,  LCF.samp = LC.sample, NMRmeth = NMRmeth, FixNC = FixNC)
 
     ## check for standards below smaller % value
     fit.vals <- which(result[LC.standard.names] < ex.smaller)

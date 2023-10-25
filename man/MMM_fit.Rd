@@ -4,7 +4,7 @@
 \alias{MMM_fit}
 \title{All combination fitting of NMR spectra.}
 \usage{
-MMM_fit(sample, standards, ex.smaller = NULL, NMRmeth)
+MMM_fit(sample, standards, ex.smaller = NULL, NMRmeth, FixNC)
 }
 \arguments{
 \item{sample}{Sample Integrals}

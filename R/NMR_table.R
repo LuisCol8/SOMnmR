@@ -20,7 +20,9 @@ NMR_table <- function (NMRmeth=NULL) {
     int_table <- data.frame("Component" = c("Alkyl", "N-Alkyl/Methoxyl", "O-Alkyl", "Di-O-Alkyl", "Aromatic",
                                           "Phenolic", "Amide/Carboxyl", "Ketone"),
                           "From" = c(-10.0, 45.0, 60.0, 95.0, 110.0, 145.0, 165.0, 190), 
-                          "To" = c(45.0, 60.0, 95.0, 110.0, 145.0, 165.0, 190.0, 210.0))
+                          "To" = c(45.0, 60.0, 95.0, 110.0, 145.0, 165.0, 190.0, 220.0),
+                          "ID" = c("Alkyl", "N-Alkyl/Methoxyl", "O-Alkyl", "Di-O-Alkyl", "Aromatic",
+                                          "Phenolic","Amide/Carboxyl&Ketone","Amide/Carboxyl&Ketone"))
     
   } else if (NMRmeth == "Bonanomi") {
     

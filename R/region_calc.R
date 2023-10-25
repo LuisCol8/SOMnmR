@@ -1,1158 +1,687 @@
 #' Functional groups calculation
 #'
-#' This function loads, integates and calculates the functional group distribution from the raw spectra.
+#' This function loads, integrates and calculates the functional group distribution from the raw spectra.
+#' Produces also the molecular mixing model fitting if NC data is provided.
 #' Output is a list with the raw data, integrals and corrected spectra.
 #' @param raw.spec List of files already loaded with read_raw_spec()
 #' @param batch_nmr Vector with file names, default
 #' @param NMRmeth Regions to be integrated.
+#' @param FixNC TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
 #' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
 #' @param ecosys Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")
 #' @param ncdata Initial correction and normalization parameters
-#' @keywords
+#' @param NMR_field Magnetic field of the NMR
+#' @param NMR_rotation Rotation frequency of the sample probe in the NMR
+#' @param mod_std File containing a modified NMR table
+#' @keywords fitting, Molecular Mixing model, Bonanomi
 #' @export
 #' @examples
 
-region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, ecosys=NULL,
-                          cndata = NULL, mod_std = NULL, stats = FALSE) {
 
+region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
+                         NMR_field=NULL, NMR_rotation=NULL, ecosys=NULL,
+                         cndata = NULL, mod_std = NULL) {
+  
   if (is.null(batch_nmr)) {
-
+    
     if (is.null(file)) {
-
+      
       stop("Please provide either a raw spectrum from the read_raw_spec function or a raw NMR file")
-
+      
     } else {
-
+      
       ## read the raw spectra from a file list
       batch.nmr <- read_raw_spec(file = file)
-
+      
     }
-
+    
   } else {
-
+    
     batch.nmr <- batch_nmr
-
+    
   }
   if (is.null(NMRmeth)) {
-    ## loop to process all samples
-    NMR.end <- NULL
-
-    batch.nmr <- int_nmr(batch.nmr)
-
-    for (i in 1:length(batch.nmr)) {
-      file.name <- batch.nmr[[i]]$name
-      Integral <- c(batch.nmr[[i]]$data$Integral)
-
-      ##carboxyl C calculation
-      carboxyl <-  setNames(data.frame(sum(2*sum(Integral$normalized.Int[30:33]), sum(Integral$normalized.Int[21:24]), -sum(Integral$normalized.Int[3:6]))), c("Carboxyl"))
-      ##Aryl C calculation
-      aryl <-  setNames(data.frame(sum(2*sum(Integral$normalized.Int[27:29]), sum(Integral$normalized.Int[18:20]), -sum(Integral$normalized.Int[1:2]))), c("Aryl"))
-      ##O-Alkyl C calculation
-      oalkyl <-  setNames(data.frame(sum(2*sum(Integral$normalized.Int[4:8]), sum(Integral$normalized.Int[13:17]), -sum(Integral$normalized.Int[31:33]))), c("O-Alkyl"))
-      ##Alkyl C calculation
-      alkyl <-  setNames(data.frame(sum(2*sum(Integral$normalized.Int[1:3]), sum(Integral$normalized.Int[10:12]), -sum(Integral$normalized.Int[28:30]))), c("Alkyl"))
-      ##Put all together
-      #NMR.end[[i]] <- list(file.name = file.name, data = data.frame(carboxyl, aryl, oalkyl, alkyl))
-      integral.end <- data.frame(carboxyl, aryl, oalkyl, alkyl)
+    
+    stop("Please choose an preset region model composition by typing 'MMM' for Molecular mixing model, 'Bonanomi' or '4region'")
+    
+    ## Start processing for an Integration of 4 regions
+  } else if (NMRmeth == "4region") {
+    
+    ## Integral function
+      Integral <- int_nmr (raw.spec = batch.nmr, NMRmeth = NMRmeth, NMR_field = NMR_field, NMR_rotation = NMR_rotation)
+        
+      ## Variable of end result
+      NMR.end <- NULL
       
-      norm <- sum(integral.end)
-      normalized.Int <- (integral.end/norm)*100
-      integral.end <- data.frame(normalized.Int)
-      #integral.end <- data.frame(file.name,integral.end)
-      NMR.end[[i]] <- data.frame(file.name, integral.end)
+      ## Start loop to process all integrals
+      for (i in 1:length(Integral)) {
       
-    }
-  } else if (NMRmeth == "Bonanomi") {
-    ## loop to process all samples
+        ## Name of sample
+        name <- Integral[[i]]$name
+      
+        ## paste which sample is used now
+        print(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
+      
+        ## create progress bar for the standards combinations
+        pb <- txtProgressBar(min = 1, max = length(batch.nmr), style = 3)
+      
+        setTxtProgressBar(pb, i)
+        
+        ## Removed messages from tidy
+        ## Sum of the Central integrals, without Spinning Sidebands
+        suppressMessages(Integral[[i]]$data$Integral %>%
+          filter(is.na(Component) == FALSE) %>% 
+          group_by(Component) %>%
+          summarise(Integral = sum(Integral), n = n())) -> sums_Integral
+        
+        ## Removed messages from tidy
+        ## Sum of the Spinning Sidebands, discriminating each side
+        suppressMessages(Integral[[i]]$data$Integral %>%
+          filter(is.na(Component) == TRUE) %>% 
+          group_by(Component, Component_ssb, ssb_ofset) %>%
+          summarise(Integral = sum(Integral), n = n())) -> double_ssb
+        
+        ## Removed messages from tidy
+        ## Chooses the max value between the sum of the SSB on each side, and multiplies by 2
+        suppressMessages(double_ssb %>%
+          group_by(Component_ssb, n) %>%
+          summarize(Integral = 2*max(Integral))) ->double_ssb
+        
+        ## Removed messages from tidy
+        ## Renames the SSB from Component_ssb to Component
+        suppressMessages(double_ssb <- double_ssb %>%
+          group_by(Component_ssb) %>%
+          filter(n == max(n)) %>%
+          rename(Component = Component_ssb) %>%
+          ungroup())
+        
+        ## Removed messages from tidy
+        ## takes the Integral table and selects the regions in which the main integral is overlaping with the spinning sidebands
+        suppressMessages(Integral[[i]]$data$Integral %>%
+          filter(is.na(Component) == FALSE, is.na(sbb_index) == FALSE) %>% 
+          group_by(Component, sbb_index) %>%
+          summarise(n = n())) -> ossb
+        
+        ## Removed messages from tidy
+        ## takes the Integral table and selects the regions in the spinning sidebands is not overlaping and multiplies it by -1
+        suppressMessages(Integral[[i]]$data$Integral %>%
+          filter(is.na(Component) == TRUE) %>% 
+          group_by(sbb_index) %>%
+          summarise(Integral = sum(Integral)*-1,n = n())) -> ossb2
+      
+        ## takes the Integral table and selects the regions in the spinning sidebands is not overlaping and multiplies it by -1
+        matching_rows <- NULL
+        for (j in 1:nrow(ossb)) {
+          index <- ossb$sbb_index[j]
+          result <- ossb2 %>%
+            filter(sbb_index == index)
+            matching_rows <- bind_rows(matching_rows, result)
+        }
+        
+        joined_df <- merge(ossb, matching_rows, by = "sbb_index")
+        
+        ## Creates a table with sums_Integral: the sum of the main integrals, double_ssb: the ssb area multiplied by 2, and joined_df: the equivalent to the overalpping ssb to be substracted
+        table_merged <- rbind(sums_Integral[1:2], double_ssb[, c('Component', 'Integral')], joined_df[, c('Component', 'Integral')])
+        
+        ## Creates the final sum of integrals
+        table_merged %>%
+          group_by(Component) %>%
+          summarise(Integral = sum(Integral)) -> final_integral
+        
+        ## Normalizing the sum of integrals to 100
+          ## Total value of the sum
+        norm <- sum(data.frame(final_integral$Integral))
+        
+        ## Normalized values
+        normalized.Int <- t(final_integral$Integral/norm)*100
+        
+        ## Giving back the names to the columns
+        colnames(normalized.Int) <- as.character(final_integral$Component)
+
+        ##Final result
+        NMR.end[[i]] <- data.frame(cbind(name, normalized.Int))
+      }
+    ## Start of the processing for regions according to Bonanomi et al.
+    } else if (NMRmeth == "Bonanomi") {
+ 
+    ## Integral function  
+    Integral <- int_nmr (raw.spec = batch.nmr, NMRmeth = NMRmeth, NMR_field = NMR_field, NMR_rotation = NMR_rotation)
+    
+    ## Variable of end result
     NMR.end <- NULL
-
-    for (i in 1:length(batch.nmr)) {
-      file.name <- batch.nmr[[i]]$name
-      sample <- list(batch.nmr[[i]])
-      Integral <- int_nmr (raw.spec = sample, NMRmeth = NMRmeth)
-
-      ##carboxyl C calculation
-      carboxyl <-  setNames(data.frame(sum(sum(Integral[30:33,2]), sum(Integral[21:24,2]), -2*sum(Integral[3:6,2]))), c("Carboxyl"))
-      ##Aryl C calculation
-      aryl <-  setNames(data.frame(sum(sum(Integral[27:29,2]), sum(Integral[18:20,2]), -2*sum(Integral[1:2,2]))), c("Aryl"))
-      ##O-Alkyl C calculation
-      oalkyl <-  setNames(data.frame(sum(sum(Integral[4:8,2]), sum(Integral[13:17,2]), -2*sum(Integral[31:33,2]))), c("O-Alkyl"))
-      ##Alkyl C calculation
-      alkyl <-  setNames(data.frame(sum(sum(Integral[1:3,2]), sum(Integral[10:12,2]), -2*sum(Integral[28:30,2]))), c("Alkyl"))
-      ##Put all together
-      NMR.end[[i]] <- data.frame(file.name = file.name, data = data.frame(carboxyl, aryl, oalkyl, alkyl))
-
+    
+    ## Start loop to process all integrals
+    for (i in 1:length(Integral)) {
+      
+      ## Name of sample
+      name <- Integral[[i]]$name
+      
+      ## paste which sample is used now
+      print(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
+      
+      ## create progress bar for the standards combinations
+      pb <- txtProgressBar(min = 1, max = length(batch.nmr), style = 3)
+      
+      setTxtProgressBar(pb, i)
+      
+      ## Removed messages from tidy
+      ## Sum of the Central integrals, without Spinning Sidebands
+      suppressMessages(Integral[[i]]$data$Integral %>%
+                         filter(is.na(Component) == FALSE) %>% 
+                         group_by(Component) %>%
+                         summarise(Integral = sum(Integral), n = n())) -> sums_Integral
+      
+      ## Removed messages from tidy
+      ## Sum of the Spinning Sidebands, discriminating each side
+      suppressMessages(Integral[[i]]$data$Integral %>%
+                         filter(is.na(Component) == TRUE) %>% 
+                         group_by(Component, Component_ssb, ssb_ofset) %>%
+                         summarise(Integral = sum(Integral), n = n())) -> double_ssb
+      
+      ## Removed messages from tidy
+      ## Chooses the max value between the sum of the SSB on each side, and multiplies by 2
+      suppressMessages(double_ssb %>%
+                         group_by(Component_ssb, n) %>%
+                         summarize(Integral = 2*max(Integral))) ->double_ssb
+      
+      ## Removed messages from tidy
+      ## Renames the SSB from Component_ssb to Component
+      suppressMessages(double_ssb <- double_ssb %>%
+                         group_by(Component_ssb) %>%
+                         filter(n == max(n)) %>%
+                         rename(Component = Component_ssb) %>%
+                         ungroup())
+      
+      ## Removed messages from tidy
+      ## takes the Integral table and selects the regions in which the main integral is overlaping with the spinning sidebands
+      suppressMessages(Integral[[i]]$data$Integral %>%
+                         filter(is.na(Component) == FALSE, is.na(sbb_index) == FALSE) %>% 
+                         group_by(Component, sbb_index) %>%
+                         summarise(n = n())) -> ossb
+      
+      ## Removed messages from tidy
+      ## takes the Integral table and selects the regions in the spinning sidebands is not overlaping and multiplies it by -1
+      suppressMessages(Integral[[i]]$data$Integral %>%
+                         filter(is.na(Component) == TRUE) %>% 
+                         group_by(sbb_index) %>%
+                         summarise(Integral = sum(Integral)*-1,n = n())) -> ossb2
+      
+      ## takes the Integral table and selects the regions in the spinning sidebands is not overlaping and multiplies it by -1
+      matching_rows <- NULL
+      for (j in 1:nrow(ossb)) {
+        index <- ossb$sbb_index[j]
+        result <- ossb2 %>%
+          filter(sbb_index == index)
+        matching_rows <- bind_rows(matching_rows, result)
+      }
+      
+      joined_df <- merge(ossb, matching_rows, by = "sbb_index")
+      
+      ## Creates a table with sums_Integral: the sum of the main integrals, double_ssb: the ssb area multiplied by 2, and joined_df: the equivalent to the overalpping ssb to be substracted
+      table_merged <- rbind(sums_Integral[1:2], double_ssb[, c('Component', 'Integral')], joined_df[, c('Component', 'Integral')])
+      
+      ## Creates the final sum of integrals
+      table_merged %>%
+        group_by(Component) %>%
+        summarise(Integral = sum(Integral)) -> final_integral
+      
+      ## Normalizing the sum of integrals to 100
+      ## Total value of the sum
+      norm <- sum(data.frame(final_integral$Integral))
+      
+      ## Normalized values
+      normalized.Int <- t(final_integral$Integral/norm)*100
+      
+      ## Giving back the names to the columns
+      colnames(normalized.Int) <- as.character(final_integral$Component)
+      
+      ## Final result
+      NMR.end[[i]] <- data.frame(cbind(name, normalized.Int))
+      
     }
   } else if (NMRmeth == "MMM") {
-
+    
     ## loop to process all samples
+    
+    Integral <- int_nmr (raw.spec = batch.nmr, NMRmeth = NMRmeth, NMR_field = NMR_field, NMR_rotation = NMR_rotation)
+    
+    ###sum of raw integrals
     NMR.end <- NULL
     raw.spec.end <- NULL
-    batch.nmr <- int_nmr(batch.nmr, NMRmeth = "MMM-SSB")
-
-    nmrmerge <- NULL
-
-    for (i in 1:length(batch.nmr)) {
-
-      raw.spec.end[[i]] <-  batch.nmr[[i]]
-      NCval <- as.numeric(cndata[[i]]$NC)
-      samplename <- batch.nmr[[i]]$name
-      sampleraw.spec <- batch.nmr[[i]]$data$raw.spec
-      sampleintegral <- as.data.frame(batch.nmr[[i]]$data$Integral)
+    
+    for (i in 1:length(Integral)) {
       
-      ##Alklyl C calculation
-      Alkyl <-  setNames(data.frame(sum(2*sum(sampleintegral[1:3,1]), sum(sampleintegral[10:12,1]), -sum(sampleintegral[28:30,1]))), c("Alkyl"))
+      NCval <- c(as.numeric(cndata[[i]]$NC))
+      name <- Integral[[i]]$name
       
-      ##N_Alkyl_Methoxyl C calculation
-      N_Alkyl_Methoxyl <-  setNames(data.frame(sum(2*sum(sampleintegral[4:5,1]), sum(sampleintegral[13:14,1]), -sum(sampleintegral[31:32,1]))), c("N_Alkyl_Methoxyl"))
+      ## paste which sample is used now
+      print(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
       
-      ##O-Alkyl C calculation
-      O_Alkyl <-  setNames(data.frame(sum(2*sum(sampleintegral[6:7,1]), sum(sampleintegral[15:16,1]), -sum(sampleintegral[33:33,1]))), c("O-Alkyl"))
+      ## create progress bar for the standards combinations
+      pb <- txtProgressBar(min = 1, max = length(batch.nmr), style = 3)
       
-      ##Di_O_Alkyl C calculation
-      Di_O_Alkyl <-  setNames(data.frame(sum(2*sum(sampleintegral[8:8,1]), sum(sampleintegral[17:17,1]))), c("Di_O_Alkyl"))
+      setTxtProgressBar(pb, i)
       
-      ##Aromatic C calculation
-      Aromatic <-  setNames(data.frame(sum(2*sum(sampleintegral[27:28,1]), sum(sampleintegral[18:19,1]), -sum(sampleintegral[1:1,1]))), c("Aromatic"))
+      suppressMessages(Integral[[i]]$data$Integral %>%
+                         filter(is.na(Component) == FALSE) %>% 
+                         group_by(Component) %>%
+                         summarise(Integral = sum(Integral), n = n())) -> sums_Integral
       
-      ##Phenolic C calculation
-      Phenolic <-  setNames(data.frame(sum(2*sum(sampleintegral[29:29,1]), sum(sampleintegral[20:20,1]), -sum(sampleintegral[2:2,1]))), c("Phenolic"))
+      ###sum of double spinning sidebands 
       
-      ##Amide_Carboxylic C calculation
-      Amide_Carboxylic <-  setNames(data.frame(sum(2*sum(sampleintegral[30:32,1]), sum(sampleintegral[21:23,1]), -sum(sampleintegral[3:5,1]))), c("Amide_Carboxylic"))
+      suppressMessages(Integral[[i]]$data$Integral %>%
+                         filter(is.na(Component) == TRUE) %>% 
+                         group_by(Component, Component_ssb, ssb_ofset) %>%
+                         summarise(Integral = sum(Integral), n = n())) -> double_ssb
       
-      ##Ketone C calculation
-      Ketone <-  setNames(data.frame(sum(2*sum(sampleintegral[33:33,1]), sum(sampleintegral[24:24,1]), -sum(sampleintegral[6:6,1]))), c("Ketone"))
+      suppressMessages(double_ssb %>%
+                         group_by(Component_ssb, n) %>%
+                         summarize(Integral = 2*max(Integral))) ->double_ssb
       
-      ##Put all together
-      Amide_to_Ketone <- c(Amide_Carboxylic + Ketone)
+      suppressMessages(double_ssb <- double_ssb %>%
+                         group_by(Component_ssb) %>%
+                         filter(n == max(n)) %>%
+                         rename(Component = Component_ssb) %>%
+                         ungroup())
       
-      sampleintegraljoin <- data.frame(Alkyl, N_Alkyl_Methoxyl, O_Alkyl, Di_O_Alkyl, Aromatic, Phenolic, Amide_to_Ketone)
-
-      sampleintegraljoin <- t(sampleintegraljoin)
+      ###sum of overlaping spinning sidebands 
       
-      norm <- sum(sampleintegraljoin)
+      suppressMessages(Integral[[i]]$data$Integral %>%
+                         filter(is.na(Component) == FALSE, is.na(sbb_index) == FALSE) %>% 
+                         group_by(Component, sbb_index) %>%
+                         summarise(n = n())) -> ossb
       
-      sampleintegraljoin <- (sampleintegraljoin/norm)*100
-      sampleintegraljoin <- data.frame(sampleintegraljoin)
-      sampleintegralend <- rbind(NCval,sampleintegraljoin)
-
-      raw.spec.end[[i]] <- list("name" = samplename, "data" = list("raw.spec" = sampleraw.spec,"Integral" = sampleintegralend))
-
-      if (ecosys == "Terr_Nelson") {
-
-        stdmat <- std_nmr(ecosys = "Terr_Nelson")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = "MMM")
-
-        ## Elementar ratios (relative to C)
-
-        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
-                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
-
-        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
-                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
-
-        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
-                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
-
-        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
-                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
-
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
-                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
-
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
-                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
-
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
-                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
-
-        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
-                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
-
-        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
-        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
-        ## Final result
-
-        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
-        
-        ## Back calculated NMR results
-        
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
-        
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
-        sample_stats <- cbind(sample_stats,ssq_sample)
-
-      } else if (ecosys == "Terr_Baldock") {
-
-        stdmat <- std_nmr(ecosys = "Terr_Baldock")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = "MMM")
-
-        ## Elementar ratios (relative to C)
-
-        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
-                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
-
-        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
-                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
-
-        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
-                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
-
-        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
-                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
-
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
-                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
-
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
-                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
-
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
-                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
-
-        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
-                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
-
-        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
-        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
-        ## Final result
-
-        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
-
-        ## Back calculated NMR results
-        
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
-        
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
-        sample_stats <- cbind(sample_stats,ssq_sample)        
-      } else if (ecosys == "Aqua_Nelson") {
-
-        stdmat <- std_nmr(ecosys = "Aqua_Nelson")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMM")
-
-        ## Elementar ratios (relative to C)
-
-        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
-                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
-
-        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
-                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
-
-        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
-                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
-
-        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
-                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
-
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
-                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
-
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
-                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
-
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
-                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
-
-        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
-                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
-
-        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
-        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
-        ## Final result
-
-        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
-        
-        ## Back calculated NMR results
-        
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
-        
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-
-        sample_stats <- cbind(sample_stats,ssq_sample)
-        
-      } else if (ecosys == "Aqua_Baldock") {
-
-        stdmat <- std_nmr(ecosys = "Aqua_Baldock")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMM")
-
-        ## Elementar ratios (relative to C)
-
-        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
-                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
-
-        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
-                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
-
-        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
-                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
-
-        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
-                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
-
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
-                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
-
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
-                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
-
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
-                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
-
-        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
-                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
-
-        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
-        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-        
-        ## Back calculated NMR results
-        
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
-        
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
-        sample_stats <- cbind(sample_stats,ssq_sample)
-        
-        ## Final result
-
-        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
-
-      } else if (ecosys == "mod") {
-
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = mod_std, amoSTD = 6, best.fits = 30,  NMRmeth = "MMM")
-
-        ## Elementar ratios (relative to C)
-
-        Cmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][9,2]+NMR.end$Protein*mod_std[[1]][9,1]+NMR.end$Lignin*mod_std[[1]][9,3]+
-                             NMR.end$Lipid*mod_std[[1]][9,4]+NMR.end$Carbonyl*mod_std[[1]][9,5]+NMR.end$Char*mod_std[[1]][9,6])
-
-        Nmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][10,2]+NMR.end$Protein*mod_std[[1]][10,1]+NMR.end$Lignin*mod_std[[1]][10,3]+
-                             NMR.end$Lipid*mod_std[[1]][10,4]+NMR.end$Carbonyl*mod_std[[1]][10,5]+NMR.end$Char*mod_std[[1]][10,6])
-
-        Hmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][11,2]+NMR.end$Protein*mod_std[[1]][11,1]+NMR.end$Lignin*mod_std[[1]][11,3]+
-                             NMR.end$Lipid*mod_std[[1]][11,4]+NMR.end$Carbonyl*mod_std[[1]][11,5]+NMR.end$Char*mod_std[[1]][11,6])
-
-        Omol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][12,2]+NMR.end$Protein*mod_std[[1]][12,1]+NMR.end$Lignin*mod_std[[1]][12,3]+
-                             NMR.end$Lipid*mod_std[[1]][12,4]+NMR.end$Carbonyl*mod_std[[1]][12,5]+NMR.end$Char*mod_std[[1]][12,6])
-
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][9,2]*12.0107+NMR.end$Protein*mod_std[[1]][9,1]*12.0107+NMR.end$Lignin*mod_std[[1]][9,3]*12.0107+
-                             NMR.end$Lipid*mod_std[[1]][9,4]*12.0107+NMR.end$Carbonyl*mod_std[[1]][9,5]*12.0107+NMR.end$Char*mod_std[[1]][9,6]*12.0107)
-
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][10,2]*14.0067+NMR.end$Protein*mod_std[[1]][10,1]*14.0067+NMR.end$Lignin*mod_std[[1]][10,3]*14.0067+
-                             NMR.end$Lipid*mod_std[[1]][10,4]*14.0067+NMR.end$Carbonyl*mod_std[[1]][10,5]*14.0067+NMR.end$Char*mod_std[[1]][10,6]*14.0067)
-
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][11,2]*1.00794+NMR.end$Protein*mod_std[[1]][11,1]*1.00794+NMR.end$Lignin*mod_std[[1]][11,3]*1.00794+
-                             NMR.end$Lipid*mod_std[[1]][11,4]*1.00794+NMR.end$Carbonyl*mod_std[[1]][11,5]*1.00794+NMR.end$Char*mod_std[[1]][11,6]*1.00794)
-
-        Owgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][12,2]*15.994+NMR.end$Protein*mod_std[[1]][12,1]*15.994+NMR.end$Lignin*mod_std[[1]][12,3]*15.994+
-                             NMR.end$Lipid*mod_std[[1]][12,4]*15.994+NMR.end$Carbonyl*mod_std[[1]][12,5]*15.994+NMR.end$Char*mod_std[[1]][12,6]*15.994)
-
-        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
-        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
-        ## Final result
-
-        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
-        
-        ## Back calculated NMR results
-        
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
-        
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        rownames(nmrrest) <- NULL
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
-        sample_stats <- cbind(sample_stats,ssq_sample)
+      suppressMessages(Integral[[i]]$data$Integral %>%
+                         filter(is.na(Component) == TRUE) %>% 
+                         group_by(sbb_index) %>%
+                         summarise(Integral = sum(Integral)*-1,n = n())) -> ossb2
+      
+      matching_rows <- NULL
+      for (j in 1:nrow(ossb)) {
+        index <- ossb$sbb_index[j]
+        #print(index)
+        result <- ossb2 %>%
+          filter(sbb_index == index)
+        matching_rows <- bind_rows(matching_rows, result)
+      }
+      
+      joined_df <- merge(ossb, matching_rows, by = "sbb_index")
+      
+      table_merged <- rbind(sums_Integral[1:2], double_ssb[, c('Component', 'Integral')], joined_df[, c('Component', 'Integral')])
+      
+      table_merged %>%
+        group_by(Component) %>%
+        summarise(Integral = sum(Integral)) -> final_integral
+      
+      ###finished calculation of integrals
+      
+      if (!is.null(ecosys)){
+        
+        norm <- sum(data.frame(final_integral$Integral))
+        normalized.Int <- (final_integral$Integral/norm)*100
+        normalized.Int <- data.frame(final_integral$Component, normalized.Int)
+        #print(normalized.Int)
+        #normalized.Int <- c(normalized.Int[1:7], sum(normalized.Int[8:9]))
+        #normalized.Int <- data.frame(final_integral$Component,normalized.Int)
+        
+        normalized.Int <-setNames(normalized.Int,c("Component", "Integral"))
+      
+        #rownames(normalized.Int) <- as.character(final_integral$Component)
+      
+        int_NMR <- NMR_table(NMRmeth = NMRmeth)
+      
+        normalized.Int <- merge(int_NMR, normalized.Int, by =  'Component')
+        
+        normalized.Int %>%
+          group_by(ID) %>%
+          summarise(From = From, To = To, Integral = sum(Integral))  %>%
+          arrange(From) -> normalized.Int
+        
+        #normalized.Int <- data.frame(normalized.Int$Component, normalized.Int$Integral)
+        
+        normalized.Int <- rbind(NCval, normalized.Int[,4])
+        
+        raw.spec.end[[i]] <- list("name" = name, "data" = list("Integral" = data.frame(normalized.Int[1:8,])))
+        
+      } else if (is.null(ecosys))  {
+        
+        norm <- sum(data.frame(final_integral$Integral))
+        normalized.Int <- t(final_integral$Integral/norm)*100
+        colnames(normalized.Int) <- as.character(final_integral$Component)
+        #final_integral <- data.frame(final_integral$Component, normalized.Int)
+        #integral.end <- data.frame(file.name,integral.end)
+        NMR.end[[i]] <- data.frame(cbind(name, normalized.Int))
         
       }
     }
-    ## return the corrected spectra list
-  } else if (NMRmeth == "MMMFixN") {
-
-    ## loop to process all samples
-    NMR.end <- NULL
-    raw.spec.end <- NULL
-    batch.nmr <- int_nmr(batch.nmr, NMRmeth = "MMM-SSB")
-
-    nmrmerge <- NULL
-
-    for (i in 1:length(batch.nmr)) {
-
-      raw.spec.end[[i]] <-  batch.nmr[[i]]
-      NCval <- as.numeric(cndata[[i]]$NC)
-      samplename <- batch.nmr[[i]]$name
-      sampleraw.spec <- batch.nmr[[i]]$data$raw.spec
-      sampleintegral <- as.data.frame(batch.nmr[[i]]$data$Integral)
-
-      ##Alklyl C calculation
-      Alkyl <-  setNames(data.frame(sum(2*sum(sampleintegral[1:3,1]), sum(sampleintegral[10:12,1]), -sum(sampleintegral[28:30,1]))), c("Alkyl"))
+    if (is.null(ecosys)) {
       
-      ##N_Alkyl_Methoxyl C calculation
-      N_Alkyl_Methoxyl <-  setNames(data.frame(sum(2*sum(sampleintegral[4:5,1]), sum(sampleintegral[13:14,1]), -sum(sampleintegral[31:32,1]))), c("N_Alkyl_Methoxyl"))
+      return(NMR.end)
+    } 
+    
+    else if (ecosys == "Terr_Nelson") {
       
-      ##O-Alkyl C calculation
-      O_Alkyl <-  setNames(data.frame(sum(2*sum(sampleintegral[6:7,1]), sum(sampleintegral[15:16,1]), -sum(sampleintegral[33:33,1]))), c("O-Alkyl"))
-      
-      ##Di_O_Alkyl C calculation
-      Di_O_Alkyl <-  setNames(data.frame(sum(2*sum(sampleintegral[8:8,1]), sum(sampleintegral[17:17,1]))), c("Di_O_Alkyl"))
-      
-      ##Aromatic C calculation
-      Aromatic <-  setNames(data.frame(sum(2*sum(sampleintegral[27:28,1]), sum(sampleintegral[18:19,1]), -sum(sampleintegral[1:1,1]))), c("Aromatic"))
-      
-      ##Phenolic C calculation
-      Phenolic <-  setNames(data.frame(sum(2*sum(sampleintegral[29:29,1]), sum(sampleintegral[20:20,1]), -sum(sampleintegral[2:2,1]))), c("Phenolic"))
-      
-      ##Amide_Carboxylic C calculation
-      Amide_Carboxylic <-  setNames(data.frame(sum(2*sum(sampleintegral[30:32,1]), sum(sampleintegral[21:23,1]), -sum(sampleintegral[3:5,1]))), c("Amide_Carboxylic"))
-      
-      ##Ketone C calculation
-      Ketone <-  setNames(data.frame(sum(2*sum(sampleintegral[33:33,1]), sum(sampleintegral[24:24,1]), -sum(sampleintegral[6:6,1]))), c("Ketone"))
-      
-      ##Put all together
-      Amide_to_Ketone <- c(Amide_Carboxylic + Ketone)
-      
-      sampleintegraljoin <- data.frame(Alkyl, N_Alkyl_Methoxyl, O_Alkyl, Di_O_Alkyl, Aromatic, Phenolic, Amide_to_Ketone)
-      
-      sampleintegraljoin <- t(sampleintegraljoin)
-      
-      norm <- sum(sampleintegraljoin)
-      
-      sampleintegraljoin <- (sampleintegraljoin/norm)*100
-      sampleintegralend <- rbind(NCval,sampleintegraljoin)
-      sampleintegralend <- data.frame(sampleintegralend)
-      
-      raw.spec.end[[i]] <- list("name" = samplename, "data" = list("raw.spec" = sampleraw.spec,"Integral" = sampleintegralend))
-      
-      if (ecosys == "Terr_Nelson") {
-
-        stdmat <- std_nmr(ecosys = "Terr_Nelson")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = "MMMFixN")
-
+      stdmat <- std_nmr(ecosys = "Terr_Nelson")
+      if (FixNC == TRUE) {
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = NMRmeth, FixNC = TRUE)
+        
         ## Elementar ratios (relative to C)
-
+        
         Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
                              NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
-
+        
         Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
                              NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
-
+        
         Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
                              NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
-
+        
         Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
                              NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
-
+        
         Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
                              NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
-
+        
         Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
                              NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
-
+        
         Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
                              NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
-
+        
         Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
                              NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
-
+        
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
+        
         NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
+        
         ## Final result
-
+        
         NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
         
-        ## Back calculated NMR results
         
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
+      } else if (FixNC == FALSE) {
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = NMRmeth, FixNC = FALSE)
         
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        rownames(nmrrest) <- NULL
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
-        sample_stats <- cbind(sample_stats,ssq_sample)
-        
-      } else if (ecosys == "Terr_Baldock") {
-
-        stdmat <- std_nmr(ecosys = "Terr_Baldock")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
-
         ## Elementar ratios (relative to C)
-
+        
         Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
                              NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
-
+        
         Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
                              NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
-
+        
         Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
                              NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
-
+        
         Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
                              NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
-
+        
         Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
                              NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
-
+        
         Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
                              NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
-
+        
         Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
                              NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
-
+        
         Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
                              NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
-
+        
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
+        
         NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
+        
         ## Final result
-
+        
         NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
         
-        ## Back calculated NMR results
+      }
+    }
+    else if (ecosys == "Terr_Baldock") {
+      
+      stdmat <- std_nmr(ecosys = "Terr_Baldock")
+      if (FixNC == TRUE) {
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = NMRmeth, FixNC = TRUE)
         
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
-        
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
-        sample_stats <- cbind(sample_stats,ssq_sample)
-        
-      } else if (ecosys == "Aqua_Nelson") {
-
-        stdmat <- std_nmr(ecosys = "Aqua_Nelson")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
-
         ## Elementar ratios (relative to C)
-
+        
         Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
                              NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
-
+        
         Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
                              NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
-
+        
         Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
                              NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
-
+        
         Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
                              NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
-
+        
         Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
                              NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
-
+        
         Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
                              NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
-
+        
         Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
                              NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
-
+        
         Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
                              NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
-
+        
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
+        
         NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
+        
         ## Final result
-
+        
         NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
         
-        ## Back calculated NMR results
         
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
+      } else if (FixNC == FALSE) {
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = NMRmeth, FixNC = FALSE)
         
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
-        sample_stats <- cbind(sample_stats,ssq_sample)
-        
-      } else if (ecosys == "Aqua_Baldock") {
-
-        stdmat <- std_nmr(ecosys = "Aqua_Baldock")
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
-
         ## Elementar ratios (relative to C)
-
+        
         Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
                              NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
-
+        
         Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
                              NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
-
+        
         Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
                              NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
-
+        
         Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
                              NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
-
+        
         Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
                              NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
-
+        
         Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
                              NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
-
+        
         Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
                              NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
-
+        
         Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
                              NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
-
+        
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
+        
         NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
+        
         ## Final result
-
+        
         NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
         
-        ## Back calculated NMR results
+      }
+    }
+    
+    else if (ecosys == "Aqua_Nelson") {
+      
+      stdmat <- std_nmr(ecosys = "Aqua_Nelson")
+      if (FixNC == TRUE) {
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = NMRmeth, FixNC = TRUE)
         
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
-        
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
-        
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
-        
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
-        
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
-        
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
-        
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
-        
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
-        
-        sum_c <- sum(sampleintegraljoin)
-        
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
-        
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
-        
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
-        
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
-        
-        sample_stats <- cbind(sample_stats,ssq_sample)
-        
-      } else if (ecosys == "mod") {
-
-        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = mod_std, amoSTD = 6, best.fits = 30,  NMRmeth = "MMMFixN")
-
         ## Elementar ratios (relative to C)
-
-        Cmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][9,2]+NMR.end$Protein*mod_std[[1]][9,1]+NMR.end$Lignin*mod_std[[1]][9,3]+
-                             NMR.end$Lipid*mod_std[[1]][9,4]+NMR.end$Carbonyl*mod_std[[1]][9,5]+NMR.end$Char*mod_std[[1]][9,6])
-
-        Nmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][10,2]+NMR.end$Protein*mod_std[[1]][10,1]+NMR.end$Lignin*mod_std[[1]][10,3]+
-                             NMR.end$Lipid*mod_std[[1]][10,4]+NMR.end$Carbonyl*mod_std[[1]][10,5]+NMR.end$Char*mod_std[[1]][10,6])
-
-        Hmol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][11,2]+NMR.end$Protein*mod_std[[1]][11,1]+NMR.end$Lignin*mod_std[[1]][11,3]+
-                             NMR.end$Lipid*mod_std[[1]][11,4]+NMR.end$Carbonyl*mod_std[[1]][11,5]+NMR.end$Char*mod_std[[1]][11,6])
-
-        Omol <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][12,2]+NMR.end$Protein*mod_std[[1]][12,1]+NMR.end$Lignin*mod_std[[1]][12,3]+
-                             NMR.end$Lipid*mod_std[[1]][12,4]+NMR.end$Carbonyl*mod_std[[1]][12,5]+NMR.end$Char*mod_std[[1]][12,6])
-
-        Cwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][9,2]*12.0107+NMR.end$Protein*mod_std[[1]][9,1]*12.0107+NMR.end$Lignin*mod_std[[1]][9,3]*12.0107+
-                             NMR.end$Lipid*mod_std[[1]][9,4]*12.0107+NMR.end$Carbonyl*mod_std[[1]][9,5]*12.0107+NMR.end$Char*mod_std[[1]][9,6]*12.0107)
-
-        Nwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][10,2]*14.0067+NMR.end$Protein*mod_std[[1]][10,1]*14.0067+NMR.end$Lignin*mod_std[[1]][10,3]*14.0067+
-                             NMR.end$Lipid*mod_std[[1]][10,4]*14.0067+NMR.end$Carbonyl*mod_std[[1]][10,5]*14.0067+NMR.end$Char*mod_std[[1]][10,6]*14.0067)
-
-        Hwgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][11,2]*1.00794+NMR.end$Protein*mod_std[[1]][11,1]*1.00794+NMR.end$Lignin*mod_std[[1]][11,3]*1.00794+
-                             NMR.end$Lipid*mod_std[[1]][11,4]*1.00794+NMR.end$Carbonyl*mod_std[[1]][11,5]*1.00794+NMR.end$Char*mod_std[[1]][11,6]*1.00794)
-
-        Owgt <- as.numeric(NMR.end$Carbohydrates*mod_std[[1]][12,2]*15.994+NMR.end$Protein*mod_std[[1]][12,1]*15.994+NMR.end$Lignin*mod_std[[1]][12,3]*15.994+
-                             NMR.end$Lipid*mod_std[[1]][12,4]*15.994+NMR.end$Carbonyl*mod_std[[1]][12,5]*15.994+NMR.end$Char*mod_std[[1]][12,6]*15.994)
-
+        
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
+        
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
+        
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
+        
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
+        
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
+        
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
+        
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
+        
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+        
         swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
-
+        
         NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
-
+        
         ## Final result
-
+        
         NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
         
-        ## Back calculated NMR results
         
-        ##Alklyl C calculation
-        Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][1,2]+NMR.end$Protein*stdmat[[1]][1,1]+NMR.end$Lignin*stdmat[[1]][1,3]+NMR.end$Lipid*stdmat[[1]][1,4]+
-                               NMR.end$Carbonyl*stdmat[[1]][1,5]+NMR.end$Char*stdmat[[1]][1,6], c("Alkyl"))
+      } else if (FixNC == FALSE) {
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = NMRmeth, FixNC = FALSE)
         
-        ##N_Alkyl_Methoxyl C calculation
-        N_Alkyl_Methoxyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][2,2]+NMR.end$Protein*stdmat[[1]][2,1]+NMR.end$Lignin*stdmat[[1]][2,3]+NMR.end$Lipid*stdmat[[1]][2,4]+
-                                          NMR.end$Carbonyl*stdmat[[1]][2,5]+NMR.end$Char*stdmat[[1]][2,6], c("N_Alkyl_Methoxyl"))
+        ## Elementar ratios (relative to C)
         
-        ##O-Alkyl C calculation
-        O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][3,2]+NMR.end$Protein*stdmat[[1]][3,1]+NMR.end$Lignin*stdmat[[1]][3,3]+NMR.end$Lipid*stdmat[[1]][3,4]+
-                                 NMR.end$Carbonyl*stdmat[[1]][3,5]+NMR.end$Char*stdmat[[1]][3,6], c("O-Alkyl"))
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
         
-        ##Di_O_Alkyl C calculation
-        Di_O_Alkyl_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][4,2]+NMR.end$Protein*stdmat[[1]][4,1]+NMR.end$Lignin*stdmat[[1]][4,3]+NMR.end$Lipid*stdmat[[1]][4,4]+
-                                    NMR.end$Carbonyl*stdmat[[1]][4,5]+NMR.end$Char*stdmat[[1]][4,6], c("Di_O_Alkyl"))
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
         
-        ##Aromatic C calculation
-        Aromatic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][5,2]+NMR.end$Protein*stdmat[[1]][5,1]+NMR.end$Lignin*stdmat[[1]][5,3]+NMR.end$Lipid*stdmat[[1]][5,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][5,5]+NMR.end$Char*stdmat[[1]][5,6], c("Aromatic"))
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
         
-        ##Phenolic C calculation
-        Phenolic_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][6,2]+NMR.end$Protein*stdmat[[1]][6,1]+NMR.end$Lignin*stdmat[[1]][6,3]+NMR.end$Lipid*stdmat[[1]][6,4]+
-                                  NMR.end$Carbonyl*stdmat[[1]][6,5]+NMR.end$Char*stdmat[[1]][6,6], c("Phenolic"))
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
         
-        ##Amide_Carboxylic C calculation
-        Amide_to_Ketone_m <-  setNames(NMR.end$Carbohydrates*stdmat[[1]][7,2]+NMR.end$Protein*stdmat[[1]][7,1]+NMR.end$Lignin*stdmat[[1]][7,3]+NMR.end$Lipid*stdmat[[1]][7,4]+
-                                         NMR.end$Carbonyl*stdmat[[1]][7,5]+NMR.end$Char*stdmat[[1]][7,6], c("Amide_to_Ketone"))
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
         
-        sum_m <- setNames(Alkyl_m + N_Alkyl_Methoxyl_m + O_Alkyl_m + Di_O_Alkyl_m + Aromatic_m + Phenolic_m + Amide_to_Ketone_m, c("Sum"))
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
         
-        sum_c <- sum(sampleintegraljoin)
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
         
-        sampleintegraljoin <-rbind(sampleintegraljoin, sum_c)
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
         
-        sample_stats <- data.frame(Alkyl_m, N_Alkyl_Methoxyl_m, O_Alkyl_m, Di_O_Alkyl_m, Aromatic_m, Phenolic_m, Amide_to_Ketone_m, sum_m)
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
         
-        nmrrest <- NULL
-        for (i in 1:nrow(sample_stats)) {
-          nmrrestt <- c(sampleintegraljoin)
-          nmrrest <- rbind(nmrrest, nmrrestt)
-        }
-        colnames(nmrrest) <-  c("Alkyl", "N_Alkyl_Methoxyl", "O-Alkyl", "Di_O_Alkyl", "Aromatic", "Phenolic", "Amide_to_Ketone", "Sum")
-        rownames(nmrrest) <- NULL
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
         
-        sample_stats <- cbind(sample_stats,nmrrest)
-        ssq_sample <- data.frame((sample_stats$Alkyl-sample_stats$Alkyl_m)^2, (sample_stats$N_Alkyl_Methoxyl-sample_stats$N_Alkyl_Methoxyl_m)^2,
-                                 (sample_stats$`O-Alkyl` -sample_stats$O_Alkyl_m)^2, (sample_stats$Di_O_Alkyl-sample_stats$Di_O_Alkyl_m)^2, 
-                                 (sample_stats$Aromatic -sample_stats$Aromatic_m)^2, (sample_stats$Phenolic -sample_stats$Phenolic_m)^2,
-                                 (sample_stats$Amide_to_Ketone -sample_stats$Amide_to_Ketone_m)^2, (sample_stats$Sum -sample_stats$sum_m)^2)
+        ## Final result
         
-        colnames(ssq_sample) <-  c("Alkyl_ssq", "N_Alkyl_Methoxyl_ssq", "O-Alkyl_ssq", "Di_O_Alkyl_ssq", "Aromatic_ssq", "Phenolic_ssq", "Amide_to_Ketone_ssq", "Sum_ssq")
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
         
-        sample_stats <- cbind(sample_stats,ssq_sample)        
+      }
+    }
+    else if (ecosys == "Aqua_Baldock") {
+      
+      stdmat <- std_nmr(ecosys = "Aqua_Baldock")
+      if (FixNC == TRUE) {
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = NMRmeth, FixNC = TRUE)
+        
+        ## Elementar ratios (relative to C)
+        
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
+        
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
+        
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
+        
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
+        
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
+        
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
+        
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
+        
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+        
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
+        
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
+        
+        ## Final result
+        
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
+        
+        
+      } else if (FixNC == FALSE) {
+        NMR.end <- fit_LCF(all.samples = raw.spec.end, all.standards = stdmat, amoSTD = 6, best.fits = 30, NMRmeth = NMRmeth, FixNC = FALSE)
+        
+        ## Elementar ratios (relative to C)
+        
+        Cmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]+NMR.end$Protein*stdmat[[1]][9,1]+NMR.end$Lignin*stdmat[[1]][9,3]+
+                             NMR.end$Lipid*stdmat[[1]][9,4]+NMR.end$Carbonyl*stdmat[[1]][9,5]+NMR.end$Char*stdmat[[1]][9,6])
+        
+        Nmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]+NMR.end$Protein*stdmat[[1]][10,1]+NMR.end$Lignin*stdmat[[1]][10,3]+
+                             NMR.end$Lipid*stdmat[[1]][10,4]+NMR.end$Carbonyl*stdmat[[1]][10,5]+NMR.end$Char*stdmat[[1]][10,6])
+        
+        Hmol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]+NMR.end$Protein*stdmat[[1]][11,1]+NMR.end$Lignin*stdmat[[1]][11,3]+
+                             NMR.end$Lipid*stdmat[[1]][11,4]+NMR.end$Carbonyl*stdmat[[1]][11,5]+NMR.end$Char*stdmat[[1]][11,6])
+        
+        Omol <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]+NMR.end$Protein*stdmat[[1]][12,1]+NMR.end$Lignin*stdmat[[1]][12,3]+
+                             NMR.end$Lipid*stdmat[[1]][12,4]+NMR.end$Carbonyl*stdmat[[1]][12,5]+NMR.end$Char*stdmat[[1]][12,6])
+        
+        Cwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][9,2]*12.0107+NMR.end$Protein*stdmat[[1]][9,1]*12.0107+NMR.end$Lignin*stdmat[[1]][9,3]*12.0107+
+                             NMR.end$Lipid*stdmat[[1]][9,4]*12.0107+NMR.end$Carbonyl*stdmat[[1]][9,5]*12.0107+NMR.end$Char*stdmat[[1]][9,6]*12.0107)
+        
+        Nwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][10,2]*14.0067+NMR.end$Protein*stdmat[[1]][10,1]*14.0067+NMR.end$Lignin*stdmat[[1]][10,3]*14.0067+
+                             NMR.end$Lipid*stdmat[[1]][10,4]*14.0067+NMR.end$Carbonyl*stdmat[[1]][10,5]*14.0067+NMR.end$Char*stdmat[[1]][10,6]*14.0067)
+        
+        Hwgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][11,2]*1.00794+NMR.end$Protein*stdmat[[1]][11,1]*1.00794+NMR.end$Lignin*stdmat[[1]][11,3]*1.00794+
+                             NMR.end$Lipid*stdmat[[1]][11,4]*1.00794+NMR.end$Carbonyl*stdmat[[1]][11,5]*1.00794+NMR.end$Char*stdmat[[1]][11,6]*1.00794)
+        
+        Owgt <- as.numeric(NMR.end$Carbohydrates*stdmat[[1]][12,2]*15.994+NMR.end$Protein*stdmat[[1]][12,1]*15.994+NMR.end$Lignin*stdmat[[1]][12,3]*15.994+
+                             NMR.end$Lipid*stdmat[[1]][12,4]*15.994+NMR.end$Carbonyl*stdmat[[1]][12,5]*15.994+NMR.end$Char*stdmat[[1]][12,6]*15.994)
+        
+        swgt <- c(Cwgt + Nwgt + Hwgt +Owgt)
+        
+        NOSC <- as.numeric(4+((2*Omol+3*Nmol-1*Hmol-4*Cmol)/Cmol))
+        
+        ## Final result
+        
+        NMR.end <- cbind(NMR.end, Cmol, Nmol, Hmol, Omol, Cwgt/swgt, Nwgt/swgt, Hwgt/swgt, Owgt/swgt, NOSC)
+        
       }
     }
   }
-  #citation  <- setNames(data.frame(matrix(ncol = 1, nrow= nrow(NMR.end))), c("Plz cite this work as an incentive to its curation"))
-  #NMR.end <- cbind(NMR.end,citation)
   
-  if (stats == FALSE) {
-    
-    return(NMR.end)
-    
-  } else if (stats == TRUE) {
-    
-    sample_stats <- sample_stats[order(sample_stats$Sum_ssq, decreasing = FALSE),]
-    rownames(sample_stats) <- NULL
-
-    
-    return(sample_stats)
-    }
+  
+  return(NMR.end)
 }

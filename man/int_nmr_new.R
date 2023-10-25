@@ -12,7 +12,7 @@
 #' @importFrom cmna simp
 #' @examples
 
-int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE, NMR_field=NULL, NMR_rotation=NULL) {
+int_nmr <- function(raw.spec, NMRmeth=NULL, NMR_field=NULL, NMR_rotation=NULL) {
   
   raw.spec.end <- NULL
   
@@ -20,14 +20,14 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE, NMR_field=NULL, NMR_r
     
     
     stop("Please choose an preset region model composition by typing 'MMM' for Molecular mixing model, 'Bonanomi' or '4region'")
-  } else if (NMRmeth == "4region") {
+  } else if (!is.null(NMRmeth)) {
     
     raw.spec.end <- NULL
     
     int_table <- ssb_ofset(NMRmeth=NMRmeth, NMR_field=NMR_field, NMR_rotation=NMR_rotation)
-    Integral <- NULL
+
     for (i in 1:length(raw.spec)) {
-      
+      Integral <- NULL
       name <- raw.spec[[i]]$name
       raw.spec.end[[i]] <- raw.spec[[i]]
       spectrum <- raw.spec[[i]]$data$raw.spec
@@ -36,8 +36,11 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE, NMR_field=NULL, NMR_r
       for (j in 1:nrow(int_table)){
         
         Int.min.j <- which(abs(spectrum[[c("ppm")]]-(int_table$From[j])) == min(abs(spectrum[[c("ppm")]]-(int_table$From[j]))))
+        #print(Int.min.j)
         Int.max.j <- which(abs(spectrum[[c("ppm")]]-(int_table$To[j])) == min(abs(spectrum[[c("ppm")]]-(int_table$To[j]))))
+        #print(Int.max.j)
         Int.x.j <- c(spectrum[[c("ppm")]][(Int.min.j:Int.max.j)])
+        #print(Int.x.j)
         Int.y.j <- c(spectrum[[c("raw.intensity")]][(Int.min.j:Int.max.j)])
         Integral <- append(Integral,trapz(Int.x.j,Int.y.j))
         #print(length((Int.x.1)))
@@ -45,40 +48,10 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, SSBcorr=FALSE, NMR_field=NULL, NMR_r
       
       norm <- sum(Integral)
       normalized.Int <- (Integral/norm)*100
-      Integral <- data.frame(normalized.Int)
-      Integral <-setNames(cbind(Integral,int_table),c("Integral","From", "To", "Component", "Component_index", "Component_ssb", "sbb_index", "ssb_ofset"))
-      raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
-    }   
-  } else if (NMRmeth == "MMM") {
-    
-    raw.spec.end <- NULL
-    
-    int_table <- ssb_ofset(NMRmeth=NMRmeth, NMR_field=NMR_field, NMR_rotation=NMR_rotation)
-    Integral <- NULL
-    for (i in 1:length(raw.spec)) {
-
-      name <- raw.spec[[i]]$name
-      raw.spec.end[[i]] <- raw.spec[[i]]
-      spectrum <- raw.spec[[i]]$data$raw.spec
-      
-      ## Extract ppm (x) and the intesity (y) for predifined intervals
-      for (j in 1:nrow(int_table)){
-  
-      Int.min.j <- which(abs(spectrum[[c("ppm")]]-(int_table$From[j])) == min(abs(spectrum[[c("ppm")]]-(int_table$From[j]))))
-      Int.max.j <- which(abs(spectrum[[c("ppm")]]-(int_table$To[j])) == min(abs(spectrum[[c("ppm")]]-(int_table$To[j]))))
-      Int.x.j <- c(spectrum[[c("ppm")]][(Int.min.j:Int.max.j)])
-      Int.y.j <- c(spectrum[[c("raw.intensity")]][(Int.min.j:Int.max.j)])
-      Integral <- append(Integral,trapz(Int.x.j,Int.y.j))
-      #print(length((Int.x.1)))
-      }
-      
-      norm <- sum(Integral)
-      normalized.Int <- (Integral/norm)*100
-      Integral <- data.frame(normalized.Int)
-      Integral <-setNames(cbind(Integral,int_table),c("Integral","From", "To", "Component", "Component_index", "Component_ssb", "sbb_index", "ssb_ofset"))
+      f.integral <- data.frame(normalized.Int)
+      Integral <-setNames(cbind(f.integral,int_table),c("Integral","From", "To", "Component", "Component_index", "Component_ssb", "sbb_index", "ssb_ofset"))
       raw.spec.end[[i]] <- list("name" = name, "data" = list("raw.spec" = spectrum,"Integral" = Integral))
     }
-  
   }
   return(raw.spec.end)
 }

@@ -4,13 +4,17 @@
 \alias{int_nmr}
 \title{Integration function}
 \usage{
-int_nmr(raw.spec, NMRmeth = NULL, SSBcorr = FALSE)
+int_nmr(raw.spec, NMRmeth = NULL, NMR_field = NULL, NMR_rotation = NULL)
 }
 \arguments{
 \item{raw.spec}{Raw spectrum}
 
 \item{NMRmeth}{Regions to be integrated.
 Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM-SSB").}
+
+\item{NMR_field}{Magnetic field of the NMR}
+
+\item{NMR_rotation}{Rotation frequency of the sample probe in the NMR}
 }
 \description{
 This function allows you to integrate the 13C-NMR spectra using diferent integration regions.

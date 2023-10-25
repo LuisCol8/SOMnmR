@@ -8,6 +8,9 @@ region_calc(
   batch_nmr = NULL,
   file = NULL,
   NMRmeth = NULL,
+  FixNC,
+  NMR_field = NULL,
+  NMR_rotation = NULL,
   ecosys = NULL,
   cndata = NULL,
   mod_std = NULL
@@ -16,16 +19,30 @@ region_calc(
 \arguments{
 \item{batch_nmr}{Vector with file names, default}
 
-\item{NMRmeth}{Regions to be integrated.
+\item{NMRmeth}{Regions to be integrated.}
+
+\item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
 Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
 
+\item{NMR_field}{Magnetic field of the NMR}
+
+\item{NMR_rotation}{Rotation frequency of the sample probe in the NMR}
+
 \item{ecosys}{Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")}
+
+\item{mod_std}{File containing a modified NMR table}
 
 \item{raw.spec}{List of files already loaded with read_raw_spec()}
 
 \item{ncdata}{Initial correction and normalization parameters}
 }
 \description{
-This function loads, integates and calculates the functional group distribution from the raw spectra.
+This function loads, integrates and calculates the functional group distribution from the raw spectra.
+Produces also the molecular mixing model fitting if NC data is provided.
 Output is a list with the raw data, integrals and corrected spectra.
 }
+\keyword{Bonanomi}
+\keyword{Mixing}
+\keyword{Molecular}
+\keyword{fitting,}
+\keyword{model,}
