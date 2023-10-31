@@ -7,7 +7,7 @@
 NMR_table(NMRmeth = NULL)
 }
 \arguments{
-\item{ecosys}{Standards from the ecosystem to be fitted. "Terr_Nelson" or "Terr_Baldock" for terrestrial, "Aqua_Nelson" or "Aqua_Baldock" for aquatic.}
+\item{NMRmeth}{Regions to be integrated.}
 }
 \description{
 The function creates a data frame with all standards of the selected ecosystem (Terrestrial or Aquatic).

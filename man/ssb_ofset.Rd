@@ -7,10 +7,11 @@
 ssb_ofset(NMRmeth = NULL, NMR_field = NULL, NMR_rotation = NULL)
 }
 \arguments{
-\item{NMRmeth}{Regions to be integrated.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM-SSB").}
+\item{NMRmeth}{Regions to be integrated.}
 
-\item{raw.spec}{Raw spectrum}
+\item{NMR_field}{Magnetic field of the NMR}
+
+\item{NMR_rotation}{Rotation frequency of the sample probe in the NMR}
 }
 \description{
 This function calculates the spinning side band ofset for a given 13C NMR table.

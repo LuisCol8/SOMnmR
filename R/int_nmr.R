@@ -12,6 +12,7 @@
 #' @keywords normalization, integration
 #' @export
 #' @importFrom cmna simp
+#' @importFrom data.table setDT
 #' @examples
 
 int_nmr <- function(raw.spec, NMRmeth=NULL, NMR_field=NULL, NMR_rotation=NULL) {
@@ -66,4 +67,3 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, NMR_field=NULL, NMR_rotation=NULL) {
   }
   return(raw.spec.end)
 }
-
