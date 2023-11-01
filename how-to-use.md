@@ -215,7 +215,8 @@ write.csv(modstd[[1]],"C:/Documents/Data/Experiment_NMR/modstd.csv", row.names =
 # Now I will load this new modified table as a list.
 modstd <- list(read.csv("C:/Users/zak69953/Downloads/Gabriela/modstd.csv"))
 
-# I will now add the modified table as the table to be used for the Standards (mod_std = modstd) and will change the ecosys to "mod".
+# I will now add the modified table as the table to be used for the Standards (mod_std = modstd)
+# and will change the ecosys to "mod".
 # We will now, integrate and correct for the SSB, and perform the fittin of the MMM for the whole data set
 # For this the NMRMeth has to be "MMM", and I will choose to fix the NC data, using the FixNC = TRUE)
 # You will need to input the magnetic field of your NMR machine and the spinning frequency of the probe.
