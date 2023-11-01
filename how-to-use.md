@@ -92,7 +92,13 @@ IntegralSSBc <- region_calc(spec, NMRmeth = "4region", NMR_field = 200, NMR_rota
 View(IntegralSSBc[[1]])
 
 #If you want to generate a table with all the results insead of having each in a list you can try this
-
+Integrall <- NULL
+for (i in 1:length(IntegralSSBc)) {
+  Integral <- data.frame(IntegralSSBc[[i]])
+  
+  Integrall <- rbind(Integrall, Integral)
+}
+View(Integrall)
 
 ```
 
