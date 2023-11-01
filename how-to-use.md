@@ -227,7 +227,7 @@ MMM_TB_fix_mod <- region_calc(spec, NMRmeth = "MMM", ecosys= "mod", cndata = ncd
  NMR_field = 200, NMR_rotation = 6800)
 
 #To view the output of a single spectrum
-View(MMM_TB_fix)
+View(MMM_TB_fix_mod)
 
 ```
 
