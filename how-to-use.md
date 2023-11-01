@@ -222,7 +222,8 @@ modstd <- list(read.csv("C:/Users/zak69953/Downloads/Gabriela/modstd.csv"))
 # and the NCdata variable.
 # In this example we used an NMR of 200 MHz and a spinning frequency of 6800 Hz.
 
-MMM_TB_fix_mod <- region_calc(spec, NMRmeth = "MMM", ecosys= "mod", cndata = ncdata, FixNC = TRUE, mod_std = modstd, NMR_field = 200, NMR_rotation = 6800)
+MMM_TB_fix_mod <- region_calc(spec, NMRmeth = "MMM", ecosys= "mod", cndata = ncdata, FixNC = TRUE, mod_std = modstd,
+ NMR_field = 200, NMR_rotation = 6800)
 
 #To view the output of a single spectrum
 View(MMM_TB_fix)
