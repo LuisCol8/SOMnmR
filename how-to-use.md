@@ -262,7 +262,9 @@ spec <- read_raw_spec(files, filetype = "Bruker")
 
 setwd(paste(work.dir,"plot",sep = "/"))
 
-plot_NMR(spec, file.output = TRUE , use.tiff = FALSE)
-
+plot_NMR(spec, NMRmeth = "MMM", file.output = TRUE , use.tiff = FALSE)
 
 ```
+The output will be a figure similar to the one below:
+
+![image](https://github.com/LuisCol8/SOMnmR/assets/35764330/74680738-a6f8-4a62-a747-11c1e83b6b67)
