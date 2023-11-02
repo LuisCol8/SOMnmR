@@ -147,7 +147,7 @@ write.csv(ncdata,"C:/Documents/Data/Experiment_NMR/NC/NC_table.csv", row.names =
 # Now we will load the NC table and use it for the MMM fitting
 ncdata <- nc_data("C:/Documents/Data/Experiment_NMR/NC/NC_table.csv")
 
-# We will now, integrate and correct for the SSB, and perform the fittin of the MMM for the whole data set
+# We will now, integrate and correct for the SSB, and perform the fitting of the MMM for the whole data set
 # For this the NMRMeth has to be "MMM", and I will choose to fix the NC data, using the FixNC = TRUE)
 # You will need to input the magnetic field of your NMR machine and the spinning frequency of the probe.
 # and the NCdata variable.
@@ -217,7 +217,8 @@ modstd <- list(read.csv("C:/Users/zak69953/Downloads/Gabriela/modstd.csv"))
 
 # I will now add the modified table as the table to be used for the Standards (mod_std = modstd)
 # and will change the ecosys to "mod".
-# We will now, integrate and correct for the SSB, and perform the fittin of the MMM for the whole data set
+# The rest of the parameters stay the same to integrate and correct for the SSB, and perform
+# the fitting of the MMM for the whole data set.
 # For this the NMRMeth has to be "MMM", and I will choose to fix the NC data, using the FixNC = TRUE)
 # You will need to input the magnetic field of your NMR machine and the spinning frequency of the probe.
 # and the NCdata variable.
