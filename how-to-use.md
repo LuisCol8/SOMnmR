@@ -92,7 +92,13 @@ IntegralSSBc <- region_calc(spec, NMRmeth = "4region", NMR_field = 200, NMR_rota
 View(IntegralSSBc[[1]])
 
 #If you want to generate a table with all the results insead of having each in a list you can try this
-
+Integrall <- NULL
+for (i in 1:length(IntegralSSBc)) {
+  Integral <- data.frame(IntegralSSBc[[i]])
+  
+  Integrall <- rbind(Integrall, Integral)
+}
+View(Integrall)
 
 ```
 
@@ -197,16 +203,31 @@ write.csv(ncdata,"C:/Documents/Data/Experiment_NMR/NC/NC_table.csv", row.names =
 # Now we will load the NC table and use it for the MMM fitting
 ncdata <- nc_data("C:/Documents/Data/Experiment_NMR/NC/NC_table.csv")
 
+# Now we will create a modified standard table. For this first we will load a table we want to modify.
+# For instance the Terrestrial ecosystem table from Nelson et al.
+modstd <-std_nmr(ecosys= "Terr_Nelson")
+
+# We will now write the table as csv and open it in excel, and modify it.
+# Currently, you can modify the values of the table, but not the names of the columns.
+# If you add a new column or modify the name of the column it will not work.
+write.csv(modstd[[1]],"C:/Documents/Data/Experiment_NMR/modstd.csv", row.names = FALSE)
+
+# Now I will load this new modified table as a list.
+modstd <- list(read.csv("C:/Users/zak69953/Downloads/Gabriela/modstd.csv"))
+
+# I will now add the modified table as the table to be used for the Standards (mod_std = modstd)
+# and will change the ecosys to "mod".
 # We will now, integrate and correct for the SSB, and perform the fittin of the MMM for the whole data set
 # For this the NMRMeth has to be "MMM", and I will choose to fix the NC data, using the FixNC = TRUE)
 # You will need to input the magnetic field of your NMR machine and the spinning frequency of the probe.
 # and the NCdata variable.
 # In this example we used an NMR of 200 MHz and a spinning frequency of 6800 Hz.
 
-MMM_TB_fix <- region_calc(spec, NMRmeth = "MMM", ecosys= "Terr_Baldock", cndata = ncdata, FixNC = TRUE)
+MMM_TB_fix_mod <- region_calc(spec, NMRmeth = "MMM", ecosys= "mod", cndata = ncdata, FixNC = TRUE, mod_std = modstd,
+ NMR_field = 200, NMR_rotation = 6800)
 
 #To view the output of a single spectrum
-View(MMM_TB_fix)
+View(MMM_TB_fix_mod)
 
 ```
 
