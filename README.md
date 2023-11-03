@@ -76,11 +76,9 @@ Load the package
 
 Hi My name is Luis Colocho.
 I made my Ph.D. at the Chair of Soil Science of the Technical University of Munich, under Apl. Prof. Joerg Prietzel.
-At our lab, a major equipment of use was the solid state NMR and for a manuscript (under review) I developed this package, which takes some functions
-from the package developed by my college Florian Werner (check LCF if you do linear combination fitting of synchrotron data).
+At our lab, a major equipment of use was the solid state NMR and for a manuscript (under review) I developed this package for quick analysis of 13C NMR data.
 
-The package has some pre set regions like spinning side bands (which makes a spinning side band correction by subtracting the spinning sidebands from
-carboxyl-C and O-N-alkyl-C region and adding the proportion to the aryl-C), Bonanomi,based on the reported regions of Bonanomi et al. (2011) and the MMM  according to Nelson et al. (2005).
+The package can do the integration and spinning side bands correction for different sets of 13C NMR regions, namely "4region"(Alkyl, O-Alkyl, Aryl and Carboxyl), "Bonanomi", according to Bonanomi et al., and the Molecular mixing model regions and fitting, according to Nelson et al (2005).
 
 A special thanks goes to Prof. Carol Aldair, and Gabriela Viyalba for encouraging me to finish.
 
