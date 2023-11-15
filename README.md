@@ -1,5 +1,5 @@
 # SOMnmR
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7023315.svg)](https://doi.org/10.5281/zenodo.7023315)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7023315.svg)](https://doi.org/10.5281/zenodo.10137768)
 
 A package for 13C NMR analysis of soil and litter samples.
 
@@ -36,7 +36,7 @@ If you want me to be motivated to mantain this package and maybe add something o
 Just copy paste this:
 
 
-Colocho Hurtarte, L. C. (2022). SOMnmR (Version 0.1.0) [Computer software]. https://doi.org/10.5281/zenodo.7023316
+Colocho Hurtarte, L. C. (2022). SOMnmR (Version 0.2.0) [Computer software]. https://doi.org/10.5281/zenodo.7023315
 
 
 ## How to install
