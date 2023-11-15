@@ -1,5 +1,5 @@
 # SOMnmR
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7023316.svg)](https://doi.org/10.5281/zenodo.7023316)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7023315.svg)](https://doi.org/10.5281/zenodo.7023315)
 
 A package for 13C NMR analysis of soil and litter samples.
 
