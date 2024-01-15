@@ -19,10 +19,12 @@ region_calc(
 \arguments{
 \item{batch_nmr}{Vector with file names, default}
 
-\item{NMRmeth}{Regions to be integrated.}
+\item{file}{The raw  file}
 
-\item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+\item{NMRmeth}{Regions to be integrated.
+#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+
+\item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.}
 
 \item{NMR_field}{Magnetic field of the NMR}
 
@@ -30,16 +32,18 @@ Default is spinning side bands, other methods available include: Bonanomi ("Bona
 
 \item{ecosys}{Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")}
 
+\item{cndata}{Initial correction and normalization parameters}
+
 \item{mod_std}{File containing a modified NMR table}
-
-\item{raw.spec}{List of files already loaded with read_raw_spec()}
-
-\item{ncdata}{Initial correction and normalization parameters}
 }
 \description{
 This function loads, integrates and calculates the functional group distribution from the raw spectra.
 Produces also the molecular mixing model fitting if NC data is provided.
 Output is a list with the raw data, integrals and corrected spectra.
+}
+\examples{
+data(nmr_data)
+IntegralSSBc <- region_calc(nmr_data, NMRmeth = "4region", NMR_field = 300, NMR_rotation = 12000)
 }
 \keyword{Bonanomi}
 \keyword{Mixing}

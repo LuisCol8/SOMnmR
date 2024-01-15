@@ -3,19 +3,21 @@
 #' This function loads, integrates and calculates the functional group distribution from the raw spectra.
 #' Produces also the molecular mixing model fitting if NC data is provided.
 #' Output is a list with the raw data, integrals and corrected spectra.
-#' @param raw.spec List of files already loaded with read_raw_spec()
+#' @param file The raw  file
 #' @param batch_nmr Vector with file names, default
 #' @param NMRmeth Regions to be integrated.
+#' #' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
 #' @param FixNC TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
 #' @param ecosys Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")
-#' @param ncdata Initial correction and normalization parameters
+#' @param cndata Initial correction and normalization parameters
 #' @param NMR_field Magnetic field of the NMR
 #' @param NMR_rotation Rotation frequency of the sample probe in the NMR
 #' @param mod_std File containing a modified NMR table
 #' @keywords fitting, Molecular Mixing model, Bonanomi
 #' @export
 #' @examples
+#' data(nmr_data)
+#' IntegralSSBc <- region_calc(nmr_data, NMRmeth = "4region", NMR_field = 300, NMR_rotation = 12000)
 
 
 region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,

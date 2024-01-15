@@ -22,5 +22,9 @@ The loaded Raw spectra can be integrated using the spinning side bands regions(d
 the Bonanomi("Bonanomi") regions or the Molecular Mixing Model regions("MMM").
 The function returns the corrected, normalized and flattened spectrum
 }
+\examples{
+data(nmr_data)
+Integralregions <- int_nmr(nmr_data, NMRmeth = "4region", NMR_field = 300, NMR_rotation = 12000)
+}
 \keyword{integration}
 \keyword{normalization,}

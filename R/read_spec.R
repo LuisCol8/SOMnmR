@@ -1,8 +1,9 @@
 #' Read spectra
 #'
-#' This function reads the raw .txt file, from Bruker
+#' This function reads the raw file, Bruker, tab separated or coma separated
 #' extracts the spectra and returns a list with name, the raw spectrum
-#' @param file The raw .txt file
+#' @param file The raw  file
+#' @param filetype The raw  file type "Bruker", .csv ("tab"), csv ("coma")
 #' @keywords integration
 #' @export
 #' @importFrom utils read.table

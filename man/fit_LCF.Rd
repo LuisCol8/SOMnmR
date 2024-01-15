@@ -21,6 +21,8 @@ fit_LCF(
 
 \item{all.standards}{List of all standards}
 
+\item{ecosys}{Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")}
+
 \item{amoSTD}{Use at most X standards}
 
 \item{ex.smaller}{Exclude portions smaller than a given value (decimal form), default to NULL}
@@ -29,7 +31,10 @@ fit_LCF(
 
 \item{best.fits}{Possibility to output more than the best fit (e.g. the first 10 best fits), default to 1}
 
-\item{LC.vals}{The fitting range values for the linear combination fitting}
+\item{NMRmeth}{Regions to be integrated.
+Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+
+\item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.}
 }
 \description{
 The function can be used to check which combinations of standards produce a good fit.

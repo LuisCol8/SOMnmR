@@ -12,4 +12,7 @@ NMR_table(NMRmeth = NULL)
 \description{
 The function creates a data frame with all standards of the selected ecosystem (Terrestrial or Aquatic).
 }
+\examples{
+nmrtable <- NMR_table(NMRmeth = "MMM")
+}
 \keyword{standards}

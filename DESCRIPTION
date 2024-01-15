@@ -1,18 +1,19 @@
 Package: SOMnmR
 Type: Package
-Title: Set of tools to process 13C-NMR data.
+Title: SOMnmR
 Version: 0.1.0
 Author: Luis Carlos Colocho Hurtarte
 Maintainer: Luis Carlos Colocho Hurtarte <luis.colocho@wzw.tum.de>
 Description: Integrates the 13C NMR spectra using three diferent methods (Spinning side-bands,Bonanomi,Molecular Mixing Model).
-    Output depends on the NMRmeth chosen. For the Molecular Mixing Model, a measurement of the fitting quality is given by its R-factor an SSQ.
-License: GNU General Public License v3.0
+  Output depends on the NMRmeth chosen. For the Molecular Mixing Model, a measurement of the fitting quality is given by its R-factor an SSQ.
 Encoding: UTF-8
 LazyData: true
-Imports:
-  cmna, minpack.lm, quadprog, data.table, IntervalSurgeon, dplyr
-Depends: data.table
-RoxygenNote: 7.2.3
+Imports: pracma, minpack.lm, quadprog, IntervalSurgeon, dplyr, ggplot2, rlang
+Depends: 
+    data.table,
+    R (>= 2.10)
+RoxygenNote: 7.3.0
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+License: MIT + file LICENSE

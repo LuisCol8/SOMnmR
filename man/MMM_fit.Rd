@@ -15,6 +15,8 @@ MMM_fit(sample, standards, ex.smaller = NULL, NMRmeth, FixNC)
 
 \item{NMRmeth}{Regions to be integrated.
 Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+
+\item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.}
 }
 \description{
 The function wraps the Linear combination fit of the integrated regions of the molecular mixing model.

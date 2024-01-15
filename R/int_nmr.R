@@ -11,31 +11,33 @@
 #' @param NMR_rotation Rotation frequency of the sample probe in the NMR
 #' @keywords normalization, integration
 #' @export
-#' @importFrom cmna simp
+#' @importFrom pracma trapz
 #' @importFrom data.table setDT
 #' @examples
+#' data(nmr_data)
+#' Integralregions <- int_nmr(nmr_data, NMRmeth = "4region", NMR_field = 300, NMR_rotation = 12000)
 
 int_nmr <- function(raw.spec, NMRmeth=NULL, NMR_field=NULL, NMR_rotation=NULL) {
-  
+
   raw.spec.end <- NULL
-  
+
   if (is.null(NMRmeth)) {
-    
-    
+
+
     stop("Please choose an preset region model composition by typing 'MMM' for Molecular mixing model, 'Bonanomi' or '4region'")
-    
+
   } else if (is.null(NMR_field)){
-    
+
     stop("Please add the NMR Magnetic field")
-    
+
   } else if (is.null(NMR_rotation)){
-    
+
     stop("Please add the NMR roation frequency")
-    
+
   } else if (!is.null(NMRmeth)) {
-    
+
     raw.spec.end <- NULL
-    
+
     int_table <- ssb_ofset(NMRmeth=NMRmeth, NMR_field=NMR_field, NMR_rotation=NMR_rotation)
 
     for (i in 1:length(raw.spec)) {
@@ -43,10 +45,10 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, NMR_field=NULL, NMR_rotation=NULL) {
       name <- raw.spec[[i]]$name
       raw.spec.end[[i]] <- raw.spec[[i]]
       spectrum <- raw.spec[[i]]$data$raw.spec
-      
+
       ## Extract ppm (x) and the intesity (y) for predifined intervals
       for (j in 1:nrow(int_table)){
-        
+
         Int.min.j <- which(abs(spectrum[[c("ppm")]]-(int_table$From[j])) == min(abs(spectrum[[c("ppm")]]-(int_table$From[j]))))
         #print(Int.min.j)
         Int.max.j <- which(abs(spectrum[[c("ppm")]]-(int_table$To[j])) == min(abs(spectrum[[c("ppm")]]-(int_table$To[j]))))
@@ -57,7 +59,7 @@ int_nmr <- function(raw.spec, NMRmeth=NULL, NMR_field=NULL, NMR_rotation=NULL) {
         Integral <- append(Integral,trapz(Int.x.j,Int.y.j))
         #print(length((Int.x.1)))
       }
-      
+
       norm <- sum(Integral)
       normalized.Int <- (Integral/norm)*100
       f.integral <- data.frame(normalized.Int)

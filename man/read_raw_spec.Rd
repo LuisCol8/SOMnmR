@@ -7,10 +7,12 @@
 read_raw_spec(file = NULL, filetype = NULL)
 }
 \arguments{
-\item{file}{The raw .txt file}
+\item{file}{The raw  file}
+
+\item{filetype}{The raw  file type "Bruker", .csv ("tab"), csv ("coma")}
 }
 \description{
-This function reads the raw .txt file, from Bruker
+This function reads the raw file, Bruker, tab separated or coma separated
 extracts the spectra and returns a list with name, the raw spectrum
 }
 \examples{

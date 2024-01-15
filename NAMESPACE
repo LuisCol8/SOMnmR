@@ -1,1 +1,16 @@
 exportPattern("^[[:alpha:]]+")
+import("dplyr")
+importFrom("quadprog", "solve.QP")
+importFrom("grDevices", "dev.off", "png", "tiff")
+importFrom("graphics", "par")
+importFrom("stats", "complete.cases", "setNames")
+importFrom("utils", "combn", "head", "read.csv", "read.table",
+           "setTxtProgressBar", "txtProgressBar", "write.csv2")
+importFrom("data.table", "setDT")
+importFrom("rlang", ".data")
+importFrom("pracma", "trapz")
+import("IntervalSurgeon")
+import("minpack.lm")
+importFrom("ggplot2", "theme", "element_text", "ggplot","element_blank",
+           "element_line","aes", "scale_fill_manual", "geom_area", "geom_line",
+           "xlab","ylab", "ylim", "xlim")

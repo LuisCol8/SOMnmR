@@ -30,5 +30,9 @@ The loaded Raw spectra are intensity normalized and plotted with the chosen inte
 the Bonanomi("Bonanomi") regions or the Molecular Mixing Model regions("MMM").
 The function returns the plots as images either tiff or png, normalized and flattened spectrum
 }
-\keyword{integration}
+\examples{
+data(nmr_data)
+plot_NMR(nmr_data, NMRmeth = "MMM", file.output = FALSE , use.tiff = FALSE)
+}
+\keyword{integration=}
 \keyword{normalization,}

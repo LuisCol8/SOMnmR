@@ -8,6 +8,7 @@
 #' @keywords normalization, integration
 #' @export
 #' @import data.table, IntervalSurgeon, dplyr
+#' @importfrom rlang .data
 #' @examples
 
 ssb_ofset <- function(NMRmeth=NULL, NMR_field=NULL, NMR_rotation=NULL) {

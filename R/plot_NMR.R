@@ -10,10 +10,12 @@
 #' @param use.tiff Logical, default to FALSE (use png)
 #' @param set.plot.ymax Set maximum of plot y axis, defaults to NULL
 #' @param file.output Logical, default to FALSE
-#' @keywords normalization, integration
+#' @keywords normalization, integration=
+#' @import ggplot2
 #' @export
-#' @importFrom ggplot2
 #' @examples
+#' data(nmr_data)
+#' plot_NMR(nmr_data, NMRmeth = "MMM", file.output = FALSE , use.tiff = FALSE)
 
 plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
                       set.plot.ymax = NULL, file.output = NULL) {

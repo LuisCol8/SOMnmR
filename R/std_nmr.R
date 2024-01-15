@@ -5,6 +5,7 @@
 #' @keywords standards
 #' @export
 #' @examples
+#' nmr_table <- std_nmr(ecosys = "Terr_Nelson")
 
 
 std_nmr <- function (ecosys=NULL) {
