@@ -1,4 +1,5 @@
-# SOMnmR
+# SOMnmR <a href='https://github.com/LuisCol8/SOMnmR'> <img src= https://github.com/LuisCol8/SOMnmR/assets/35764330/581949d2-386d-4f19-8c9c-5bac6f7b8bc9 align="right" height="300" /></a>
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7023315.svg)](https://doi.org/10.5281/zenodo.10137768)
 
 A package for 13C NMR analysis of soil and litter samples.
