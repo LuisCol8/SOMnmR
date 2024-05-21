@@ -5,12 +5,11 @@
 #' @param standards List of all standards
 #' @param ex.smaller Exclude portions smaller than a given value (decimal form), default to NULL
 #' @param NMRmeth Regions to be integrated.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
 #' @param FixNC TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
+#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
 #' @keywords normalization correction
 #' @export
 #' @importFrom utils head combn setTxtProgressBar txtProgressBar write.csv2
-#' @examples
 
 
 MMM_fit <- function (sample, standards, ex.smaller = NULL, NMRmeth, FixNC) {

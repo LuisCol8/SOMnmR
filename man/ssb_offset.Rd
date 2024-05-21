@@ -4,7 +4,7 @@
 \alias{ssb_ofset}
 \title{Spinnning side bands ofset calculation function}
 \usage{
-ssb_ofset(NMRmeth = NULL, NMR_field = NULL, NMR_rotation = NULL)
+ssb_offset(NMRmeth = NULL, NMR_field = NULL, NMR_rotation = NULL)
 }
 \arguments{
 \item{NMRmeth}{Regions to be integrated.}
