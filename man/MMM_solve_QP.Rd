@@ -11,10 +11,10 @@ MMM_solve_QP(LCF.stds, LCF.samp, NMRmeth = NULL, FixNC)
 
 \item{LCF.samp}{NMR Sample(s) for LCF}
 
-\item{NMRmeth}{Regions to be integrated.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+\item{NMRmeth}{Regions to be integrated.}
 
-\item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.}
+\item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
+Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
 }
 \description{
 Quadratic programming solution function for linear combination fitting (LCF)

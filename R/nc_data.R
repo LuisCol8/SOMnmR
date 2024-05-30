@@ -5,8 +5,7 @@
 #' @param NCdata Raw spectrum
 #' @keywords normalization, correction, flattening
 #' @export
-#' @examples
-#' ncdata <- nc_data("C:/Documents/Data/Experiment_NMR/NC/NC_table.csv")
+
 
 nc_data <- function (NCdata) {
 

@@ -13,6 +13,6 @@ std_nmr(ecosys = NULL)
 The function creates a data frame with all standards of the selected ecosystem (Terrestrial or Aquatic).
 }
 \examples{
-nmr_table <- std_nmr(ecosys = "Terr_Nelson")
+std_table <- std_nmr(ecosys="Terr_Nelson")
 }
 \keyword{standards}

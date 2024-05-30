@@ -22,7 +22,7 @@ region_calc(
 \item{file}{The raw  file}
 
 \item{NMRmeth}{Regions to be integrated.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
 
 \item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.}
 
@@ -32,7 +32,7 @@ region_calc(
 
 \item{ecosys}{Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")}
 
-\item{cndata}{Initial correction and normalization parameters}
+\item{cndata}{The N:C data file created with mk_nc_data}
 
 \item{mod_std}{File containing a modified NMR table}
 }
@@ -42,8 +42,8 @@ Produces also the molecular mixing model fitting if NC data is provided.
 Output is a list with the raw data, integrals and corrected spectra.
 }
 \examples{
-data(nmr_data)
-IntegralSSBc <- region_calc(nmr_data, NMRmeth = "4region", NMR_field = 300, NMR_rotation = 12000)
+data("GarciaF200")
+IntegralSSBc <- region_calc(GarciaF200, NMRmeth = "4region", NMR_field = 200, NMR_rotation = 6800)
 }
 \keyword{Bonanomi}
 \keyword{Mixing}

@@ -10,7 +10,7 @@ int_nmr(raw.spec, NMRmeth = NULL, NMR_field = NULL, NMR_rotation = NULL)
 \item{raw.spec}{Raw spectrum}
 
 \item{NMRmeth}{Regions to be integrated.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM-SSB").}
+Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM").}
 
 \item{NMR_field}{Magnetic field of the NMR}
 
@@ -23,8 +23,8 @@ the Bonanomi("Bonanomi") regions or the Molecular Mixing Model regions("MMM").
 The function returns the corrected, normalized and flattened spectrum
 }
 \examples{
-data(nmr_data)
-Integralregions <- int_nmr(nmr_data, NMRmeth = "4region", NMR_field = 300, NMR_rotation = 12000)
+data(GarciaF200)
+Integralregions <- int_nmr(GarciaF200, NMRmeth = "4region", NMR_field = 200, NMR_rotation = 6800)
 }
 \keyword{integration}
 \keyword{normalization,}

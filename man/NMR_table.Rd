@@ -7,12 +7,13 @@
 NMR_table(NMRmeth = NULL)
 }
 \arguments{
-\item{NMRmeth}{Regions to be integrated.}
+\item{NMRmeth}{Regions to be integrated.
+Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
 }
 \description{
 The function creates a data frame with all standards of the selected ecosystem (Terrestrial or Aquatic).
 }
 \examples{
-nmrtable <- NMR_table(NMRmeth = "MMM")
+see_NMR_table <- NMR_table(NMRmeth="4region")
 }
 \keyword{standards}
