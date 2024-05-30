@@ -6,7 +6,7 @@
 #' @param file The raw  file
 #' @param batch_nmr Vector with file names, default
 #' @param NMRmeth Regions to be integrated.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
+#' Default is 4region, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
 #' @param FixNC TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
 #' @param ecosys Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")
 #' @param NMR_field Magnetic field of the NMR
@@ -14,7 +14,7 @@
 #' @param mod_std File containing a modified NMR table
 #' @param cndata The N:C data file created with mk_nc_data
 #' @keywords fitting, Molecular Mixing model, Bonanomi
-#' @import dplyr
+#' @import dplyr, InvervalSurgeon, data.table
 #' @export
 #' @examples
 #' data("GarciaF200")

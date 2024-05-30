@@ -12,6 +12,7 @@
 #' @param file.output Logical, default to FALSE
 #' @keywords normalization, integration
 #' @export
+#' @import ggplot2
 #' @examples
 #' library(ggplot2)
 #' data("GarciaF200")
@@ -33,6 +34,9 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
 
     ## create list of new sample for fitting function
     new.spec <- list("name" = raw.spec[[i]]$name, "data" = list("corr.spec" = corr.spec))
+
+    ppm <- NULL
+    norm.intensity <- NULL
 
     if (file.output == TRUE) {
 
