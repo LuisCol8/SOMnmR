@@ -19,7 +19,7 @@ NMR_table <- function (NMRmeth=NULL) {
   } else if (NMRmeth == "MMM") {
 
     ## Area composition
-    int_table <- data.frame("Component" = c("Alkyl", "N-Alkyl/Methoxyl", "O-Alkyl", "Di-O-Alkyl", "Aromatic",
+    int_table <- data.frame("Component" = c("Alkyl", "Methoxy/N-Alkyl", "O-Alkyl", "Di-O-Alkyl", "Aromatic",
                                           "Phenolic", "Amide/Carboxyl", "Ketone"),
                           "From" = c(-10.0, 45.0, 60.0, 95.0, 110.0, 145.0, 165.0, 190),
                           "To" = c(45.0, 60.0, 95.0, 110.0, 145.0, 165.0, 190.0, 220.0),
@@ -29,7 +29,7 @@ NMR_table <- function (NMRmeth=NULL) {
   } else if (NMRmeth == "Bonanomi") {
 
     ## Area composition
-    int_table <- data.frame("Component" = c("Alkyl", "N-Alkyl/Methoxyl", "O-Alkyl", "Di-O-Alkyl", "Aromatic",
+    int_table <- data.frame("Component" = c("Alkyl", "Methoxy/N-Alkyl", "O-Alkyl", "Di-O-Alkyl", "Aromatic",
                                             "Phenolic", "Amide/Carboxyl"),
                             "From" = c(0.0, 45.0, 60.0, 90.0, 110.0, 140.0, 160.0),
                             "To" = c(45.0, 60.0, 90.0, 110.0, 140.0, 160.0, 190.0))
@@ -37,14 +37,14 @@ NMR_table <- function (NMRmeth=NULL) {
   } else if (NMRmeth == "4region") {
 
     ## Area composition
-    int_table <- data.frame("Component" = c("Alkyl", "O-Alkyl", "Aryl", "Carboxyl"),
+    int_table <- data.frame("Component" = c("Alkyl", "O/N-Alkyl", "Aryl", "Carboxyl"),
                             "From" = c(0.0, 45.0, 110.0, 160.0),
                             "To" = c(45.0, 110, 160.0, 220.0))
 
   } else if (NMRmeth == "Smernik") {
 
   ## Area composition
-  int_table <- data.frame("Component" = c("Alkyl", "O-Alkyl", "Aryl", "Carboxyl"),
+  int_table <- data.frame("Component" = c("Alkyl", "O/N-Alkyl", "Aryl", "Carboxyl"),
                           "From" = c(0.0, 45.0, 110.0, 165.0),
                           "To" = c(45.0, 110, 165.0, 185.0))
 
