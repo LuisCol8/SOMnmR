@@ -22,7 +22,7 @@ region_calc(
 \item{file}{The raw  file}
 
 \item{NMRmeth}{Regions to be integrated.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+Default is 4region, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
 
 \item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.}
 
