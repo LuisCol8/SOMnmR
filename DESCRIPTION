@@ -1,9 +1,9 @@
 Package: SOMnmR
 Type: Package
 Title: SOMnmR
-Version: 0.1.0
+Version: 0.3.0
 Author: Luis Carlos Colocho Hurtarte
-Maintainer: Luis Carlos Colocho Hurtarte <luis.colocho@wzw.tum.de>
+Maintainer: Luis Carlos Colocho Hurtarte <lucacol8@gmail.com>
 Description: Integrates the 13C NMR spectra using three diferent methods (Spinning side-bands,Bonanomi,Molecular Mixing Model).
   Output depends on the NMRmeth chosen. For the Molecular Mixing Model, a measurement of the fitting quality is given by its R-factor an SSQ.
 Encoding: UTF-8
