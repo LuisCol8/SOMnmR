@@ -49,6 +49,14 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
     ## Start processing for an Integration of 4 regions
   } else if (NMRmeth == "4region") {
 
+    From <- NULL
+    To <- NULL
+    ID <- NULL
+    Component <- NULL
+    Component_ssb <- NULL
+    ssb_ofset <- NULL
+    sbb_index <- NULL
+
     ## Integral function
       Integral <- int_nmr (raw.spec = batch.nmr, NMRmeth = NMRmeth, NMR_field = NMR_field, NMR_rotation = NMR_rotation)
 
@@ -145,6 +153,14 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
       }
       ## Start processing for an Integration of 4 regions
   } else if (NMRmeth == "Smernik") {
+
+    From <- NULL
+    To <- NULL
+    ID <- NULL
+    Component <- NULL
+    Component_ssb <- NULL
+    ssb_ofset <- NULL
+    sbb_index <- NULL
 
     ## Integral function
     Integral <- int_nmr (raw.spec = batch.nmr, NMRmeth = NMRmeth, NMR_field = NMR_field, NMR_rotation = NMR_rotation)
@@ -243,6 +259,14 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
     ## Start of the processing for regions according to Bonanomi et al.
   } else if (NMRmeth == "Bonanomi") {
 
+    From <- NULL
+    To <- NULL
+    ID <- NULL
+    Component <- NULL
+    Component_ssb <- NULL
+    ssb_ofset <- NULL
+    sbb_index <- NULL
+
     ## Integral function
     Integral <- int_nmr (raw.spec = batch.nmr, NMRmeth = NMRmeth, NMR_field = NMR_field, NMR_rotation = NMR_rotation)
 
@@ -339,6 +363,14 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
 
     }
   } else if (NMRmeth == "MMM") {
+
+    From <- NULL
+    To <- NULL
+    ID <- NULL
+    Component <- NULL
+    Component_ssb <- NULL
+    ssb_ofset <- NULL
+    sbb_index <- NULL
 
     ## loop to process all samples
 

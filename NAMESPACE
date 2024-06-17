@@ -6,11 +6,11 @@ importFrom("graphics", "par")
 importFrom("stats", "complete.cases", "setNames")
 importFrom("utils", "combn", "head", "read.csv", "read.table",
            "setTxtProgressBar", "txtProgressBar", "write.csv2")
-importFrom("data.table", "setDT")
+importFrom("data.table", "setDT", "copy", ":=", "data.table", "setnames", "rbindlist")
 importFrom("rlang", ".data")
 importFrom("pracma", "trapz")
 import("IntervalSurgeon")
 import("minpack.lm")
 importFrom("ggplot2", "theme", "element_text", "ggplot","element_blank",
            "element_line","aes", "scale_fill_manual", "geom_area", "geom_line",
-           "xlab","ylab", "ylim", "xlim")
+           "xlab","ylab", "ylim", "xlim", "scale_x_reverse")

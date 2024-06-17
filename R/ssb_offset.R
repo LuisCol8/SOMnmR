@@ -33,6 +33,16 @@ ssb_offset <- function(NMRmeth=NULL, NMR_field=NULL, NMR_rotation=NULL) {
   # comvert to data.table format
   setDT(int_NMR)
   # create high and low intervals
+  From <- NULL
+  To <- NULL
+  Component <- NULL
+  Component_ssb <- NULL
+  i.Component <- NULL
+  i.Component_ssb <- NULL
+  ssb_ofset <- NULL
+  i.ssb_ofset <- NULL
+  `.` <- list
+
   int_NMR_high <- copy(int_NMR)[, `:=`(From = From + sb_ofset, To = To + sb_ofset, Component_ssb = paste0(Component), ssb_ofset =  "High")]
   int_NMR_low <- copy(int_NMR)[, `:=`(From = From - sb_ofset, To = To - sb_ofset, Component_ssb = paste0(Component), ssb_ofset =  "Low")]
   # create one data.table of all intervals
