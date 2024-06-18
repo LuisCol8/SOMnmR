@@ -24,4 +24,4 @@ The function returns the 13C NMR integration table to be used in the int_nmr fun
 see_ofset <- ssb_offset (NMRmeth='4region', NMR_field = 200, NMR_rotation = 6800)
 }
 \keyword{integration}
-\keyword{normalization,}
+\keyword{normalization}

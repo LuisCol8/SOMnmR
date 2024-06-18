@@ -13,7 +13,7 @@
 #' @param NMR_rotation Rotation frequency of the sample probe in the NMR
 #' @param mod_std File containing a modified NMR table
 #' @param cndata The N:C data file created with mk_nc_data
-#' @keywords fitting, Molecular Mixing model, Bonanomi
+#' @keywords fitting Molecular Mixing model Bonanomi
 #' @import dplyr, InvervalSurgeon, data.table
 #' @export
 #' @examples

@@ -27,4 +27,4 @@ data(GarciaF200)
 Integralregions <- int_nmr(GarciaF200, NMRmeth = "4region", NMR_field = 200, NMR_rotation = 6800)
 }
 \keyword{integration}
-\keyword{normalization,}
+\keyword{normalization}

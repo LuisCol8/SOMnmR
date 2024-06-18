@@ -31,9 +31,9 @@ the Bonanomi("Bonanomi") regions or the Molecular Mixing Model regions("MMM").
 The function returns the plots as images either tiff or png, normalized and flattened spectrum
 }
 \examples{
-library(ggplot2)
-data("GarciaF200")
-plot_NMR(GarciaF200, NMRmeth = "MMM", file.output = TRUE , use.tiff = FALSE)
+#library(ggplot2)
+#data("GarciaF200")
+#plot_NMR(GarciaF200, NMRmeth = "MMM", file.output = FALSE, use.tiff = FALSE)
 }
 \keyword{integration}
-\keyword{normalization,}
+\keyword{normalization}

@@ -13,6 +13,6 @@ nc_data(NCdata)
 This function allows you import a .csv file and create a dataframe with the C and N data of the samples been processed.
 The created dataframe will be merged with the spectral data during the fitting.
 }
-\keyword{correction,}
+\keyword{correction}
 \keyword{flattening}
-\keyword{normalization,}
+\keyword{normalization}

@@ -1,11 +1,11 @@
 Package: SOMnmR
 Type: Package
-Title: SOMnmR
+Title: 'SOMnmR: An R Package for Analysing CP MAS 13c NMR Spectra of Environmental Samples'
 Version: 0.3.0
 Author: Luis Carlos Colocho Hurtarte
 Maintainer: Luis Carlos Colocho Hurtarte <lucacol8@gmail.com>
-Description: Integrates the 13C NMR spectra using three diferent methods (Spinning side-bands,Bonanomi,Molecular Mixing Model).
-  Output depends on the NMRmeth chosen. For the Molecular Mixing Model, a measurement of the fitting quality is given by its R-factor an SSQ.
+Description: Integrates the 13C NMR spectra using different integration ranges ("Smernik", "Bonanomi","Molecular Mixing Model").
+  Output depends on the "NMRmeth" chosen. For the Molecular Mixing Model, a measurement of the fitting quality is given by its R-factor.
 Encoding: UTF-8
 LazyData: true
 Imports: pracma, minpack.lm, quadprog, IntervalSurgeon, dplyr, ggplot2, rlang

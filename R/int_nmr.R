@@ -9,7 +9,7 @@
 #' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM").
 #' @param NMR_field Magnetic field of the NMR
 #' @param NMR_rotation Rotation frequency of the sample probe in the NMR
-#' @keywords normalization, integration
+#' @keywords normalization integration
 #' @export
 #' @importFrom pracma trapz
 #' @importFrom data.table setDT

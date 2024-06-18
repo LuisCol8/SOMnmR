@@ -20,4 +20,4 @@ Default is spinning side bands, other methods available include: Bonanomi ("Bona
 Quadratic programming solution function for linear combination fitting (LCF)
 }
 \keyword{correction}
-\keyword{normalization,}
+\keyword{normalization}

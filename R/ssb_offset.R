@@ -4,7 +4,7 @@
 #' @param NMRmeth Regions to be integrated.
 #' @param NMR_field Magnetic field of the NMR
 #' @param NMR_rotation Rotation frequency of the sample probe in the NMR
-#' @keywords normalization, integration
+#' @keywords normalization integration
 #' @export
 #' @import data.table
 #' @examples

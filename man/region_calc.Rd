@@ -48,5 +48,5 @@ IntegralSSBc <- region_calc(GarciaF200, NMRmeth = "4region", NMR_field = 200, NM
 \keyword{Bonanomi}
 \keyword{Mixing}
 \keyword{Molecular}
-\keyword{fitting,}
-\keyword{model,}
+\keyword{fitting}
+\keyword{model}

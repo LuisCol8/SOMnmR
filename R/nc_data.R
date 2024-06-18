@@ -3,7 +3,7 @@
 #' This function allows you import a .csv file and create a dataframe with the C and N data of the samples been processed.
 #' The created dataframe will be merged with the spectral data during the fitting.
 #' @param NCdata Raw spectrum
-#' @keywords normalization, correction, flattening
+#' @keywords normalization correction flattening
 #' @export
 
 
