@@ -4,9 +4,9 @@
 #' @param sample Sample Integrals
 #' @param standards List of all standards
 #' @param ex.smaller Exclude portions smaller than a given value (decimal form), default to NULL
-#' @param NMRmeth Regions to be integrated.
+#' @param NMRmeth  Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").
 #' @param FixNC TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
+#' @returns A dataframe containing the result of the fitting exercise.
 #' @keywords normalization correction
 #' @export
 #' @importFrom utils head combn setTxtProgressBar txtProgressBar write.csv2

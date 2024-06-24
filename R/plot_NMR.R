@@ -5,18 +5,20 @@
 #' the Bonanomi("Bonanomi") regions or the Molecular Mixing Model regions("MMM").
 #' The function returns the plots as images either tiff or png, normalized and flattened spectrum
 #' @param raw.spec loaded NMR spectra
-#' @param NMRmeth Regions to be integrated.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
+#' @param NMRmeth  Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").
 #' @param use.tiff Logical, default to FALSE (use png)
 #' @param set.plot.ymax Set maximum of plot y axis, defaults to NULL
 #' @param file.output Logical, default to FALSE
+#' @returns A plot of the NMR spectrum and a  csv file of the data plotted.
 #' @keywords normalization integration
 #' @export
 #' @import ggplot2
 #' @examples
-#' #library(ggplot2)
-#' #data("GarciaF200")
-#' #plot_NMR(GarciaF200, NMRmeth = "MMM", file.output = FALSE, use.tiff = FALSE)
+#' \donttest{
+#' library(ggplot2)
+#' data("GarciaF200")
+#' plot_NMR(GarciaF200, NMRmeth = "MMM", file.output = FALSE, use.tiff = FALSE)
+#' }
 
 plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
                       set.plot.ymax = NULL, file.output = NULL) {
@@ -67,6 +69,13 @@ plot_NMR <- function (raw.spec, NMRmeth = NULL,  use.tiff = NULL,
       ## simply use sample name as header name
       head.name <- paste(sample.name)
     }
+
+    ## preserving old parameters
+    oldpar <- par(no.readonly = TRUE)
+
+    # Ensure the original graphical parameters are restored on exit
+    on.exit(par(oldpar))
+
 
     ## set squared plots (pty), margins (mar), and size of plot (cex)
     if (file.output == TRUE) {

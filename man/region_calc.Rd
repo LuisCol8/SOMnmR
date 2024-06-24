@@ -21,8 +21,7 @@ region_calc(
 
 \item{file}{The raw  file}
 
-\item{NMRmeth}{Regions to be integrated.
-Default is 4region, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+\item{NMRmeth}{Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").}
 
 \item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.}
 
@@ -35,6 +34,9 @@ Default is 4region, other methods available include: Bonanomi ("Bonanomi") and M
 \item{cndata}{The N:C data file created with mk_nc_data}
 
 \item{mod_std}{File containing a modified NMR table}
+}
+\value{
+A data frame that contains the SSBs corrected C functional groups, or if the "MMM" method is selected, the result of the fitting of the "MMM".
 }
 \description{
 This function loads, integrates and calculates the functional group distribution from the raw spectra.

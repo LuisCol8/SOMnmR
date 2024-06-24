@@ -5,6 +5,7 @@
 #' Thereafter the file is read with the function nc_data
 #'
 #' @param raw.spec The uploaded spectra read using the read_spec function
+#' @returns A data frame with three columns, one containing the names extracted from the raw.spec, and two columns to be filled manually with the carbon and nitrogen values.
 #' @keywords CN file
 #' @export
 #' @importFrom utils read.table

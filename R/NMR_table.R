@@ -1,8 +1,8 @@
 #' Create a data frame of standard NMR areas
 #'
 #' The function creates a data frame with all standards of the selected ecosystem (Terrestrial or Aquatic).
-#' @param NMRmeth Regions to be integrated.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
+#' @param NMRmeth Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").
+#' @returns A data frame containing the starting (from) and ending (to) ppm integral ranges of the different C functional groups.
 #' @keywords standards
 #' @export
 #' @examples

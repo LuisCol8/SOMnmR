@@ -3,9 +3,9 @@
 #' Quadratic programming solution function for linear combination fitting (LCF)
 #' @param LCF.stds Standards for LCF
 #' @param LCF.samp NMR Sample(s) for LCF
-#' @param NMRmeth Regions to be integrated.
+#' @param NMRmeth  Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").
 #' @param FixNC TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
+#' @returns A dataframe containing the result of the quadratic programming exercise, constrained or not by the Nc ratio (FixNC)
 #' @keywords normalization correction
 #' @importFrom quadprog solve.QP
 #' @export

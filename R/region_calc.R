@@ -5,14 +5,14 @@
 #' Output is a list with the raw data, integrals and corrected spectra.
 #' @param file The raw  file
 #' @param batch_nmr Vector with file names, default
-#' @param NMRmeth Regions to be integrated.
-#' Default is 4region, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
+#' @param NMRmeth  Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").
 #' @param FixNC TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
 #' @param ecosys Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")
 #' @param NMR_field Magnetic field of the NMR
 #' @param NMR_rotation Rotation frequency of the sample probe in the NMR
 #' @param mod_std File containing a modified NMR table
 #' @param cndata The N:C data file created with mk_nc_data
+#' @returns A data frame that contains the SSBs corrected C functional groups, or if the "MMM" method is selected, the result of the fitting of the "MMM".
 #' @keywords fitting Molecular Mixing model Bonanomi
 #' @import dplyr, InvervalSurgeon, data.table
 #' @export
@@ -70,7 +70,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
         name <- Integral[[i]]$name
 
         ## paste which sample is used now
-        print(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
+        message(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
 
         ## create progress bar for the standards combinations
         pb <- txtProgressBar(min = 1, max = length(batch.nmr), style = 3)
@@ -175,7 +175,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
       name <- Integral[[i]]$name
 
       ## paste which sample is used now
-      print(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
+      message(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
 
       ## create progress bar for the standards combinations
       pb <- txtProgressBar(min = 1, max = length(batch.nmr), style = 3)
@@ -280,7 +280,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
       name <- Integral[[i]]$name
 
       ## paste which sample is used now
-      print(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
+      message(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
 
       ## create progress bar for the standards combinations
       pb <- txtProgressBar(min = 1, max = length(batch.nmr), style = 3)
@@ -386,7 +386,7 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
       name <- Integral[[i]]$name
 
       ## paste which sample is used now
-      print(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
+      message(paste("Integrating Sample: ", name, ", start date: ", Sys.time(), sep = ""))
 
       ## create progress bar for the standards combinations
       pb <- txtProgressBar(min = 1, max = length(batch.nmr), style = 3)
@@ -430,7 +430,6 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
       matching_rows <- NULL
       for (j in 1:nrow(ossb)) {
         index <- ossb$sbb_index[j]
-        #print(index)
         result <- ossb2 %>%
           filter(sbb_index == index)
         matching_rows <- bind_rows(matching_rows, result)
@@ -451,13 +450,8 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
         norm <- sum(data.frame(final_integral$Integral))
         normalized.Int <- (final_integral$Integral/norm)*100
         normalized.Int <- data.frame(final_integral$Component, normalized.Int)
-        #print(normalized.Int)
-        #normalized.Int <- c(normalized.Int[1:7], sum(normalized.Int[8:9]))
-        #normalized.Int <- data.frame(final_integral$Component,normalized.Int)
 
         normalized.Int <-setNames(normalized.Int,c("Component", "Integral"))
-
-        #rownames(normalized.Int) <- as.character(final_integral$Component)
 
         int_NMR <- NMR_table(NMRmeth = NMRmeth)
 
@@ -467,8 +461,6 @@ region_calc <- function (batch_nmr = NULL, file = NULL, NMRmeth = NULL, FixNC,
           group_by(ID) %>%
           summarise(From = From, To = To, Integral = sum(Integral))  %>%
           arrange(From) -> normalized.Int
-
-        #normalized.Int <- data.frame(normalized.Int$Component, normalized.Int$Integral)
 
         normalized.Int <- rbind(NCval, normalized.Int[,4])
 

@@ -15,14 +15,16 @@ plot_NMR(
 \arguments{
 \item{raw.spec}{loaded NMR spectra}
 
-\item{NMRmeth}{Regions to be integrated.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+\item{NMRmeth}{Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").}
 
 \item{use.tiff}{Logical, default to FALSE (use png)}
 
 \item{set.plot.ymax}{Set maximum of plot y axis, defaults to NULL}
 
 \item{file.output}{Logical, default to FALSE}
+}
+\value{
+A plot of the NMR spectrum and a  csv file of the data plotted.
 }
 \description{
 This function allows you to plot the 13C-NMR spectra using marking different integration regions.
@@ -31,9 +33,11 @@ the Bonanomi("Bonanomi") regions or the Molecular Mixing Model regions("MMM").
 The function returns the plots as images either tiff or png, normalized and flattened spectrum
 }
 \examples{
-#library(ggplot2)
-#data("GarciaF200")
-#plot_NMR(GarciaF200, NMRmeth = "MMM", file.output = FALSE, use.tiff = FALSE)
+\donttest{
+library(ggplot2)
+data("GarciaF200")
+plot_NMR(GarciaF200, NMRmeth = "MMM", file.output = FALSE, use.tiff = FALSE)
+}
 }
 \keyword{integration}
 \keyword{normalization}

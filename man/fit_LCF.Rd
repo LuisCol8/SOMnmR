@@ -31,10 +31,12 @@ fit_LCF(
 
 \item{best.fits}{Possibility to output more than the best fit (e.g. the first 10 best fits), default to 1}
 
-\item{NMRmeth}{Regions to be integrated.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+\item{NMRmeth}{Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").}
 
 \item{FixNC}{TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.}
+}
+\value{
+A dataframe containing the result of the fitting exercise for all files.
 }
 \description{
 The function can be used to check which combinations of standards produce a good fit.

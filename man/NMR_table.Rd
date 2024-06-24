@@ -7,8 +7,10 @@
 NMR_table(NMRmeth = NULL)
 }
 \arguments{
-\item{NMRmeth}{Regions to be integrated.
-Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").}
+\item{NMRmeth}{Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").}
+}
+\value{
+A data frame containing the starting (from) and ending (to) ppm integral ranges of the different C functional groups.
 }
 \description{
 The function creates a data frame with all standards of the selected ecosystem (Terrestrial or Aquatic).

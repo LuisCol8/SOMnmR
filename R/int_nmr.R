@@ -5,10 +5,11 @@
 #' the Bonanomi("Bonanomi") regions or the Molecular Mixing Model regions("MMM").
 #' The function returns the corrected, normalized and flattened spectrum
 #' @param raw.spec Raw spectrum
-#' @param NMRmeth Regions to be integrated.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM").
+#' @param NMRmeth Regions to be integrated. Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM" or "MMM").
 #' @param NMR_field Magnetic field of the NMR
 #' @param NMR_rotation Rotation frequency of the sample probe in the NMR
+#' @returns A nested list containing in the first level a string (name) and a list (data) which contains two data frames
+#' one the raw spectrum and another the output of table of the integration with the spinning side bands.
 #' @keywords normalization integration
 #' @export
 #' @importFrom pracma trapz

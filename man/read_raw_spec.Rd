@@ -11,9 +11,12 @@ read_raw_spec(file = NULL, filetype = NULL)
 
 \item{filetype}{The raw  file type "Bruker", .csv ("tab"), csv ("coma")}
 }
+\value{
+A list with the name of the file and the raw spectral data.
+}
 \description{
 This function reads the raw file, Bruker, tab separated or coma separated
-extracts the spectra and returns a list with name, the raw spectrum
+extracts the spectra and returns a list with name, and the raw spectral data.
 }
 \examples{
 ## any .txt file as output from BRUKER

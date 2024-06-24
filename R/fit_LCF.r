@@ -7,10 +7,10 @@
 #' @param ex.smaller Exclude portions smaller than a given value (decimal form), default to NULL
 #' @param file.output Possibility to have a file output, default to NULL
 #' @param best.fits Possibility to output more than the best fit (e.g. the first 10 best fits), default to 1
-#' @param NMRmeth Regions to be integrated.
-#' Default is spinning side bands, other methods available include: Bonanomi ("Bonanomi") and Molecular mixing model ("MMM").
+#' @param NMRmeth Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").
 #' @param ecosys Standards to be used for the MMM, can be Terrestrial("Terr_Nelson" or "Terr_Baldock") or Aquatic ("Aqua_Nelson" or "Aqua_Baldock")
 #' @param FixNC TRUE or FALSE, for fixing or not the NC ratio on the sample fitting.
+#' @returns A dataframe containing the result of the fitting exercise for all files.
 #' @keywords normalization correction
 #' @export
 #' @importFrom utils head combn setTxtProgressBar txtProgressBar write.csv2
@@ -83,10 +83,10 @@ fit_LCF <- function (all.samples, all.standards, ecosys =NULL,
     new.results <- NULL
 
     ## paste which sample is used now
-    print(paste("Sample: ", all.samples[[i]]$name, ", start date: ", Sys.time(), sep = ""))
+    message(paste("Sample: ", all.samples[[i]]$name, ", start date: ", Sys.time(), sep = ""))
 
     ## paste how much combinations will be fitted
-    print(paste("Fitting ", length(STD.combs), " combinations", sep = ""))
+    message(paste("Fitting ", length(STD.combs), " combinations", sep = ""))
 
     ## create progress bar for the standards combinations
     pb <- txtProgressBar(min = 1, max = length(STD.combs), style = 3)
@@ -119,7 +119,7 @@ fit_LCF <- function (all.samples, all.standards, ecosys =NULL,
     close(pb)
 
     ## print finished time
-    print(paste("Finished: ", Sys.time(), sep = ""))
+    message(paste("Finished: ", Sys.time(), sep = ""))
 
 
     if (!is.null(new.results)) {

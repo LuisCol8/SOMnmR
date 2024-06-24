@@ -9,11 +9,14 @@ The function returns the 13C NMR integration table to be used in the int_nmr fun
 ssb_offset(NMRmeth = NULL, NMR_field = NULL, NMR_rotation = NULL)
 }
 \arguments{
-\item{NMRmeth}{Regions to be integrated.}
+\item{NMRmeth}{Regions to be integrated, methods available include: "4region", "Bonanomi", "Smernik" and Molecular mixing model ("MMM").}
 
 \item{NMR_field}{Magnetic field of the NMR}
 
 \item{NMR_rotation}{Rotation frequency of the sample probe in the NMR}
+}
+\value{
+A dataframe containing the  integral regions of the NMR spectrometer (according to the NMR spectrometer field and rotation speed) using the selected method and the predicted regions of the SSBs.
 }
 \description{
 Spinnning side bands ofset calculation function
@@ -21,7 +24,7 @@ This function calculates the spinning side band ofset for a given 13C NMR table.
 The function returns the 13C NMR integration table to be used in the int_nmr function.
 }
 \examples{
-see_ofset <- ssb_offset (NMRmeth='4region', NMR_field = 200, NMR_rotation = 6800)
+see_offset <- ssb_offset (NMRmeth='4region', NMR_field = 200, NMR_rotation = 6800)
 }
 \keyword{integration}
 \keyword{normalization}

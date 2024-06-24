@@ -9,6 +9,9 @@ mk_nc_data(raw.spec)
 \arguments{
 \item{raw.spec}{The uploaded spectra read using the read_spec function}
 }
+\value{
+A data frame with three columns, one containing the names extracted from the raw.spec, and two columns to be filled manually with the carbon and nitrogen values.
+}
 \description{
 This function copies the spectra read using the read_spec function and creates
 a .csv file with a colum with their names and two empty columns where the user must add the C and N values.
