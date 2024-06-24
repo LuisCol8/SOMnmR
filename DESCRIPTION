@@ -1,11 +1,15 @@
 Package: SOMnmR
 Type: Package
-Title: 'SOMnmR: An R Package for Analysing CP MAS 13c NMR Spectra of Environmental Samples'
+Title: Analysing cross polarization (CP) magic angle spinning (MAS)  13c nuclear magnetic resonance (NMR) Spectra of Environmental Samples
 Version: 0.3.0
-Author: Luis Carlos Colocho Hurtarte
-Maintainer: Luis Carlos Colocho Hurtarte <lucacol8@gmail.com>
-Description: Integrates the 13C NMR spectra using different integration ranges ("Smernik", "Bonanomi","Molecular Mixing Model").
+Authors@R: c(
+  person("Luis", "Colocho",
+  email = "lucacol8@gmail.com",
+  role = c("aut", "cre")))
+Description: Integrates the 13C nuclear magnetic resonance (NMR) spectra using different integration ranges ("Smernik", "Bonanomi","Molecular Mixing Model").
   Output depends on the "NMRmeth" chosen. For the Molecular Mixing Model, a measurement of the fitting quality is given by its R-factor.
+References:
+  Colocho Hurtarte, L. C. (2023). <doi:10.5281/zenodo.10137768>
 Encoding: UTF-8
 LazyData: true
 Imports: pracma, minpack.lm, quadprog, IntervalSurgeon, dplyr, ggplot2, rlang
